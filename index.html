@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pasquale Camelia – Research</title>
-  <meta name="description" content="Pasquale Camelia, independent researcher. Structural foundations of physics beyond the Standard Model, boundary phase inference, dimensional reduction, finite-rank constructive regimes and structural selection of form and physical fields." />
+  <title>Pasquale Camelia | Finite-Rank Projection, Foundations of Physics, Boundary Observability, Structural Selection</title>
+  <meta name="description" content="Pasquale Camelia, independent researcher. Finite-rank non-isometric projection as foundational constraint of physical structure: metric, time, and gauge as necessary residuals. Boundary phase inference, dimensional reduction, SAR tomography, and structural selection of form and physical fields in built systems." />
   <meta name="author" content="Pasquale Camelia" />
   <meta name="citation_author" content="Camelia, Pasquale" />
   <meta name="citation_title" content="Projection-Induced Singular Value Decomposition of Irrational Scale Invariant" />
@@ -174,9 +174,8 @@
     .lang-btn:hover:not(.active) { background: var(--border); }
 
     /* Header */
-    header { border-bottom: 2px solid var(--text); padding-bottom: 28px; margin-bottom: 40px; }
-    .name { font-size: 2.6rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 6px; }
-    .affil { font-size: 1rem; color: var(--muted); font-style: italic; margin-bottom: 16px; }
+    header { border-bottom: 2px solid var(--text); padding-bottom: 20px; margin-bottom: 40px; }
+    header .orcid-line { margin-top: 0; }
     .orcid-line { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--accent); text-decoration: none; }
     .orcid-line:hover { background: var(--border); }
     .orcid-icon { width: 16px; height: 16px; background: #a6ce39; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -221,6 +220,71 @@
     /* In progress note */
     .wip-note { background: #faf6ee; border: 1px solid #e8d8b0; border-radius: 8px; padding: 14px 18px; margin-top: 16px; font-size: 0.88rem; color: #7a6040; font-style: italic; line-height: 1.55; }
 
+
+    /* HERO */
+    .hero {
+      margin-bottom: 48px;
+    }
+
+    /* Banner corretto */
+    .banner {
+      width: 100%;
+      aspect-ratio: 1584 / 396;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Contenuto sotto il banner */
+    .hero-content {
+      border-bottom: 2px solid var(--text);
+      padding-bottom: 20px;
+    }
+
+    .name {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .role {
+      font-size: 1rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+
+    .keywords {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      margin-bottom: 16px;
+    }
+
+    /* Mobile tuning */
+    @media (max-width: 640px) {
+      .name {
+        font-size: 1.6rem;
+      }
+
+      .banner {
+        aspect-ratio: 3 / 1;
+      }
+
+      .keywords {
+        font-size: 0.75rem;
+      }
+    }
+
     /* Links */
     .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 12px; }
     .link-card { display: flex; flex-direction: column; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; text-decoration: none; color: var(--text); transition: border-color 0.15s; }
@@ -257,17 +321,37 @@
     </div>
   </div>
 
-  <header>
-    <div class="name">Pasquale Camelia</div>
-    <div class="affil">
-      <span class="en">Independent Researcher · Milan, Italy</span>
-      <span class="it">Ricercatore Indipendente · Milano, Italia</span>
-    </div>
-    <a class="orcid-line" href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener">
-      <span class="orcid-icon"></span>0009-0006-4779-4647
-    </a>
-  </header>
+  <header class="hero">
 
+    <div class="banner">
+      <img src="linkedin_banner.png"
+          alt="Pasquale Camelia — Finite-rank projection, boundary observability, Giza metrology" />
+    </div>
+
+    <div class="hero-content">
+      <h1 class="name">
+        Pasquale Camelia
+      </h1>
+
+      <p class="role">
+        <span class="en">Independent Researcher · Milan, Italy</span>
+        <span class="it">Ricercatore Indipendente · Milano, Italia</span>
+      </p>
+
+      <p class="keywords">
+        Finite-rank projection · Boundary observability · Structural selection · Giza metrology
+      </p>
+
+      <a class="orcid-line"
+        href="https://orcid.org/0009-0006-4779-4647"
+        target="_blank"
+        rel="noopener">
+        <span class="orcid-icon"></span>
+        0009-0006-4779-4647
+      </a>
+    </div>
+
+  </header>
   <!-- Research statement -->
   <div class="statement">
     <div class="en">
