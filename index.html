@@ -4,292 +4,562 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pasquale Camelia – Research</title>
-  <meta name="description" content="Research profile of Pasquale Camelia. Publications, ORCID, Zenodo records, and main research lines." />
+  <meta name="description" content="Pasquale Camelia, independent researcher. Work on projection-induced observability, boundary phase inference, dimensional reduction, and ancient Egyptian metrology." />
+  <meta name="author" content="Pasquale Camelia" />
+  <meta name="citation_author" content="Camelia, Pasquale" />
+
+  <!-- Google Scholar meta tags — paper 1 -->
+  <meta name="citation_title" content="Projection-Induced Singular Value Decomposition of Irrational Scale Invariant" />
+  <meta name="citation_author" content="Camelia, Pasquale" />
+  <meta name="citation_publication_date" content="2025/12/30" />
+  <meta name="citation_doi" content="10.5281/zenodo.18088773" />
+
+  <!-- Google Scholar meta tags — paper 2 -->
+  <meta name="citation_title" content="Boundary Metric from Projection-Induced Finite Rank" />
+  <meta name="citation_author" content="Camelia, Pasquale" />
+  <meta name="citation_publication_date" content="2025/12/31" />
+  <meta name="citation_doi" content="10.5281/zenodo.18097405" />
+
+  <!-- Google Scholar meta tags — paper 3 -->
+  <meta name="citation_title" content="Structural Ordering from Projection to Time" />
+  <meta name="citation_author" content="Camelia, Pasquale" />
+  <meta name="citation_publication_date" content="2026/01/01" />
+  <meta name="citation_doi" content="10.5281/zenodo.18108626" />
+
+  <!-- Google Scholar meta tags — paper 4 -->
+  <meta name="citation_title" content="A Quantum Gauge Theory of Time (QGT): Foundations from a Noetherian Balance" />
+  <meta name="citation_author" content="Camelia, Pasquale" />
+  <meta name="citation_publication_date" content="2026/01/22" />
+  <meta name="citation_doi" content="10.5281/zenodo.18331744" />
+
+  <!-- Google Scholar meta tags — paper 5 -->
+  <meta name="citation_title" content="Dimensional reduction as a limit to boundary phase inference" />
+  <meta name="citation_author" content="Camelia, Pasquale" />
+  <meta name="citation_publication_date" content="2026/01/02" />
+  <meta name="citation_doi" content="10.5281/zenodo.18114856" />
+
+  <!-- Google Scholar meta tags — paper 6 -->
+  <meta name="citation_title" content="Boundary-induced phase locking and guided helical modes in SAR Doppler tomography of the Giza Plateau" />
+  <meta name="citation_author" content="Camelia, Pasquale" />
+  <meta name="citation_publication_date" content="2026/01/09" />
+  <meta name="citation_doi" content="10.5281/zenodo.18157411" />
+
+  <!-- Google Scholar meta tags — paper 7 -->
+  <meta name="citation_title" content="The Short Cubit as a Structural Invariant: Dilatation, Discrete Generation, and Metrological Projection in Ancient Egypt" />
+  <meta name="citation_author" content="Camelia, Pasquale" />
+  <meta name="citation_publication_date" content="2025/12/28" />
+  <meta name="citation_doi" content="10.5281/zenodo.18077184" />
+
+  <!-- Google Scholar meta tags — paper 8 -->
+  <meta name="citation_title" content="Metrological Non-Invertibility and Projection Constants in Historical Scale-Based Construction" />
+  <meta name="citation_author" content="Camelia, Pasquale" />
+  <meta name="citation_publication_date" content="2026/01/13" />
+  <meta name="citation_doi" content="10.5281/zenodo.18226792" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
     :root {
-      --bg: #ffffff;
-      --text: #1a1a1a;
-      --muted: #666666;
-      --line: #dddddd;
-      --accent: #0b57d0;
-      --card: #f8f9fb;
-      --maxw: 920px;
+      --bg: #faf9f6;
+      --surface: #f2f0eb;
+      --border: #dedad2;
+      --text: #1c1b18;
+      --muted: #7a7670;
+      --accent: #2a4a8a;
+      --accent2: #8a3a2a;
+      --tag-bg: #e8e4dc;
+      --tag-text: #4a4640;
+      --maxw: 860px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: 'EB Garamond', Georgia, serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      font-size: 18px;
+      line-height: 1.65;
     }
 
     .wrap {
       max-width: var(--maxw);
       margin: 0 auto;
-      padding: 48px 20px 72px;
+      padding: 56px 24px 80px;
     }
 
-    h1, h2 {
-      line-height: 1.2;
-      margin-top: 0;
+    /* ── Header ── */
+    header {
+      border-bottom: 2px solid var(--text);
+      padding-bottom: 28px;
+      margin-bottom: 40px;
     }
 
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 0.4rem;
+    .name {
+      font-size: 2.6rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 6px;
     }
 
-    h2 {
-      font-size: 1.35rem;
-      margin-top: 2.2rem;
-      padding-top: 0.4rem;
-      border-top: 1px solid var(--line);
-    }
-
-    p {
-      margin: 0.8rem 0;
-    }
-
-    .sub {
+    .affil {
+      font-size: 1rem;
       color: var(--muted);
-      margin-bottom: 1rem;
+      font-style: italic;
+      margin-bottom: 16px;
     }
 
-    .box {
-      background: var(--card);
-      border: 1px solid var(--line);
-      padding: 16px 18px;
-      border-radius: 10px;
-      margin: 1rem 0 1.5rem;
-    }
-
-    .section-intro {
-      color: var(--text);
-      margin: 0.6rem 0 1.2rem 0;
-    }
-
-    .pub {
-      margin: 1rem 0;
-      padding: 0 0 1rem 0;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .pub:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .title {
-      font-weight: bold;
-      font-size: 1.02rem;
-    }
-
-    .doi, .meta {
-      color: var(--muted);
-      font-size: 0.96rem;
-    }
-
-    a {
+    .orcid-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
       color: var(--accent);
       text-decoration: none;
     }
 
-    a:hover {
-      text-decoration: underline;
+    .orcid-line:hover { background: var(--border); }
+
+    .orcid-icon {
+      width: 16px; height: 16px;
+      background: #a6ce39;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
-    ul {
-      margin-top: 0.4rem;
+    .orcid-icon::after {
+      content: 'iD';
+      font-size: 7px;
+      font-weight: 700;
+      color: white;
+      font-family: sans-serif;
+      letter-spacing: -0.5px;
     }
 
-    .footer {
-      margin-top: 2.5rem;
+    /* ── Research statement ── */
+    .statement {
+      background: var(--surface);
+      border-left: 3px solid var(--text);
+      padding: 20px 24px;
+      margin-bottom: 48px;
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .statement p + p { margin-top: 10px; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 48px; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+
+    .section-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
       color: var(--muted);
-      font-size: 0.95rem;
-      border-top: 1px solid var(--line);
-      padding-top: 1rem;
+      letter-spacing: 0.05em;
+      padding-top: 2px;
     }
 
-    @media (max-width: 640px) {
-      h1 {
-        font-size: 1.8rem;
-      }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      flex: 1;
+    }
 
-      h2 {
-        font-size: 1.2rem;
-      }
+    .section-intro {
+      font-size: 0.96rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
 
-      .wrap {
-        padding-top: 32px;
-      }
+    /* ── Paper card ── */
+    .pub {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .pub:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 12px rgba(42,74,138,0.08);
+    }
+
+    .pub-title {
+      font-size: 1.04rem;
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .pub-abstract {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+
+    .pub-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pub-doi {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      background: var(--surface);
+    }
+
+    .pub-doi:hover { background: var(--border); }
+
+    .pub-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .tag {
+      font-size: 0.76rem;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── Links section ── */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .link-card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.15s;
+    }
+
+    .link-card:hover { border-color: var(--accent); }
+
+    .link-card-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .link-card-value {
+      font-size: 0.95rem;
+      color: var(--accent);
+      word-break: break-all;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.88rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .name { font-size: 2rem; }
+      body { font-size: 16px; }
+      .wrap { padding: 32px 16px 60px; }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
+
     <header>
-      <h1>Pasquale Camelia</h1>
-      <p class="sub">Independent Researcher, Italy</p>
-      <p>
-        Research profile of Pasquale Camelia. Publications, preprints, ORCID record, and Zenodo records.
-      </p>
-      <p>
-        ORCID:
-        <a href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener noreferrer">
-          0009-0006-4779-4647
-        </a>
-      </p>
+      <div class="name">Pasquale Camelia</div>
+      <div class="affil">Independent Researcher · Milan, Italy</div>
+      <a class="orcid-line" href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener">
+        <span class="orcid-icon"></span>
+        0009-0006-4779-4647
+      </a>
     </header>
 
-    <section class="box">
+    <div class="statement">
       <p>
-        My research is organized into three main lines:
-        <strong>(1) pre-physical foundations of projection, observability, and time</strong>,
-        <strong>(2) boundary observability, wave projection, and interface-induced dimensional reduction</strong>,
-        and <strong>(3) ancient Egyptian metrology, structural invariants, and constructional non-invertibility</strong>.
+        My research develops a structural approach to observability, metric structure, temporal ordering,
+        and constructional form. These are treated as consequences of <em>projection</em>, finite admissibility,
+        and relational invariance — rather than as primitive elements of a physical theory.
       </p>
       <p>
-        Across these lines, my work develops a structural approach in which observability,
-        metric structure, temporal ordering, and constructional form are treated as consequences of
-        projection, finite admissibility, and relational invariance, rather than as primitive givens.
+        The work is organized into three interconnected lines: <strong>(1)</strong> pre-physical foundations
+        of projection, observability, and time; <strong>(2)</strong> boundary observability, wave projection,
+        and interface-induced dimensional reduction; <strong>(3)</strong> ancient Egyptian metrology,
+        structural invariants, and constructional non-invertibility.
       </p>
-    </section>
-
-    <section>
-      <h2>1. Pre-physical foundations of projection, observability, and time</h2>
-      <p class="section-intro">
-        This line develops a pre-physical framework in which projection, rather than spacetime
-        or dynamics, is taken as the primary structural constraint. Within this setting,
-        finite-rank observability, operational metric structure, and temporal ordering emerge
-        from non-invertible representational access and conservation requirements.
-      </p>
-
-      <div class="pub">
-        <div class="title">Projection-Induced Singular Value Decomposition of Irrational Scale Invariant</div>
-        <div class="doi">
-          DOI:
-          <a href="https://doi.org/10.5281/zenodo.18088773" target="_blank" rel="noopener noreferrer">
-            10.5281/zenodo.18088773
-          </a>
-        </div>
-      </div>
-
-      <div class="pub">
-        <div class="title">Boundary Metric from Projection-Induced Finite Rank</div>
-        <div class="doi">
-          DOI:
-          <a href="https://doi.org/10.5281/zenodo.18097405" target="_blank" rel="noopener noreferrer">
-            10.5281/zenodo.18097405
-          </a>
-        </div>
-      </div>
-
-      <div class="pub">
-        <div class="title">Structural Ordering from Projection to Time</div>
-        <div class="doi">
-          DOI:
-          <a href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener noreferrer">
-            10.5281/zenodo.18108626
-          </a>
-        </div>
-      </div>
-
-      <div class="pub">
-        <div class="title">A Quantum Gauge Theory of Time (QGT): Foundations from a Noetherian Balance</div>
-        <div class="doi">
-          DOI:
-          <a href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener noreferrer">
-            10.5281/zenodo.18331744
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>2. Boundary observability, wave projection, and interface-induced dimensional reduction</h2>
-      <p class="section-intro">
-        This line investigates the structural limits of phase observability in wave systems under
-        boundary constraints, with particular focus on interface-induced dimensional reduction,
-        non-invertible bulk-to-boundary maps, and guided or phase-locked boundary responses
-        in sensing configurations.
-      </p>
-
-      <div class="pub">
-        <div class="title">Dimensional reduction as a limit to boundary phase inference</div>
-        <div class="doi">
-          DOI:
-          <a href="https://doi.org/10.5281/zenodo.18114856" target="_blank" rel="noopener noreferrer">
-            10.5281/zenodo.18114856
-          </a>
-        </div>
-      </div>
-
-      <div class="pub">
-        <div class="title">Boundary-induced phase locking and guided helical modes in SAR Doppler tomography of the Giza Plateau</div>
-        <div class="doi">
-          DOI:
-          <a href="https://doi.org/10.5281/zenodo.18157411" target="_blank" rel="noopener noreferrer">
-            10.5281/zenodo.18157411
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>3. Ancient Egyptian metrology, structural invariants, and constructional non-invertibility</h2>
-      <p class="section-intro">
-        This line addresses historical metrology, structural invariance, and metrological
-        non-invertibility in ancient construction processes, with particular emphasis on
-        ancient Egypt, Giza, and relational scale regimes.
-      </p>
-
-      <div class="pub">
-        <div class="title">The Short Cubit as a Structural Invariant: Dilatation, Discrete Generation, and Metrological Projection in Ancient Egypt</div>
-        <div class="doi">
-          DOI:
-          <a href="https://doi.org/10.5281/zenodo.18077184" target="_blank" rel="noopener noreferrer">
-            10.5281/zenodo.18077184
-          </a>
-        </div>
-      </div>
-
-      <div class="pub">
-        <div class="title">Metrological Non-Invertibility and Projection Constants in Historical Scale-Based Construction</div>
-        <div class="doi">
-          DOI:
-          <a href="https://doi.org/10.5281/zenodo.18226792" target="_blank" rel="noopener noreferrer">
-            10.5281/zenodo.18226792
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>Links</h2>
-      <ul>
-        <li>
-          ORCID:
-          <a href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener noreferrer">
-            orcid.org/0009-0006-4779-4647
-          </a>
-        </li>
-        <li>
-          Zenodo records:
-          <a href="https://zenodo.org/search?q=metadata.creators.person_or_org.identifiers.identifier%3A0009-0006-4779-4647&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener noreferrer">
-            View Zenodo records
-          </a>
-        </li>
-      </ul>
-    </section>
-
-    <div class="footer">
-      Last updated: March 2026
     </div>
+
+    <!-- LINE 1 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-num">LINE 01</span>
+        <h2>Pre-physical foundations of projection, observability, and time</h2>
+      </div>
+      <p class="section-intro">
+        A pre-physical framework in which projection, rather than spacetime or dynamics, is the primary
+        structural constraint. Finite-rank observability, operational metric structure, and temporal
+        ordering emerge from non-invertible representational access and conservation requirements.
+      </p>
+
+      <div class="pub">
+        <div class="pub-title">Projection-Induced Singular Value Decomposition of Irrational Scale Invariant</div>
+        <div class="pub-abstract">
+          Shows that linear discretization of an irrational scale relation defines a non-isometric projection
+          operator admitting a natural SVD. Finite spectral resolution enforces truncation, yielding finite
+          effective rank. Non-closure, dispersion, and discrete holonomy arise as unavoidable residuals.
+          The analysis is operator-theoretic and model-independent.
+        </div>
+        <div class="pub-footer">
+          <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18088773" target="_blank" rel="noopener">
+            DOI 10.5281/zenodo.18088773
+          </a>
+          <span class="pub-date">Dec 2025</span>
+          <span class="tag">preprint</span>
+          <span class="tag">operator theory</span>
+        </div>
+      </div>
+
+      <div class="pub">
+        <div class="pub-title">Boundary Metric from Projection-Induced Finite Rank</div>
+        <div class="pub-abstract">
+          Analyzes how a notion of metric necessarily arises when observables are obtained through a
+          finite-rank, non-isometric projection. The framework is pre-geometric and pre-dynamical:
+          the metric describes limits of resolvable structure imposed by projection, not spatial distance.
+        </div>
+        <div class="pub-footer">
+          <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18097405" target="_blank" rel="noopener">
+            DOI 10.5281/zenodo.18097405
+          </a>
+          <span class="pub-date">Dec 2025</span>
+          <span class="tag">preprint</span>
+          <span class="tag">metric structure</span>
+        </div>
+      </div>
+
+      <div class="pub">
+        <div class="pub-title">Structural Ordering from Projection to Time</div>
+        <div class="pub-abstract">
+          Derives temporal ordering as a structural consequence of non-invertible projection under
+          restricted accessibility. No spacetime geometry or dynamics is assumed. Temporal structure
+          emerges as an ordering constraint required to preserve invariance under projection.
+        </div>
+        <div class="pub-footer">
+          <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener">
+            DOI 10.5281/zenodo.18108626
+          </a>
+          <span class="pub-date">Jan 2026</span>
+          <span class="tag">preprint</span>
+          <span class="tag">temporal ordering</span>
+        </div>
+      </div>
+
+      <div class="pub">
+        <div class="pub-title">A Quantum Gauge Theory of Time (QGT): Foundations from a Noetherian Balance</div>
+        <div class="pub-abstract">
+          Addresses what necessarily follows if conservation is assumed in the structural sense of Noether,
+          prior to any notion of time or dynamics. Shows that an ordering relation necessarily emerges once
+          conservation is imposed under restricted accessibility — functioning as a structural ordering constraint,
+          not a coordinate or dynamical variable.
+        </div>
+        <div class="pub-footer">
+          <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener">
+            DOI 10.5281/zenodo.18331744
+          </a>
+          <span class="pub-date">Jan 2026</span>
+          <span class="tag">preprint</span>
+          <span class="tag">Noether theorem</span>
+          <span class="tag">gauge theory</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINE 2 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-num">LINE 02</span>
+        <h2>Boundary observability, wave projection, and interface-induced dimensional reduction</h2>
+      </div>
+      <p class="section-intro">
+        Structural limits of phase observability in wave systems under boundary constraints.
+        Interface-induced dimensional reduction, non-invertible bulk-to-boundary maps, and
+        guided or phase-locked boundary responses in sensing configurations.
+      </p>
+
+      <div class="pub">
+        <div class="pub-title">Dimensional Reduction as a Limit to Boundary Phase Inference</div>
+        <div class="pub-abstract">
+          When admissibility and boundary compatibility suppress normal propagating transport,
+          an exact boundary-induced dimensional reduction occurs. The bulk-to-boundary phase mapping
+          is structurally non-invertible: boundary phase measurements cannot uniquely reconstruct
+          the underlying bulk elastodynamic state. This limitation is geometric, not experimental.
+        </div>
+        <div class="pub-footer">
+          <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18114856" target="_blank" rel="noopener">
+            DOI 10.5281/zenodo.18114856
+          </a>
+          <span class="pub-date">Jan 2026</span>
+          <span class="tag">preprint</span>
+          <span class="tag">inverse problems</span>
+          <span class="tag">evanescent fields</span>
+        </div>
+      </div>
+
+      <div class="pub">
+        <div class="pub-title">Boundary-Induced Phase Locking and Guided Helical Modes in SAR Doppler Tomography of the Giza Plateau</div>
+        <div class="pub-abstract">
+          Analysis of phase-based SAR Doppler tomographic products within a framework of structural
+          non-invertibility and boundary-limited observability. Using public polarimetric datasets from
+          the Giza Plateau, results demonstrate highly constrained global phase organization with sustained
+          longitudinal coherence and symmetry-selective phase locking. Full reproducibility package included.
+        </div>
+        <div class="pub-footer">
+          <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18157411" target="_blank" rel="noopener">
+            DOI 10.5281/zenodo.18157411
+          </a>
+          <span class="pub-date">Jan 2026</span>
+          <span class="tag">preprint</span>
+          <span class="tag">SAR tomography</span>
+          <span class="tag">Giza Plateau</span>
+          <span class="tag">Python</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINE 3 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-num">LINE 03</span>
+        <h2>Ancient Egyptian metrology, structural invariants, and constructional non-invertibility</h2>
+      </div>
+      <p class="section-intro">
+        Historical metrology and structural invariance in ancient construction processes.
+        The Egyptian cubit system as a projection of non-linear invariants into administratively
+        usable linear ratios, approached via structural analysis rather than anthropometric reconstruction.
+      </p>
+
+      <div class="pub">
+        <div class="pub-title">The Short Cubit as a Structural Invariant: Dilatation, Discrete Generation, and Metrological Projection in Ancient Egypt</div>
+        <div class="pub-abstract">
+          The Short Cubit is reframed at two pre-metrical levels: as a dilatation normalization
+          expressed by the adimensional factor 1/√5, and as a discrete generative step represented
+          by the non-tessellating angle π/7. The ratio Cᵣ/Cₛ = φ²/√5 is derived as a normalized
+          golden curvature. Explains why no unique Short Cubit length should be expected.
+        </div>
+        <div class="pub-footer">
+          <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18077184" target="_blank" rel="noopener">
+            DOI 10.5281/zenodo.18077184
+          </a>
+          <span class="pub-date">Dec 2025</span>
+          <span class="tag">preprint</span>
+          <span class="tag">Egyptian metrology</span>
+          <span class="tag">golden ratio</span>
+        </div>
+      </div>
+
+      <div class="pub">
+        <div class="pub-title">Metrological Non-Invertibility and Projection Constants in Historical Scale-Based Construction</div>
+        <div class="pub-abstract">
+          Argues that the Short Cubit ratio and the <em>seked</em> are not empirical coincidences but
+          structural residues of a non-invertible projection from scale dynamics to observable construction.
+          A <em>projection constant</em> is identified: a dimensionless scalar that survives realization
+          while the underlying scale action is irreversibly discarded. Linear and angular measures
+          organize into a coupled metric–angular lattice within a restricted observable domain.
+        </div>
+        <div class="pub-footer">
+          <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18226792" target="_blank" rel="noopener">
+            DOI 10.5281/zenodo.18226792
+          </a>
+          <span class="pub-date">Jan 2026</span>
+          <span class="tag">preprint</span>
+          <span class="tag">seked</span>
+          <span class="tag">projection constants</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINKS -->
+    <section class="section">
+      <div class="section-header">
+        <h2 style="border-bottom: none; padding-bottom: 0;">Links</h2>
+      </div>
+      <div class="links-grid">
+        <a class="link-card" href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener">
+          <span class="link-card-label">ORCID</span>
+          <span class="link-card-value">0009-0006-4779-4647</span>
+        </a>
+        <a class="link-card" href="https://zenodo.org/search?q=metadata.creators.person_or_org.identifiers.identifier%3A0009-0006-4779-4647&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener">
+          <span class="link-card-label">Zenodo</span>
+          <span class="link-card-value">All records by ORCID</span>
+        </a>
+        <a class="link-card" href="https://explore.openaire.eu/search/find/research-outcomes?q=Camelia+Pasquale" target="_blank" rel="noopener">
+          <span class="link-card-label">OpenAIRE</span>
+          <span class="link-card-value">Research outputs</span>
+        </a>
+      </div>
+    </section>
+
+    <footer>
+      <span>Pasquale Camelia · Independent Researcher · Milan, Italy</span>
+      <span>Last updated: March 2026</span>
+    </footer>
+
   </main>
 </body>
 </html>
+
