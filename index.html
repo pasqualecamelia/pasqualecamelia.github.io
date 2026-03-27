@@ -555,7 +555,43 @@
     </div>
   </div>
 
-  <!-- Reading order note -->
+  <!-- QGT INTERACTIVE ANIMATION -->
+  <div class="qgt-demo">
+    <div class="qgt-demo-header">
+      <div class="qgt-demo-meta">
+        <span class="qgt-demo-label">
+          <span class="en">Interactive</span>
+          <span class="it">Interattivo</span>
+        </span>
+        <span class="qgt-demo-title">
+          <span class="en">QGT — Temporal Fibre Projection</span>
+          <span class="it">QGT — Proiezione della Fibra Temporale</span>
+        </span>
+      </div>
+      <button class="qgt-toggle-btn" id="qgtToggleBtn" onclick="toggleQGT()" aria-expanded="true" aria-controls="qgtFrameWrap">
+        <span class="en">Hide</span>
+        <span class="it">Nascondi</span>
+      </button>
+    </div>
+    <div class="qgt-desc">
+      <span class="en">An interactive visualisation of the core QGT mechanism: non-isometric projection of the temporal fibre onto the boundary observable domain. Adjust parameters to explore how metric structure, gauge redundancy and temporal ordering emerge as necessary residuals of irreversible projection.</span>
+      <span class="it">Una visualizzazione interattiva del meccanismo centrale della QGT: la proiezione non-isometrica della fibra temporale sul dominio osservabile di confine. Regola i parametri per esplorare come struttura metrica, ridondanza di gauge e ordinamento temporale emergano come residui necessari della proiezione irreversibile.</span>
+    </div>
+    <div class="qgt-frame-wrap" id="qgtFrameWrap">
+      <iframe
+        src="qgt_animation.html"
+        title="QGT — Temporal Fibre Projection"
+        loading="lazy"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <a class="qgt-open-link" href="qgt_animation.html" target="_blank" rel="noopener">
+      <span class="en">Open in full window</span>
+      <span class="it">Apri in finestra intera</span>
+    </a>
+  </div>
+
+  <!-- How the three lines connect -->
   <div class="principle-box">
     <div class="principle-title">
       <span class="en">How the three lines connect</span>
@@ -641,42 +677,6 @@
       </div>
     </div>
   </section>
-
-  <!-- QGT INTERACTIVE ANIMATION -->
-  <div class="qgt-demo">
-    <div class="qgt-demo-header">
-      <div class="qgt-demo-meta">
-        <span class="qgt-demo-label">
-          <span class="en">Interactive</span>
-          <span class="it">Interattivo</span>
-        </span>
-        <span class="qgt-demo-title">
-          <span class="en">QGT — Temporal Fibre Projection</span>
-          <span class="it">QGT — Proiezione della Fibra Temporale</span>
-        </span>
-      </div>
-      <button class="qgt-toggle-btn" id="qgtToggleBtn" onclick="toggleQGT()" aria-expanded="true" aria-controls="qgtFrameWrap">
-        <span class="en">Hide</span>
-        <span class="it">Nascondi</span>
-      </button>
-    </div>
-    <div class="qgt-desc">
-      <span class="en">An interactive visualisation of the core QGT mechanism: non-isometric projection of the temporal fibre onto the boundary observable domain. Adjust parameters to explore how metric structure, gauge redundancy and temporal ordering emerge as necessary residuals of irreversible projection.</span>
-      <span class="it">Una visualizzazione interattiva del meccanismo centrale della QGT: la proiezione non-isometrica della fibra temporale sul dominio osservabile di confine. Regola i parametri per esplorare come struttura metrica, ridondanza di gauge e ordinamento temporale emergano come residui necessari della proiezione irreversibile.</span>
-    </div>
-    <div class="qgt-frame-wrap" id="qgtFrameWrap">
-      <iframe
-        src="qgt_animation.html"
-        title="QGT — Temporal Fibre Projection"
-        loading="lazy"
-        allowfullscreen>
-      </iframe>
-    </div>
-    <a class="qgt-open-link" href="qgt_animation.html" target="_blank" rel="noopener">
-      <span class="en">Open in full window</span>
-      <span class="it">Apri in finestra intera</span>
-    </a>
-  </div>
 
   <!-- LINE 02 -->
   <section class="section">
@@ -846,5 +846,6 @@
 </script>
 </body>
 </html>
+
 
 
