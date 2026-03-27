@@ -327,6 +327,111 @@
     body.lang-en span.en { display: inline; }
     body.lang-it span.it { display: inline; }
 
+    /* QGT Interactive Demo */
+    .qgt-demo {
+      margin: 36px 0 48px;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      overflow: hidden;
+      background: #fff;
+    }
+    .qgt-demo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .qgt-demo-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .qgt-demo-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+    }
+    .qgt-demo-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .qgt-toggle-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 5px 14px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .qgt-toggle-btn:hover {
+      background: var(--border);
+      border-color: var(--accent);
+    }
+    .qgt-desc {
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.55;
+      border-bottom: 1px solid var(--border);
+    }
+    .qgt-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 540px;
+      overflow: hidden;
+      background: #09090f;
+      transition: height 0.35s ease;
+    }
+    .qgt-frame-wrap.collapsed {
+      height: 0;
+    }
+    .qgt-frame-wrap iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    .qgt-open-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.77rem;
+      color: var(--muted);
+      text-decoration: none;
+      border-top: 1px solid var(--border);
+      transition: color 0.15s;
+    }
+    .qgt-open-link:hover { color: var(--accent); }
+    .qgt-open-link::before {
+      content: '↗';
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .qgt-frame-wrap { height: 480px; }
+      .qgt-demo-title { font-size: 0.88rem; }
+    }
+
     @media (max-width: 640px) {
       .name { font-size: 2rem; }
       body { font-size: 16px; }
@@ -537,6 +642,42 @@
     </div>
   </section>
 
+  <!-- QGT INTERACTIVE ANIMATION -->
+  <div class="qgt-demo">
+    <div class="qgt-demo-header">
+      <div class="qgt-demo-meta">
+        <span class="qgt-demo-label">
+          <span class="en">Interactive</span>
+          <span class="it">Interattivo</span>
+        </span>
+        <span class="qgt-demo-title">
+          <span class="en">QGT — Temporal Fibre Projection</span>
+          <span class="it">QGT — Proiezione della Fibra Temporale</span>
+        </span>
+      </div>
+      <button class="qgt-toggle-btn" id="qgtToggleBtn" onclick="toggleQGT()" aria-expanded="true" aria-controls="qgtFrameWrap">
+        <span class="en">Hide</span>
+        <span class="it">Nascondi</span>
+      </button>
+    </div>
+    <div class="qgt-desc">
+      <span class="en">An interactive visualisation of the core QGT mechanism: non-isometric projection of the temporal fibre onto the boundary observable domain. Adjust parameters to explore how metric structure, gauge redundancy and temporal ordering emerge as necessary residuals of irreversible projection.</span>
+      <span class="it">Una visualizzazione interattiva del meccanismo centrale della QGT: la proiezione non-isometrica della fibra temporale sul dominio osservabile di confine. Regola i parametri per esplorare come struttura metrica, ridondanza di gauge e ordinamento temporale emergano come residui necessari della proiezione irreversibile.</span>
+    </div>
+    <div class="qgt-frame-wrap" id="qgtFrameWrap">
+      <iframe
+        src="qgt_animation.html"
+        title="QGT — Temporal Fibre Projection"
+        loading="lazy"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <a class="qgt-open-link" href="qgt_animation.html" target="_blank" rel="noopener">
+      <span class="en">Open in full window</span>
+      <span class="it">Apri in finestra intera</span>
+    </a>
+  </div>
+
   <!-- LINE 02 -->
   <section class="section">
     <div class="section-header">
@@ -668,6 +809,25 @@
 
 </main>
 <script>
+  function toggleQGT() {
+    const wrap = document.getElementById('qgtFrameWrap');
+    const btn  = document.getElementById('qgtToggleBtn');
+    const isOpen = !wrap.classList.contains('collapsed');
+    wrap.classList.toggle('collapsed', isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+
+    // EN labels
+    const enSpan = btn.querySelector('.en');
+    const itSpan = btn.querySelector('.it');
+    if (isOpen) {
+      if (enSpan) enSpan.textContent = 'Show';
+      if (itSpan) itSpan.textContent = 'Mostra';
+    } else {
+      if (enSpan) enSpan.textContent = 'Hide';
+      if (itSpan) itSpan.textContent = 'Nascondi';
+    }
+  }
+
   function setLang(lang) {
     document.body.className = 'lang-' + lang;
     document.documentElement.lang = lang;
