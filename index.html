@@ -275,6 +275,8 @@
     .pub { border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; margin-bottom: 12px; background: #fff; transition: border-color 0.15s, box-shadow 0.15s; }
     .pub:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(42,74,138,0.08); }
     .pub-title { font-size: 1.03rem; font-weight: 500; line-height: 1.4; margin-bottom: 8px; color: var(--accent); }
+    .pub-title a { color: inherit; text-decoration: none; }
+    .pub-title a:hover { text-decoration: underline; text-underline-offset: 3px; }
     .pub-abstract { font-size: 0.88rem; color: var(--muted); line-height: 1.55; margin-bottom: 10px; font-style: italic; }
     .pub-footer { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .pub-doi { font-family: 'DM Mono', monospace; font-size: 0.77rem; color: var(--accent); text-decoration: none; border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; background: var(--surface); }
@@ -391,13 +393,9 @@
       display: inline-block;
       margin-bottom: 12px;
     }
-    .featured-title {
-      font-size: 1.08rem;
-      font-weight: 600;
-      color: var(--accent);
-      line-height: 1.4;
-      margin-bottom: 10px;
-    }
+    .featured-title { font-size: 1.08rem; font-weight: 600; color: var(--accent); line-height: 1.4; margin-bottom: 10px; }
+    .featured-title a { color: inherit; text-decoration: none; }
+    .featured-title a:hover { text-decoration: underline; text-underline-offset: 3px; }
     .featured-abstract {
       font-size: 0.9rem;
       color: var(--muted);
@@ -649,8 +647,8 @@
       <span class="it">Recente · Paper chiave</span>
     </div>
     <div class="featured-title">
-      <span class="en">Electromagnetism and Gravitation as Chiral Boundary Readouts of a Majorana Bulk</span>
-      <span class="it">Elettromagnetismo e gravitazione come letture chirali di bordo di un bulk di Majorana</span>
+      <a href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener"><span class="en">Electromagnetism and Gravitation as Chiral Boundary Readouts of a Majorana Bulk</span></a>
+      <a href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener"><span class="it">Elettromagnetismo e gravitazione come letture chirali di bordo di un bulk di Majorana</span></a>
     </div>
     <div class="featured-abstract">
       <span class="en">Electromagnetism and gravitation are not two fields to be unified — they are the two chiral boundary readouts of a single neutral Majorana spinor on a 5-dimensional temporal manifold. Maxwell's equations and Einstein's effective gravitational equation emerge simultaneously from one conservation law. No free parameters.</span>
@@ -767,7 +765,7 @@
     </p>
 
     <div class="pub">
-      <div class="pub-title">Projection-Induced Singular Value Decomposition of Irrational Scale Invariants and the Origin of the Fine-Structure Constant</div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18088773" target="_blank" rel="noopener">Projection-Induced Singular Value Decomposition of Irrational Scale Invariants and the Origin of the Fine-Structure Constant</a></div>
       <div class="pub-abstract">
         <span class="en">Linear discretization of an irrational scale relation defines a non-isometric projection operator admitting a natural SVD. Finite spectral resolution enforces truncation to finite effective rank fixed by spectral curvature. Non-closure, dispersion, and discrete holonomy arise as unavoidable residuals. The analysis identifies α⁻¹ as a structural pole of the projection filter.</span>
         <span class="it">La discretizzazione lineare di una relazione di scala irrazionale definisce un operatore di proiezione non-isometrico che ammette una SVD naturale. La risoluzione spettrale finita impone la troncatura a rango effettivo finito. Identifica α⁻¹ come polo strutturale del filtro di proiezione.</span>
@@ -780,7 +778,7 @@
     </div>
 
     <div class="pub">
-      <div class="pub-title">Boundary Metric from Projection-Induced Finite Rank: Distinguishability, Filter Structure, and the Pole at α⁻¹</div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18097405" target="_blank" rel="noopener">Boundary Metric from Projection-Induced Finite Rank: Distinguishability, Filter Structure, and the Pole at α⁻¹</a></div>
       <div class="pub-abstract">
         <span class="en">A notion of metric necessarily arises when observables are obtained through a finite-rank, non-isometric projection. The framework is pre-geometric and pre-dynamical: the metric describes limits of resolvable structure imposed by projection. The filter structure exhibits a structural pole at α⁻¹ — connecting metric emergence directly to the fine-structure constant.</span>
         <span class="it">Una nozione di metrica emerge necessariamente da una proiezione non-isometrica di rango finito. Il framework è pre-geometrico e pre-dinamico. La struttura del filtro esibisce un polo strutturale in α⁻¹ — connettendo direttamente l'emergenza della metrica alla costante di struttura fine.</span>
@@ -793,7 +791,7 @@
     </div>
 
     <div class="pub">
-      <div class="pub-title">Structural Ordering from Projection to Time</div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener">Structural Ordering from Projection to Time</a></div>
       <div class="pub-abstract">
         <span class="en">A finite-rank saturated observable domain cannot internally support a Noetherian conservation law. When conservation is imposed, a temporal ordering parameter becomes structurally unavoidable. Time emerges as the minimal extension required for coherence — without restoring suppressed information or introducing dynamics.</span>
         <span class="it">Un dominio osservabile saturato di rango finito non può supportare internamente una legge di conservazione Noetheriana. Quando la conservazione è imposta, un parametro di ordinamento temporale diventa strutturalmente inevitabile.</span>
@@ -806,7 +804,7 @@
     </div>
 
     <div class="pub">
-      <div class="pub-title">A Quantum Gauge Theory of Time (QGT): Foundations from a Noetherian Balance</div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener">A Quantum Gauge Theory of Time (QGT): Foundations from a Noetherian Balance</a></div>
       <div class="pub-abstract">
         <span class="en">What necessarily follows if conservation is assumed in the structural sense of Noether, prior to any notion of time or dynamics? An ordering relation necessarily emerges once conservation is imposed under restricted accessibility. The theory directly addresses the Wheeler–DeWitt problem of time in quantum gravity from a pre-dynamical standpoint. No spacetime geometry or equations of motion assumed.</span>
         <span class="it">Cosa segue necessariamente se la conservazione è assunta nel senso strutturale di Noether, prima di qualsiasi nozione di tempo o dinamica? Una relazione d'ordine emerge necessariamente. La teoria affronta direttamente il problema di Wheeler–DeWitt del tempo nella gravità quantistica.</span>
@@ -820,8 +818,8 @@
 
     <div class="pub" style="border-left: 3px solid var(--accent);">
       <div class="pub-title">
-        <span class="en">Electromagnetism and Gravitation as Chiral Boundary Readouts of a Majorana Bulk</span>
-        <span class="it">Elettromagnetismo e gravitazione come letture chirali di bordo di un bulk di Majorana</span>
+        <a href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener"><span class="en">Electromagnetism and Gravitation as Chiral Boundary Readouts of a Majorana Bulk</span></a>
+        <a href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener"><span class="it">Elettromagnetismo e gravitazione come letture chirali di bordo di un bulk di Majorana</span></a>
       </div>
       <div class="pub-abstract">
         <span class="en">The central result of the QGT programme. Electromagnetism and gravitation are the two chiral boundary readouts of a single neutral Majorana spinor on M⁵ = ℝ⁴×S¹(τ). Maxwell's equations and the Einstein-like equation emerge simultaneously from one conservation law. α⁻¹ ≈ 137.082 derived without free parameters. Breathing dynamics with attractor B★ = 8. Born rule, arrow of time, and CMB temperature follow structurally.</span>
@@ -839,7 +837,7 @@
     </div>
 
     <div class="pub">
-      <div class="pub-title">Projection-Induced Decoherence and the Emergence of 1/f Noise</div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19337549" target="_blank" rel="noopener">Projection-Induced Decoherence and the Emergence of 1/f Noise</a></div>
       <div class="pub-abstract">
         <span class="en">1/f noise is not a phenomenological fit: it is the universal structural residual of any projection that eliminates all coherent modes. Three regimes are identified. The result applies to any physical system where a finite-rank projection suppresses bulk coherence — from electronic devices to cosmological backgrounds.</span>
         <span class="it">Il rumore 1/f non è un fit fenomenologico: è il residuo strutturale universale di qualsiasi proiezione che elimina tutti i modi coerenti. Tre regimi sono identificati. Il risultato si applica a qualsiasi sistema fisico in cui una proiezione di rango finito sopprime la coerenza bulk.</span>
@@ -866,7 +864,7 @@
     </p>
 
     <div class="pub">
-      <div class="pub-title">Dimensional Reduction as a Limit to Boundary Phase Inference</div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18114856" target="_blank" rel="noopener">Dimensional Reduction as a Limit to Boundary Phase Inference</a></div>
       <div class="pub-abstract">
         <span class="en">When admissibility and boundary compatibility suppress normal propagating transport, an exact boundary-induced dimensional reduction occurs. Distinct admissible bulk configurations generate identical boundary phase signatures even in the ideal noiseless limit. This non-invertibility is not a limitation of instrumentation — it follows directly from the physics of the interface.</span>
         <span class="it">Quando l'ammissibilità sopprime il trasporto propagante normale, si produce una riduzione dimensionale esatta. Configurazioni bulk ammissibili distinte generano firme di fase al confine identiche anche nel limite ideale senza rumore.</span>
@@ -879,7 +877,7 @@
     </div>
 
     <div class="pub">
-      <div class="pub-title">Boundary-Induced Phase Locking and Guided Helical Modes in SAR Doppler Tomography of the Giza Plateau</div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18157411" target="_blank" rel="noopener">Boundary-Induced Phase Locking and Guided Helical Modes in SAR Doppler Tomography of the Giza Plateau</a></div>
       <div class="pub-abstract">
         <span class="en">Application of the boundary observability framework to public polarimetric SAR datasets from the Giza Plateau. Results demonstrate highly constrained global phase organization with sustained longitudinal coherence and symmetry-selective phase locking — incompatible with interpretations based on independent subsurface structures. Full reproducibility package included.</span>
         <span class="it">Applicazione del framework di osservabilità di confine a dataset SAR polarimetrici pubblici del Plateau di Giza. I risultati dimostrano un'organizzazione di fase globale altamente vincolata. Pacchetto completo di riproducibilità incluso.</span>
@@ -907,7 +905,7 @@
     </p>
 
     <div class="pub">
-      <div class="pub-title">The Short Cubit as a Structural Invariant: Dilatation, Discrete Generation, and Metrological Projection in Ancient Egypt</div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18077184" target="_blank" rel="noopener">The Short Cubit as a Structural Invariant: Dilatation, Discrete Generation, and Metrological Projection in Ancient Egypt</a></div>
       <div class="pub-abstract">
         <span class="en">The Short Cubit is reframed at two pre-metrical levels: as a dilatation normalization expressed by 1/√5, and as a discrete generative step represented by the non-tessellating angle π/7. The ratio Cᵣ/Cₛ = φ²/√5 is derived as a normalized golden curvature — a projection constant that survives metrological realization while the underlying scale dynamics is irreversibly discarded. Explains why no unique Short Cubit length should be expected across archaeological realizations.</span>
         <span class="it">Il Cubito Corto è reinterpretato a due livelli pre-metrici. Il rapporto Cᵣ/Cₛ = φ²/√5 è derivato come curvatura dorata normalizzata — una costante di proiezione che sopravvive alla realizzazione metrologica mentre la dinamica di scala sottostante viene irrevocabilmente scartata.</span>
@@ -920,7 +918,7 @@
     </div>
 
     <div class="pub">
-      <div class="pub-title">Metrological Non-Invertibility and Projection Constants in Historical Scale-Based Construction</div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18226792" target="_blank" rel="noopener">Metrological Non-Invertibility and Projection Constants in Historical Scale-Based Construction</a></div>
       <div class="pub-abstract">
         <span class="en">The Short Cubit ratio and the seked are structural residues of a non-invertible projection from scale dynamics to observable construction. A projection constant is identified: a dimensionless scalar that survives realization while the underlying scale action is irreversibly discarded. Linear and angular measures organize into a coupled metric–angular lattice within a restricted observable domain — a direct instance of finite-rank projection in a historical constructive system.</span>
         <span class="it">Il rapporto del Cubito Corto e il seked sono residui strutturali di una proiezione non-invertibile dalla dinamica di scala alla costruzione osservabile. Una costante di proiezione è identificata: uno scalare adimensionale che sopravvive alla realizzazione mentre l'azione di scala sottostante viene irrevocabilmente scartata.</span>
@@ -933,7 +931,7 @@
     </div>
 
     <div class="pub">
-      <div class="pub-title">Constrained Form: A Rank-One Constructive Regime at Giza</div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19208560" target="_blank" rel="noopener">Constrained Form: A Rank-One Constructive Regime at Giza</a></div>
       <div class="pub-abstract">
         <span class="en">A constructive process operating with a single slope rule and without global coordinates is not free to generate arbitrary forms: the process itself selects the admissible outcomes. The Egyptian seked constrains planimetric form to exactly three distinct solutions by arithmetic necessity. The three pyramids of Giza realise all three. Measured dimensions match Petrie's surveys within 1% without free parameters. The Giza configuration does not require a global plan; it follows from the persistence of a single constructive rule.</span>
         <span class="it">Un processo costruttivo che opera con una sola regola di pendenza e senza coordinate globali non è libero di generare forme arbitrarie: il processo stesso seleziona gli esiti ammissibili. Il seked egizio vincola la forma planimetrica a esattamente tre soluzioni distinte per necessità aritmetica. Le tre piramidi di Giza realizzano tutte e tre. Le dimensioni misurate corrispondono ai rilievi di Petrie entro l'1% senza parametri liberi.</span>
