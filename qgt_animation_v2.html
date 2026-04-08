@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QGT — Proiezione della Fibra Temporale</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#0c0c10;color:#c8c8d4;
+  font-family:'SF Mono','Fira Mono','Consolas',monospace;
+  height:100vh;width:100vw;overflow:hidden;
+  display:grid;
+  grid-template-columns:1fr 350px;
+  grid-template-rows:auto 1fr auto;
+}
+header{
+  grid-column:1/3;padding:11px 24px 9px;
+  border-bottom:.5px solid #1e2030;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+header h1{font-size:15px;font-weight:500;letter-spacing:.07em;color:#e8e8f8;white-space:nowrap;flex:0 0 auto}
+header p{font-size:11px;color:#505068;line-height:1.4;flex:1}
+.lang-btn{
+  flex:0 0 auto;display:flex;gap:0;border:.5px solid #2a2a44;border-radius:5px;overflow:hidden;
+}
+.lang-btn button{
+  background:transparent;border:none;cursor:pointer;
+  padding:5px 11px;font-size:12px;font-family:inherit;
+  color:#5a6a8a;transition:background .15s,color .15s;
+}
+.lang-btn button.active{background:#1e1e38;color:#e8e8f8;}
+.lang-btn button:hover:not(.active){background:#141428;color:#a0a0c0;}
+.canvases{
+  grid-column:1/2;grid-row:2/3;
+  display:flex;align-items:center;justify-content:center;
+  gap:14px;padding:12px 10px 12px 16px;
+}
+canvas{display:block;border-radius:8px;background:#0c0c10}
+.panel{
+  grid-column:2/3;grid-row:2/3;
+  background:#0d0d16;border-left:.5px solid #1e2030;
+  display:flex;flex-direction:column;overflow-y:auto;
+}
+.section{padding:12px 16px;border-bottom:.5px solid #1e2030}
+.section-title{font-size:10px;color:#4a5a7a;letter-spacing:.07em;margin-bottom:9px;font-weight:500}
+.cr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.cl{font-size:12px;color:#7888a8;min-width:100px}
+.cv{font-size:12px;color:#e0e8ff;min-width:40px;text-align:right;font-weight:500}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:#1a1a2e;border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:#EF9F27;border-radius:50%;cursor:pointer}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sl{font-size:10px;color:#4a5a7a;margin-bottom:2px}
+.sv{font-size:14px;color:#c0d0f0;font-weight:500}
+.alpha-desc{font-size:11px;color:#5a7090;line-height:1.55;margin-bottom:8px}
+.layer-grid{display:flex;flex-direction:column;gap:5px}
+.layer-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.layer-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.layer-name{font-size:11px;color:#7888a8;min-width:80px}
+.layer-val{font-size:11px;color:#a0b0d0;min-width:62px}
+.layer-bar-wrap{flex:1;height:4px;background:#12122a;border-radius:2px;overflow:hidden;position:relative}
+.layer-bar{height:100%;border-radius:2px;transition:width .08s}
+.layer-cur{position:absolute;top:-1px;height:6px;width:2px;border-radius:1px;background:#fff;transition:left .08s}
+.bgs{display:flex;flex-direction:column;gap:5px}
+.bg-row{display:flex;align-items:center;gap:7px}
+.bg-label{font-size:12px;min-width:36px}
+.bg-bar-wrap{flex:1;height:5px;background:#14142a;border-radius:2px;overflow:hidden}
+.bg-bar{height:100%;border-radius:2px;transition:width .1s}
+.bg-pct{font-size:11px;color:#5a6a8a;min-width:30px;text-align:right}
+.note{font-size:10px;color:#354560;line-height:1.5;margin-top:6px;border-top:.5px solid #1e2030;padding-top:6px}
+footer{
+  grid-column:1/3;padding:6px 20px;border-top:.5px solid #1e2030;
+  font-size:10px;color:#354560;display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+}
+footer b{color:#607080}
+footer a{color:#EF9F27;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>QGT — <span class="t" data-it="Proiezione della Fibra Temporale" data-en="Temporal Fibre Projection">Proiezione della Fibra Temporale</span></h1>
+  <p class="t"
+     data-it="N(τ=0, bulk) → spirale aurea → E(equatore, boundary R⁴) · Quattro strati di α: B(entropico) · P(QED, attrattore) · G(geometrico) · S(spettrale) · Il breathing porta lo spinore tra gli strati"
+     data-en="N(τ=0, bulk) → golden spiral → E(equator, boundary R⁴) · Four α layers: B(entropic) · P(QED, attractor) · G(geometric) · S(spectral) · Breathing carries the spinor between layers">
+    N(τ=0, bulk) → spirale aurea → E(equatore, boundary R⁴) · Quattro strati di α: B(entropico) · P(QED, attrattore) · G(geometrico) · S(spettrale) · Il breathing porta lo spinore tra gli strati
+  </p>
+  <div class="lang-btn">
+    <button id="btn-it" class="active" onclick="setLang('it')">IT</button>
+    <button id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</header>
+
+<div class="canvases">
+  <canvas id="c3d"></canvas>
+  <canvas id="c2d" style="align-self:center"></canvas>
+</div>
+
+<div class="panel">
+  <div class="section">
+    <div class="section-title t" data-it="Parametri QGT" data-en="QGT Parameters">Parametri QGT</div>
+    <div class="cr">
+      <span class="cl t" data-it="Velocità τ" data-en="Speed τ">Velocità τ</span>
+      <input type="range" id="speed" min="0.25" max="8" step="0.25" value="1">
+      <span class="cv" id="sv">1×</span>
+    </div>
+    <div class="cr">
+      <span class="cl t" data-it="Breathing amp" data-en="Breathing amp">Breathing amp</span>
+      <input type="range" id="breath" min="0" max="0.90" step="0.02" value="0.36">
+      <span class="cv" id="bv">0.36</span>
+    </div>
+    <div class="cr">
+      <span class="cl t" data-it="Lock-in σ" data-en="Lock-in σ">Lock-in σ</span>
+      <input type="range" id="sigma" min="0.02" max="0.22" step="0.01" value="0.06">
+      <span class="cv" id="sgv">0.06</span>
+    </div>
+    <div class="cr">
+      <span class="cl t" data-it="Rotaz. camera" data-en="Camera rotation">Rotaz. camera</span>
+      <input type="range" id="rot" min="0" max="1" step="0.05" value="0.2">
+      <span class="cv" id="rotv">0.2</span>
+    </div>
+    <div class="note t"
+         data-it="f∥ = φ²/10 ≈ 0.262 Hz — radiale (ξ, curvatura aurea)<br>f⊥ = φ⁴/10³ ≈ 0.00685 Hz — tang. (η, ×20 per visibilità)<br>T ciclo = 3.82 s a velocità 1×"
+         data-en="f∥ = φ²/10 ≈ 0.262 Hz — radial (ξ, golden curvature)<br>f⊥ = φ⁴/10³ ≈ 0.00685 Hz — tang. (η, ×20 for visibility)<br>Cycle T = 3.82 s at speed 1×">
+      f∥ = φ²/10 ≈ 0.262 Hz — radiale (ξ, curvatura aurea)<br>f⊥ = φ⁴/10³ ≈ 0.00685 Hz — tang. (η, ×20 per visibilità)<br>T ciclo = 3.82 s a velocità 1×
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title t"
+         data-it="Strati di α — costante di proiezione"
+         data-en="α layers — projection constant">
+      Strati di α — costante di proiezione
+    </div>
+    <div class="alpha-desc t"
+         data-it="α non è una costante empirica: è il <b style='color:#8899bb'>residuo scalare invariante</b> della proiezione non-invertibile bulk→boundary. Quattro domini coordinativi producono rappresentazioni distinte ma osservativamente equivalenti. Il valore fisico (QED) è l'<b style='color:#FFD700'>attrattore</b> del respiro."
+         data-en="α is not an empirical constant: it is the <b style='color:#8899bb'>invariant scalar residue</b> of the non-invertible bulk→boundary projection. Four coordinative domains yield distinct but observationally equivalent representations. The physical value (QED) is the <b style='color:#FFD700'>attractor</b> of the breathing.">
+      α non è una costante empirica: è il <b style="color:#8899bb">residuo scalare invariante</b> della proiezione non-invertibile bulk→boundary. Quattro domini coordinativi producono rappresentazioni distinte ma osservativamente equivalenti. Il valore fisico (QED) è l'<b style="color:#FFD700">attrattore</b> del respiro.
+    </div>
+    <div class="layer-grid" id="layers"></div>
+    <div class="note t"
+         data-it="B: entropico (e^π/100)² = 1/18.7 — bulk dissipativo<br>P: fisico QED α=1/137.036 — attrattore del respiro<br>G: geometrico [4φ²(φ-½)]⁻² · S: spettrale 5/φ⁴·10⁻²<br>Il breathing porta R tra strato B (espanso) e strato G/S (contratto)"
+         data-en="B: entropic (e^π/100)² = 1/18.7 — dissipative bulk<br>P: physical QED α=1/137.036 — breathing attractor<br>G: geometric [4φ²(φ-½)]⁻² · S: spectral 5/φ⁴·10⁻²<br>Breathing carries R between layer B (expanded) and G/S (contracted)">
+      B: entropico (e^π/100)² = 1/18.7 — bulk dissipativo<br>P: fisico QED α=1/137.036 — attrattore del respiro<br>G: geometrico [4φ²(φ-½)]⁻² · S: spettrale 5/φ⁴·10⁻²<br>Il breathing porta R tra strato B (espanso) e strato G/S (contratto)
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title t" data-it="Stato" data-en="State">Stato</div>
+    <div class="sg">
+      <div><div class="sl">τ / 2π</div><div class="sv" id="s-tau">0.000</div></div>
+      <div><div class="sl t" data-it="T restante (s)" data-en="T remaining (s)">T restante (s)</div><div class="sv" id="s-T">3.82</div></div>
+      <div><div class="sl">n★</div><div class="sv" id="s-nstar">11</div></div>
+      <div><div class="sl">Sheet 4π</div><div class="sv" id="s-sheet">+1</div></div>
+      <div><div class="sl t" data-it="R effettivo" data-en="R effective">R effettivo</div><div class="sv" id="s-rad">1.000</div></div>
+      <div><div class="sl t" data-it="θ spirale" data-en="θ spiral">θ spirale</div><div class="sv" id="s-theta">0°</div></div>
+    </div>
+  </div>
+
+  <div class="section" style="flex:1">
+    <div class="section-title">Lock-in π/n</div>
+    <div class="bgs" id="badges"></div>
+  </div>
+</div>
+
+<footer>
+  <span class="t"
+    data-it="<b>N</b> polo nord τ=0 · spirale aurea (grigio) · <b>E</b> equatore=boundary R⁴ (arancio) · <b>S</b> polo sud entropico"
+    data-en="<b>N</b> north pole τ=0 · golden spiral (grey) · <b>E</b> equator=boundary R⁴ (orange) · <b>S</b> south pole entropic">
+    <b>N</b> polo nord τ=0 · spirale aurea (grigio) · <b>E</b> equatore=boundary R⁴ (arancio) · <b>S</b> polo sud entropico
+  </span>
+  <span class="t"
+    data-it="Sfera: 4 strati α concentrici · Ψ₊ verde · Ψ₋ arancio (antipodale, 4π)"
+    data-en="Sphere: 4 concentric α layers · Ψ₊ green · Ψ₋ orange (antipodal, 4π)">
+    Sfera: 4 strati α concentrici · Ψ₊ verde · Ψ₋ arancio (antipodale, 4π)
+  </span>
+  <span><a href="https://pasqualecamelia.github.io/">pasqualecamelia.github.io</a></span>
+</footer>
+
+<script>
+// ── Lingua ──────────────────────────────────────────────────────
+let LANG = 'it';
+
+const LAYERS_IT = [
+  {key:'B', name:'B entropico',  col:'#F0997B', label:'1/18.7',    role:'bulk dissipativo'},
+  {key:'S2',name:"S' spettrale", col:'#85B7EB', label:'1/136.99',  role:'spettrale alt.'},
+  {key:'P', name:'P fisico QED', col:'#EF9F27', label:'1/137.036', role:'attrattore'},
+  {key:'G', name:'G geometrico', col:'#5DCAA5', label:'1/137.082', role:'geometrico'},
+  {key:'S', name:'S spettrale',  col:'#7F77DD', label:'1/137.082', role:'spettrale modale'},
+];
+const LAYERS_EN = [
+  {key:'B', name:'B entropic',   col:'#F0997B', label:'1/18.7',    role:'dissipative bulk'},
+  {key:'S2',name:"S' spectral",  col:'#85B7EB', label:'1/136.99',  role:'spectral alt.'},
+  {key:'P', name:'P physical',   col:'#EF9F27', label:'1/137.036', role:'attractor'},
+  {key:'G', name:'G geometric',  col:'#5DCAA5', label:'1/137.082', role:'geometric'},
+  {key:'S', name:'S spectral',   col:'#7F77DD', label:'1/137.082', role:'spectral modal'},
+];
+const CANVAS_IT = {N:'N τ=0', boundary:'boundary R⁴', south:'polo sud', sphere:'S² — bulk R⁵'};
+const CANVAS_EN = {N:'N τ=0', boundary:'boundary R⁴', south:'south pole', sphere:'S² — bulk R⁵'};
+
+function setLang(lang){
+  LANG = lang;
+  document.getElementById('btn-it').className = lang==='it'?'active':'';
+  document.getElementById('btn-en').className = lang==='en'?'active':'';
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.t').forEach(el=>{
+    const txt = el.getAttribute('data-'+lang);
+    if(txt) el.innerHTML = txt;
+  });
+}
+
+// ── QGT constants ────────────────────────────────────────────────
+const phi=(1+Math.sqrt(5))/2;
+const f_par=phi*phi/10, f_perp=Math.pow(phi,4)*1e-3, f_perp_vis=f_perp*20;
+
+const ALPHA_P = 1/137.036;
+const ALPHA_B = Math.pow(Math.exp(Math.PI)/100,2);
+const ALPHA_G = 1/Math.pow(4*phi*phi*(phi-0.5),2);
+const ALPHA_S = (5/Math.pow(phi,4))*1e-2;
+const ALPHA_S2= 2*Math.PI*(1+phi/10)*1e-3;
+
+const AMP_LAYER=0.30;
+function alphaToR(a){return 1+AMP_LAYER*Math.log(ALPHA_P/a)/Math.log(ALPHA_P/ALPHA_B);}
+const R_B=alphaToR(ALPHA_B), R_S2=alphaToR(ALPHA_S2);
+const R_P=1.0, R_G=alphaToR(ALPHA_G), R_S=alphaToR(ALPHA_S);
+const ALPHA_RS=[
+  {a:ALPHA_B, R:R_B,  col:'#F0997B', key:'B'},
+  {a:ALPHA_S2,R:R_S2, col:'#85B7EB', key:'S2'},
+  {a:ALPHA_P, R:R_P,  col:'#EF9F27', key:'P'},
+  {a:ALPHA_G, R:R_G,  col:'#5DCAA5', key:'G'},
+  {a:ALPHA_S, R:R_S,  col:'#7F77DD', key:'S'},
+];
+
+const NL=[11,7,5,3,2];
+const COL={11:'#5DCAA5',7:'#7F77DD',5:'#EF9F27',3:'#F0997B',2:'#ED93B1'};
+
+let ba=0.36,sm=1.0,ls=0.06,rot_amp=0.2;
+document.getElementById('breath').oninput=e=>{ba=+e.target.value;document.getElementById('bv').textContent=ba.toFixed(2)};
+document.getElementById('speed').oninput=e=>{sm=+e.target.value;document.getElementById('sv').textContent=(sm%1===0?sm:sm.toFixed(2))+'×'};
+document.getElementById('sigma').oninput=e=>{ls=+e.target.value;document.getElementById('sgv').textContent=ls.toFixed(2)};
+document.getElementById('rot').oninput=e=>{rot_amp=+e.target.value;document.getElementById('rotv').textContent=(+e.target.value).toFixed(2)};
+
+const c3=document.getElementById('c3d'),x3=c3.getContext('2d');
+const c2=document.getElementById('c2d'),x2=c2.getContext('2d');
+
+function sizeCanvases(){
+  const wrap=document.querySelector('.canvases');
+  const W=wrap.clientWidth,H=wrap.clientHeight;
+  const s3=Math.min(W*0.63,H-6), s2=Math.min(W*0.33,H*0.52);
+  c3.width=Math.round(s3);c3.height=Math.round(s3);
+  c2.width=Math.round(s2);c2.height=Math.round(s2);
+}
+sizeCanvases();window.addEventListener('resize',sizeCanvases);
+
+function norm(v){const l=Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);return l<1e-12?[0,0,1]:[v[0]/l,v[1]/l,v[2]/l]}
+function xp([ax,ay,az],[bx,by,bz]){return[ay*bz-az*by,az*bx-ax*bz,ax*by-ay*bx]}
+function proj3d(x,y,z,el,az,cx,cy,sc){
+  const ea=el*Math.PI/180,a=az*Math.PI/180;
+  const rx=x*Math.cos(a)+y*Math.sin(a), ry=-x*Math.sin(a)+y*Math.cos(a);
+  return[cx+rx*sc,cy-(-z*Math.sin(ea)+ry*Math.cos(ea))*sc];
+}
+
+function spiralPt(u){
+  const FR=0.65,TR=6,TE=4;
+  if(u<=FR){const s=u/FR,th=Math.PI/2*s,pa=2*Math.PI*TR*s*(1+(phi-1)*s);return[Math.sin(th)*Math.cos(pa),Math.sin(th)*Math.sin(pa),Math.cos(th)];}
+  else{const ph=2*Math.PI*TE*(u-FR)/(1-FR);return[Math.cos(ph),Math.sin(ph),0];}
+}
+const SP=[];for(let i=0;i<800;i++)SP.push(spiralPt(i/799));
+
+function breathingR(t){
+  const amp_main=ba*(R_B-R_P)*0.55, amp_perp=ba*(R_P-R_S)*0.40;
+  return R_P+amp_main*Math.abs(Math.sin(2*Math.PI*f_par*t))-amp_perp*Math.abs(Math.sin(2*Math.PI*f_perp_vis*t+Math.PI/phi));
+}
+function spinorPos(u,t){
+  const base=spiralPt(u), R=breathingR(t);
+  if(ba<1e-4)return{pos:base,R:R_P};
+  let ref=[0,0,1];if(Math.abs(base[2])>0.92)ref=[1,0,0];
+  const p1=norm(xp(base,ref)),p2=norm(xp(base,p1));
+  const d=ba*0.08*Math.sin(2*Math.PI*f_perp_vis*t),g=ba*0.03*Math.cos(2*Math.PI*f_perp_vis*t*phi);
+  const pos=norm([base[0]+p1[0]*d+p2[0]*g,base[1]+p1[1]*d+p2[1]*g,base[2]+p1[2]*d+p2[2]*g]);
+  return{pos,R};
+}
+
+function obliqCirc(n,np=160){
+  const tn=Math.PI/n,nv=[Math.sin(tn),0,Math.cos(tn)];
+  const v1=norm(xp(nv,[0,1,0])),v2=norm(xp(nv,v1));
+  const pts=[];
+  for(let i=0;i<=np;i++){const a=2*Math.PI*i/np;pts.push([v1[0]*Math.cos(a)+v2[0]*Math.sin(a),v1[1]*Math.cos(a)+v2[1]*Math.sin(a),v1[2]*Math.cos(a)+v2[2]*Math.sin(a)]);}
+  return pts;
+}
+const CR={};NL.forEach(n=>CR[n]=obliqCirc(n));
+
+function lkw(theta){
+  const w={};let s=0;
+  NL.forEach(n=>{const v=Math.exp(-0.5*Math.pow((theta-Math.PI/n)/Math.max(ls,1e-9),2));w[n]=v;s+=v;});
+  if(s>1e-12)NL.forEach(n=>w[n]/=s);
+  return w;
+}
+function polyPt(n,frac){
+  frac=((frac%1)+1)%1;
+  const kf=frac*n,k=Math.floor(kf)%n,loc=kf-Math.floor(kf);
+  const a0=2*Math.PI*k/n,a1=2*Math.PI*(k+1)/n;
+  return[Math.cos(a0)+(Math.cos(a1)-Math.cos(a0))*loc,Math.sin(a0)+(Math.sin(a1)-Math.sin(a0))*loc];
+}
+
+function latColor(z,alpha=0.18){
+  const t=Math.max(0,Math.min(1,(1-z)/2));
+  if(t<0.5){const u=t*2;return`rgba(${Math.round(u*240)},${Math.round(80+u*100)},${Math.round(220-u*120)},${alpha})`;}
+  else{const u=(t-0.5)*2;return`rgba(${Math.round(240-u*140)},${Math.round(180-u*100)},${Math.round(100-u*70)},${alpha})`;}
+}
+
+let t_phys=0,azm=30;
+const RH=[],RHM=300;
+
+function drawS(){
+  const W=c3.width,H=c3.height,cx=W*.50,cy=H*.47,sc_base=W*.32,el=38;
+  function pt(x,y,z,R=1){return proj3d(x*R,y*R,z*R,el,azm,cx,cy,sc_base)}
+  x3.clearRect(0,0,W,H);x3.fillStyle='#0c0c10';x3.fillRect(0,0,W,H);
+
+  const u=((t_phys*f_par*sm)%1+1)%1;
+  const{pos:r,R:Reff}=spinorPos(u,t_phys);
+
+  // Strati α — sfere concentriche
+  const layerOrder=[...ALPHA_RS].sort((a,b)=>b.R-a.R);
+  layerOrder.forEach(layer=>{
+    x3.strokeStyle=layer.col+'38'; x3.lineWidth=0.55;
+    for(let i=1;i<=8;i++){const a=Math.PI*i/9;x3.beginPath();for(let j=0;j<=36;j++){const b=2*Math.PI*j/36;const[px,py]=pt(Math.sin(a)*Math.cos(b),Math.sin(a)*Math.sin(b),Math.cos(a),layer.R);j===0?x3.moveTo(px,py):x3.lineTo(px,py);}x3.stroke();}
+    for(let j=0;j<6;j++){const b=Math.PI*j/6;x3.beginPath();for(let i=0;i<=16;i++){const a=Math.PI*i/16;const[px,py]=pt(Math.sin(a)*Math.cos(b),Math.sin(a)*Math.sin(b),Math.cos(a),layer.R);i===0?x3.moveTo(px,py):x3.lineTo(px,py);}x3.stroke();}
+  });
+
+  // Colorazione latitudinale sullo strato R_P
+  for(let i=0;i<=14;i++){
+    const a1=Math.PI*i/14;
+    x3.strokeStyle=latColor(Math.cos((a1+Math.PI*(i+1)/14)/2)); x3.lineWidth=4;
+    x3.beginPath();for(let j=0;j<=40;j++){const b=2*Math.PI*j/40;const[px,py]=pt(Math.sin(a1)*Math.cos(b),Math.sin(a1)*Math.sin(b),Math.cos(a1),R_P);j===0?x3.moveTo(px,py):x3.lineTo(px,py);}x3.stroke();
+  }
+
+  // Equatore — boundary R⁴
+  x3.strokeStyle='rgba(239,159,39,.70)'; x3.lineWidth=2.0;
+  x3.beginPath();for(let j=0;j<=72;j++){const b=2*Math.PI*j/72;const[px,py]=pt(Math.cos(b),Math.sin(b),0,Reff);j===0?x3.moveTo(px,py):x3.lineTo(px,py);}x3.stroke();
+
+  // Piani π/n
+  const th=Math.acos(Math.max(-1,Math.min(1,r[2])));
+  const w=lkw(th); const ns=NL.reduce((a,b)=>w[a]>w[b]?a:b);
+  NL.forEach(n=>{
+    x3.strokeStyle=COL[n]+Math.round((.07+.48*w[n])*255).toString(16).padStart(2,'0');
+    x3.lineWidth=n===ns?1.8:.6; x3.setLineDash([5,5]);
+    x3.beginPath();CR[n].forEach(([a,b,c],i)=>{const[px,py]=pt(a,b,c,Reff);i===0?x3.moveTo(px,py):x3.lineTo(px,py);});
+    x3.stroke(); x3.setLineDash([]);
+  });
+
+  // Spirale aurea
+  x3.strokeStyle='rgba(150,150,190,.18)'; x3.lineWidth=1.2;
+  x3.beginPath();SP.forEach(([a,b,c],i)=>{const[px,py]=pt(a,b,c,1);i===0?x3.moveTo(px,py):x3.lineTo(px,py);});x3.stroke();
+
+  // Tracce fisiche
+  if(RH.length>1){
+    x3.strokeStyle='#5DCAA5'; x3.lineWidth=2.0;
+    x3.beginPath();RH.forEach(([a,b,c,Rh],i)=>{const[px,py]=pt(a,b,c,Rh);i===0?x3.moveTo(px,py):x3.lineTo(px,py);});x3.stroke();
+    x3.strokeStyle='#7F77DD'; x3.lineWidth=2.0;
+    x3.beginPath();RH.forEach(([a,b,c,Rh],i)=>{const[px,py]=pt(-a,-b,-c,Rh);i===0?x3.moveTo(px,py):x3.lineTo(px,py);});x3.stroke();
+  }
+
+  // Punti correnti
+  const[bx,by]=pt(r[0],r[1],r[2],Reff);x3.fillStyle='#5DCAA5';x3.beginPath();x3.arc(bx,by,7,0,2*Math.PI);x3.fill();
+  const[mx,my]=pt(-r[0],-r[1],-r[2],Reff);x3.fillStyle='#7F77DD';x3.beginPath();x3.arc(mx,my,7,0,2*Math.PI);x3.fill();
+
+  // Polo nord
+  const lbl=LANG==='it'?CANVAS_IT:CANVAS_EN;
+  const[nx,ny]=pt(0,0,1,Reff);
+  x3.fillStyle='#7F77DD';x3.beginPath();x3.arc(nx,ny,5,0,2*Math.PI);x3.fill();
+  x3.fillStyle='rgba(175,169,236,.88)';x3.font='11px monospace';x3.fillText(lbl.N,nx+7,ny+3);
+
+  // Polo sud
+  const[sx,sy]=pt(0,0,-1,Reff);
+  x3.fillStyle='#444455';x3.beginPath();x3.arc(sx,sy,4,0,2*Math.PI);x3.fill();
+
+  // Asse τ
+  const[o1x,o1y]=pt(0,0,-1.3,1),[o2x,o2y]=pt(0,0,1.3,1);
+  x3.strokeStyle='rgba(127,119,221,.38)'; x3.lineWidth=.7;
+  x3.beginPath();x3.moveTo(o1x,o1y);x3.lineTo(o2x,o2y);x3.stroke();
+  x3.fillStyle='rgba(175,169,236,.82)';x3.font='12px monospace';x3.fillText('τ',o2x+4,o2y-4);
+
+  x3.fillStyle='rgba(127,119,221,.72)';x3.font='12px monospace';x3.fillText(lbl.sphere,8,18);
+  const colR=Reff>R_P+0.04?'#F0997B':Reff<R_P-0.04?'#7F77DD':'#EF9F27';
+  const activeLayer=ALPHA_RS.reduce((best,l)=>Math.abs(Reff-l.R)<Math.abs(Reff-best.R)?l:best);
+  const layerNames=LANG==='it'?LAYERS_IT:LAYERS_EN;
+  const activeLayerName=layerNames.find(l=>l.key===activeLayer.key)?.name||'';
+  x3.fillStyle=colR;x3.font='11px monospace';x3.fillText('R='+Reff.toFixed(3)+' '+activeLayerName,8,H-8);
+  x3.fillStyle='rgba(240,153,123,.65)';x3.font='10px monospace';
+  const[eqx,eqy]=pt(0,-1.08,0,Reff);x3.fillText(lbl.boundary,eqx-30,eqy+3);
+}
+
+function drawP(){
+  const W=c2.width,H=c2.height,cx=W/2,cy=H/2,sc=W*.40;
+  x2.clearRect(0,0,W,H);x2.fillStyle='#0c0c10';x2.fillRect(0,0,W,H);
+  x2.strokeStyle='rgba(239,159,39,.45)';x2.lineWidth=1.0;
+  x2.beginPath();x2.arc(cx,cy,sc,0,2*Math.PI);x2.stroke();
+
+  const u=((t_phys*f_par*sm)%1+1)%1;
+  const{pos:r}=spinorPos(u,t_phys);
+  const th=Math.acos(Math.max(-1,Math.min(1,r[2])));
+  const w=lkw(th); const ns=NL.reduce((a,b)=>w[a]>w[b]?a:b);
+
+  NL.forEach(n=>{
+    x2.strokeStyle=COL[n]+Math.round((.10+.68*w[n])*255).toString(16).padStart(2,'0');
+    x2.lineWidth=n===ns?2.4:.85; x2.beginPath();
+    for(let i=0;i<=n;i++){const a=2*Math.PI*i/n;i===0?x2.moveTo(cx+sc*Math.cos(a),cy+sc*Math.sin(a)):x2.lineTo(cx+sc*Math.cos(a),cy+sc*Math.sin(a));}
+    x2.stroke();
+    x2.fillStyle=COL[n]+'cc'; x2.font='10px monospace';
+    const la=Math.PI/n*.5; x2.fillText('π/'+n,cx+(sc+14)*Math.cos(la)-9,cy+(sc+14)*Math.sin(la)+4);
+  });
+
+  const lbl=LANG==='it'?CANVAS_IT:CANVAS_EN;
+  const[px,py]=polyPt(ns,t_phys*f_par*sm);
+  x2.fillStyle='#ffffff';x2.beginPath();x2.arc(cx+px*sc,cy+py*sc,6,0,2*Math.PI);x2.fill();
+  x2.fillStyle='rgba(239,159,39,.75)';x2.font='12px monospace';x2.fillText('R⁴ — '+lbl.boundary,6,15);
+  x2.fillStyle=COL[ns];x2.font='bold 12px monospace';x2.fillText('n★ = '+ns,6,30);
+}
+
+function updateUI(){
+  const u=((t_phys*f_par*sm)%1+1)%1;
+  document.getElementById('s-tau').textContent=u.toFixed(3);
+  const Tc=1/(f_par*sm),tin=(t_phys*f_par*sm)%1;
+  document.getElementById('s-T').textContent=(Tc*(1-tin)).toFixed(2);
+  document.getElementById('s-sheet').textContent=Math.cos(Math.PI*t_phys*f_par*sm)>=0?'+1':'−1';
+  const{pos:r,R:Reff}=spinorPos(u,t_phys);
+  const th=Math.acos(Math.max(-1,Math.min(1,r[2])));
+  document.getElementById('s-rad').textContent=Reff.toFixed(3);
+  document.getElementById('s-theta').textContent=(th*180/Math.PI).toFixed(1)+'°';
+  const w=lkw(th),ns=NL.reduce((a,b)=>w[a]>w[b]?a:b);
+  document.getElementById('s-nstar').textContent=ns;
+
+  const layerData=LANG==='it'?LAYERS_IT:LAYERS_EN;
+  const Rmin=R_S-0.02,Rmax=R_B+0.05;
+  document.getElementById('layers').innerHTML=ALPHA_RS.map((ar,i)=>{
+    const ld=layerData.find(l=>l.key===ar.key);
+    const barPos=Math.max(0,Math.min(100,(ar.R-Rmin)/(Rmax-Rmin)*100));
+    const curPos=Math.max(0,Math.min(100,(Reff-Rmin)/(Rmax-Rmin)*100));
+    const isActive=Math.abs(Reff-ar.R)<0.06;
+    return`<div class="layer-row">
+      <div class="layer-dot" style="background:${ar.col}${isActive?'':'66'}"></div>
+      <span class="layer-name" style="color:${isActive?ar.col:'#5a6a8a'}">${ld.name}</span>
+      <span class="layer-val" style="color:${isActive?ar.col:'#445566'}">${ld.label}</span>
+      <div class="layer-bar-wrap">
+        <div class="layer-bar" style="width:${barPos}%;background:${ar.col}55"></div>
+        <div class="layer-cur" style="left:${curPos}%;background:${isActive?ar.col:'#ffffff66'}"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('badges').innerHTML=NL.map(n=>{
+    const pct=Math.round(w[n]*100),isA=n===ns;
+    return`<div class="bg-row">
+      <span class="bg-label" style="color:${COL[n]}">π/${n}</span>
+      <div class="bg-bar-wrap"><div class="bg-bar" style="width:${pct}%;background:${COL[n]}60"></div></div>
+      <span class="bg-pct" style="${isA?'color:'+COL[n]+';font-weight:600':''}">${pct}%</span>
+    </div>`;
+  }).join('');
+}
+
+let LT=null;
+function loop(ts){
+  if(LT!==null){
+    const dt=Math.min((ts-LT)/1000,.05);
+    t_phys+=dt;
+    const u=((t_phys*f_par*sm)%1+1)%1;
+    azm=(30+rot_amp*50*t_phys*0.06)%360;
+    const{pos:r,R:Reff}=spinorPos(u,t_phys);
+    RH.push([r[0],r[1],r[2],Reff]);
+    if(RH.length>RHM)RH.shift();
+    drawS();drawP();updateUI();
+  }
+  LT=ts;requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
