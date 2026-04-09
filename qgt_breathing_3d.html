@@ -127,6 +127,7 @@ footer a:hover{opacity:1;}
         <div class="ldot-item"><span style="background:var(--eta)"></span> η <span class="t" data-en="transverse (EM)" data-it="trasverso (EM)">transverse (EM)</span></div>
         <div class="ldot-item"><span style="background:var(--amb)"></span> <span class="t" data-en="codon nodes · 10/turn" data-it="nodi codonici · 10/giro">codon nodes · 10/turn</span></div>
         <div class="ldot-item"><span style="background:var(--ax)"></span> τ <span class="t" data-en="temporal axis" data-it="asse temporale">temporal axis</span></div>
+        <div class="ldot-item"><span style="background:#EF9F27;opacity:.5;border-radius:2px;"></span> <span class="t" data-en="α⁻¹ = 137 reference cylinder" data-it="cilindro di riferimento α⁻¹ = 137">α⁻¹ = 137 reference cylinder</span></div>
       </div>
       <div class="fnote t"
            data-en="ξ(t) = (1/√α)·exp(+A·sin(Γτ·t))<br>η(t) = (1/√α)·exp(−A·sin(Γτ·t))<br>ξη = α⁻¹ ≈ 137 conserved<br>Γτ = φ/√5 ≈ 0.7265"
@@ -238,62 +239,138 @@ function draw3D(){
     z_arr[i]=-1.0+i/(N_PTS-1)*2.0;
   }
 
-  // Local t for each point (past history)
-  // t_local = t - (ang_start - ang) / Gamma
-  const r_plus=new Float32Array(N_PTS);
-  const r_minus=new Float32Array(N_PTS);
+  // ── Compute 3D world coords for both strands ──────────────────
+  // DNA geometry: both helices wind in the SAME direction (right-handed),
+  // offset by π in angle, radii in TRUE antiphase: r_η = radiusNorm(exp(-s))
+  // when r_ξ = radiusNorm(exp(+s)). Same s, opposite exponent sign.
+  // This means when ξ bulges OUT, η pulls IN — exactly like the Python original.
+
+  const pts3_plus  = []; // {x3d,y3d,z3d, px,py, depth, s_val}
+  const pts3_minus = [];
+  const r_eq = radiusNorm(sq_a);
+
   for(let i=0;i<N_PTS;i++){
-    const t_local=t_phys*sm-(ang_start-ang_arr[i])/Gamma;
-    const s=A*Math.sin(Gamma*t_local);
-    r_plus[i]=radiusNorm(sq_a*Math.exp(s));
-    r_minus[i]=radiusNorm(sq_a*Math.exp(-s));
+    const t_local = t_phys*sm - (ang_start - ang_arr[i]) / Gamma;
+    const s = A * Math.sin(Gamma * t_local);
+    const rp = radiusNorm(sq_a * Math.exp( s));
+    const rm = radiusNorm(sq_a * Math.exp(-s));   // true antiphase
+
+    const ang = ang_arr[i];
+    const z   = z_arr[i];
+
+    // ξ strand
+    const xp = rp * Math.cos(ang), yp = rp * Math.sin(ang);
+    const [ppx, ppy] = pt(xp, yp, z);
+    // depth: raw y after azimuth rotation (used for painter's sort)
+    const dep_p = -xp*Math.sin(azm*Math.PI/180) + yp*Math.cos(azm*Math.PI/180);
+    pts3_plus.push({xw:xp,yw:yp,zw:z, px:ppx,py:ppy, dep:dep_p, s, idx:i});
+
+    // η strand — offset π in angle, antiphase radius
+    const xm = rm * Math.cos(ang + Math.PI), ym = rm * Math.sin(ang + Math.PI);
+    const [pmx, pmy] = pt(xm, ym, z);
+    const dep_m = -xm*Math.sin(azm*Math.PI/180) + ym*Math.cos(azm*Math.PI/180);
+    pts3_minus.push({xw:xm,yw:ym,zw:z, px:pmx,py:pmy, dep:dep_m, s:-s, idx:i});
   }
 
-  // Draw ξ strand (teal, +)
-  x3.strokeStyle='#5DCAA5';x3.lineWidth=2.0;
-  x3.beginPath();
-  for(let i=0;i<N_PTS;i++){
-    const x=r_plus[i]*Math.cos(ang_arr[i]);
-    const y=r_plus[i]*Math.sin(ang_arr[i]);
-    const[px,py]=pt(x,y,z_arr[i]);
-    i===0?x3.moveTo(px,py):x3.lineTo(px,py);
-  }x3.stroke();
+  // ── α reference cylinder ──────────────────────────────────────
+  const N_CYL=64;
+  for(const zr of[-1.0, 0.0, 1.0]){
+    x3.strokeStyle='rgba(239,159,39,0.30)'; x3.lineWidth=0.9;
+    x3.beginPath();
+    for(let j=0;j<=N_CYL;j++){
+      const b=2*Math.PI*j/N_CYL;
+      const[px,py]=pt(r_eq*Math.cos(b), r_eq*Math.sin(b), zr);
+      j===0?x3.moveTo(px,py):x3.lineTo(px,py);
+    }
+    x3.stroke();
+  }
+  for(let j=0;j<N_CYL;j+=8){
+    const b=2*Math.PI*j/N_CYL;
+    x3.strokeStyle='rgba(239,159,39,0.12)'; x3.lineWidth=0.5;
+    x3.beginPath();
+    const[px1,py1]=pt(r_eq*Math.cos(b), r_eq*Math.sin(b),-1.0);
+    const[px2,py2]=pt(r_eq*Math.cos(b), r_eq*Math.sin(b), 1.0);
+    x3.moveTo(px1,py1); x3.lineTo(px2,py2); x3.stroke();
+  }
+  // label at top of cylinder
+  const[lax,lay]=pt(r_eq*0.7, r_eq*0.7, 1.08);
+  x3.fillStyle='rgba(239,159,39,0.72)'; x3.font='10px monospace';
+  x3.fillText('α⁻¹ = 137 ref.',lax,lay);
 
-  // Draw η strand (violet, -, offset π)
-  x3.strokeStyle='#7F77DD';x3.lineWidth=2.0;
-  x3.beginPath();
-  for(let i=0;i<N_PTS;i++){
-    const x=r_minus[i]*Math.cos(ang_arr[i]+Math.PI);
-    const y=r_minus[i]*Math.sin(ang_arr[i]+Math.PI);
-    const[px,py]=pt(x,y,z_arr[i]);
-    i===0?x3.moveTo(px,py):x3.lineTo(px,py);
-  }x3.stroke();
+  // ── Draw strands with depth-aware line width ──────────────────
+  // Split each strand into segments, draw back-to-front with varying
+  // opacity/linewidth to give a strong 3D impression.
+  function drawStrand(pts, color){
+    // draw as continuous polyline but with per-segment alpha based on depth
+    const n = pts.length;
+    for(let i=1;i<n;i++){
+      const p0=pts[i-1], p1=pts[i];
+      // depth: -1 = farthest back, +1 = closest front
+      const dep = (p0.dep + p1.dep) * 0.5;
+      // dep is in world units ~[-r,+r]; normalise to [0,1]
+      const t = (dep + 0.95) / 1.90;
+      const alpha = 0.35 + 0.65 * Math.max(0, Math.min(1, t));
+      const lw    = 1.0  + 2.0  * Math.max(0, Math.min(1, t));
+      x3.strokeStyle = color + Math.round(alpha*255).toString(16).padStart(2,'0');
+      x3.lineWidth   = lw;
+      x3.beginPath();
+      x3.moveTo(p0.px, p0.py);
+      x3.lineTo(p1.px, p1.py);
+      x3.stroke();
+    }
+  }
 
-  // Codon nodes (amber dots on both strands)
-  const nNodes=Math.floor(nTurns*STEPS)+1;
+  drawStrand(pts3_plus,  '#5DCAA5');
+  drawStrand(pts3_minus, '#7F77DD');
+
+  // ── Rungs between the two strands (like DNA base pairs) ───────
+  // draw every ~18° (every STEPS/2 rung)
+  const RUNG_STEP = Math.max(1, Math.floor(N_PTS / (Math.round(nTurns * STEPS * 2))));
+  for(let i=0;i<N_PTS;i+=RUNG_STEP){
+    const pp=pts3_plus[i], pm=pts3_minus[i];
+    const dep=(pp.dep+pm.dep)*0.5;
+    const t=(dep+0.95)/1.90;
+    const alpha=0.12+0.25*Math.max(0,Math.min(1,t));
+    x3.strokeStyle=`rgba(180,180,200,${alpha.toFixed(2)})`;
+    x3.lineWidth=0.7;
+    x3.beginPath(); x3.moveTo(pp.px,pp.py); x3.lineTo(pm.px,pm.py); x3.stroke();
+  }
+
+  // ── Codon nodes (amber) ───────────────────────────────────────
+  const nNodes = Math.floor(nTurns * STEPS) + 1;
+  const nodePts = [];
   for(let k=0;k<nNodes;k++){
-    const frac=k/STEPS;
-    const ang_node=ang_start-nTurns*2*Math.PI+frac*nTurns*2*Math.PI;
-    const z_node=-1.0+frac*2.0;
-    if(z_node<-1.0||z_node>1.0)continue;
-    const t_node=t_phys*sm-(ang_start-ang_node)/Gamma;
-    const s_node=A*Math.sin(Gamma*t_node);
-    const rp=radiusNorm(sq_a*Math.exp(s_node));
-    const rm=radiusNorm(sq_a*Math.exp(-s_node));
-    // node on + strand
-    const[npx,npy]=pt(rp*Math.cos(ang_node),rp*Math.sin(ang_node),z_node);
-    x3.fillStyle='#EF9F27';x3.beginPath();x3.arc(npx,npy,3.5,0,2*Math.PI);x3.fill();
-    // node on - strand
-    const[nmx,nmy]=pt(rm*Math.cos(ang_node+Math.PI),rm*Math.sin(ang_node+Math.PI),z_node);
-    x3.fillStyle='#EF9F27';x3.beginPath();x3.arc(nmx,nmy,3.5,0,2*Math.PI);x3.fill();
+    const frac = k / STEPS;
+    const ang_node = ang_start - nTurns*2*Math.PI + frac*nTurns*2*Math.PI;
+    const z_node   = -1.0 + frac*2.0;
+    if(z_node < -1.02 || z_node > 1.02) continue;
+    const t_node = t_phys*sm - (ang_start - ang_node)/Gamma;
+    const s_node = A * Math.sin(Gamma * t_node);
+    const rp = radiusNorm(sq_a * Math.exp( s_node));
+    const rm = radiusNorm(sq_a * Math.exp(-s_node));
+    const[npx,npy]=pt(rp*Math.cos(ang_node), rp*Math.sin(ang_node), z_node);
+    const[nmx,nmy]=pt(rm*Math.cos(ang_node+Math.PI), rm*Math.sin(ang_node+Math.PI), z_node);
+    const dep_p = -rp*Math.cos(ang_node)*Math.sin(azm*Math.PI/180) + rp*Math.sin(ang_node)*Math.cos(azm*Math.PI/180);
+    const dep_m = -rm*Math.cos(ang_node+Math.PI)*Math.sin(azm*Math.PI/180) + rm*Math.sin(ang_node+Math.PI)*Math.cos(azm*Math.PI/180);
+    nodePts.push({px:npx,py:npy,dep:dep_p},{px:nmx,py:nmy,dep:dep_m});
+  }
+  // sort nodes back-to-front
+  nodePts.sort((a,b)=>a.dep-b.dep);
+  for(const np of nodePts){
+    const t=(np.dep+0.95)/1.90;
+    const alpha=0.50+0.50*Math.max(0,Math.min(1,t));
+    const r=2.5+2.0*Math.max(0,Math.min(1,t));
+    x3.fillStyle=`rgba(239,159,39,${alpha.toFixed(2)})`;
+    x3.beginPath(); x3.arc(np.px,np.py,r,0,2*Math.PI); x3.fill();
   }
 
-  // Head of ξ strand (top, z=+1)
-  const xi_head_x=r_plus[N_PTS-1]*Math.cos(ang_arr[N_PTS-1]);
-  const xi_head_y=r_plus[N_PTS-1]*Math.sin(ang_arr[N_PTS-1]);
-  const[hpx,hpy]=pt(xi_head_x,xi_head_y,1.0);
+  // Head dots at top of each strand
+  const headP = pts3_plus[N_PTS-1];
   x3.fillStyle='white';x3.strokeStyle='#5DCAA5';x3.lineWidth=2;
-  x3.beginPath();x3.arc(hpx,hpy,5,0,2*Math.PI);x3.fill();x3.stroke();
+  x3.beginPath();x3.arc(headP.px,headP.py,5,0,2*Math.PI);x3.fill();x3.stroke();
+  const headM = pts3_minus[N_PTS-1];
+  x3.fillStyle='white';x3.strokeStyle='#7F77DD';x3.lineWidth=2;
+  x3.beginPath();x3.arc(headM.px,headM.py,5,0,2*Math.PI);x3.fill();x3.stroke();
 
   // Labels
   const{xi,eta}=xiEta(t_phys);
