@@ -8,41 +8,16 @@
   <meta name="author" content="Pasquale Camelia" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://pasqualecamelia.github.io/" />
-
-  <!-- Open Graph -->
   <meta property="og:type" content="profile" />
   <meta property="og:title" content="Pasquale Camelia — Quantum Gauge Theory of Time" />
   <meta property="og:description" content="Independent researcher. QGT series: physics as the topology of a non-invertible projection. 18 preprints on Zenodo. ORCID 0009-0006-4779-4647." />
   <meta property="og:url" content="https://pasqualecamelia.github.io/" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="profile:first_name" content="Pasquale" />
-  <meta property="profile:last_name" content="Camelia" />
-
-  <!-- Citation meta -->
   <meta name="citation_author" content="Camelia, Pasquale" />
   <meta name="citation_title" content="Physics as the Topology of a Non-Invertible Projection" />
-  <meta name="citation_publication_date" content="2026/04" />
   <meta name="citation_doi" content="10.5281/zenodo.19384549" />
 
-  <!-- Schema.org -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Person",
-        "@id": "https://pasqualecamelia.github.io/#person",
-        "name": "Pasquale Camelia",
-        "url": "https://pasqualecamelia.github.io/",
-        "sameAs": [
-          "https://orcid.org/0009-0006-4779-4647",
-          "https://zenodo.org/search?q=metadata.creators.person_or_org.identifiers.identifier%3A0009-0006-4779-4647"
-        ],
-        "jobTitle": "Independent Researcher",
-        "knowsAbout": ["Foundations of Physics","Quantum Gauge Theory","Finite-rank Projection","Boundary Observability","Ancient Egyptian Metrology","Noether Theorem","Majorana spinors","Structural Selection"]
-      }
-    ]
-  }
+  {"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://pasqualecamelia.github.io/#person","name":"Pasquale Camelia","url":"https://pasqualecamelia.github.io/","sameAs":["https://orcid.org/0009-0006-4779-4647","https://zenodo.org/search?q=metadata.creators.person_or_org.identifiers.identifier%3A0009-0006-4779-4647"],"jobTitle":"Independent Researcher","knowsAbout":["Foundations of Physics","Quantum Gauge Theory","Finite-rank Projection","Boundary Observability","Ancient Egyptian Metrology","Noether Theorem","Majorana spinors","Structural Selection"]}]}
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,701 +25,167 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <style>
-    /* ── Design tokens ─────────────────────────────────────── */
     :root {
-      --bg:        #f8f6f1;
-      --bg2:       #f2efe8;
-      --bg3:       #eceae1;
-      --border:    #d8d3c8;
-      --border2:   #c8c3b5;
-      --text:      #1a1916;
-      --muted:     #6b6660;
-      --faint:     #9b9590;
-      --accent:    #1e3a6e;
-      --accent2:   #2d5299;
-      --gold:      #8b6914;
-      --gold-bg:   #fdf8ee;
-      --gold-bdr:  #d4b855;
-      --red:       #7a1f1f;
-      --maxw:      780px;
-      --serif:     'EB Garamond', Georgia, serif;
-      --mono:      'JetBrains Mono', 'Fira Code', monospace;
+      --bg:#f8f6f1; --bg2:#f2efe8; --bg3:#eceae1;
+      --border:#d8d3c8; --border2:#c8c3b5;
+      --text:#1a1916; --muted:#6b6660; --faint:#9b9590;
+      --accent:#1e3a6e; --accent2:#2d5299;
+      --gold:#8b6914; --gold-bg:#fdf8ee; --gold-bdr:#d4b855;
+      --maxw:780px;
+      --serif:'EB Garamond',Georgia,serif;
+      --mono:'JetBrains Mono','Fira Code',monospace;
     }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:var(--serif);background:var(--bg);color:var(--text);font-size:18px;line-height:1.72;-webkit-font-smoothing:antialiased;}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px 100px;}
 
-    /* ── Reset ─────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* topbar */
+    .topbar{display:flex;justify-content:flex-end;padding:22px 0 0;margin-bottom:48px;}
+    .lang-toggle{display:flex;border:1px solid var(--border);border-radius:5px;overflow:hidden;font-family:var(--mono);font-size:0.72rem;}
+    .lang-btn{padding:5px 15px;background:transparent;color:var(--muted);cursor:pointer;border:none;font-family:inherit;font-size:inherit;letter-spacing:.07em;transition:background .15s,color .15s;}
+    .lang-btn.active{background:var(--text);color:var(--bg);}
+    .lang-btn:hover:not(.active){background:var(--bg3);}
 
-    /* ── Base ──────────────────────────────────────────────── */
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--serif);
-      background: var(--bg);
-      color: var(--text);
-      font-size: 18px;
-      line-height: 1.72;
-      -webkit-font-smoothing: antialiased;
-    }
+    /* header */
+    header{padding-bottom:40px;margin-bottom:56px;border-bottom:1.5px solid var(--text);}
+    .banner{width:100%;aspect-ratio:4/1;border-radius:6px;overflow:hidden;margin-bottom:32px;background:var(--bg3);}
+    .banner img{width:100%;height:100%;object-fit:cover;display:block;}
+    h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:2.8rem;font-weight:300;letter-spacing:-0.01em;line-height:1.1;margin-bottom:6px;}
+    .role{font-size:0.92rem;color:var(--muted);font-family:var(--mono);letter-spacing:.04em;margin-bottom:14px;}
+    .keywords-row{font-size:0.83rem;color:var(--faint);letter-spacing:.02em;font-style:italic;margin-bottom:18px;}
+    .orcid-pill{display:inline-flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:5px 12px;font-family:var(--mono);font-size:0.78rem;color:var(--accent);text-decoration:none;transition:border-color .15s,background .15s;}
+    .orcid-pill:hover{background:var(--bg3);border-color:var(--border2);}
+    .orcid-dot{width:14px;height:14px;background:#a6ce39;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .orcid-dot::after{content:'iD';font-size:6px;font-weight:700;color:white;font-family:sans-serif;letter-spacing:-0.5px;}
 
-    /* ── Layout ────────────────────────────────────────────── */
-    .wrap {
-      max-width: var(--maxw);
-      margin: 0 auto;
-      padding: 0 28px 100px;
-    }
+    /* sections */
+    .section{margin-bottom:64px;}
+    .section-label{font-family:var(--mono);font-size:0.68rem;color:var(--faint);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;}
+    h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.55rem;font-weight:400;line-height:1.25;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:22px;}
+    .section-intro{font-size:0.95rem;color:var(--muted);font-style:italic;line-height:1.65;margin-bottom:28px;}
 
-    /* ── Lang toggle ───────────────────────────────────────── */
-    .topbar {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 22px 0 0;
-      margin-bottom: 48px;
-    }
-    .lang-toggle {
-      display: flex;
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      overflow: hidden;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-    }
-    .lang-btn {
-      padding: 5px 15px;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      border: none;
-      font-family: inherit;
-      font-size: inherit;
-      letter-spacing: 0.07em;
-      transition: background 0.15s, color 0.15s;
-    }
-    .lang-btn.active { background: var(--text); color: var(--bg); }
-    .lang-btn:hover:not(.active) { background: var(--bg3); }
+    /* statement */
+    .statement{border-left:2.5px solid var(--text);padding:20px 26px;margin-bottom:56px;font-size:0.98rem;line-height:1.75;background:var(--bg2);}
+    .statement p+p{margin-top:12px;}
+    .statement ul{margin:14px 0 0 1.4em;list-style:disc;}
+    .statement li{margin-bottom:8px;}
 
-    /* ── Header ────────────────────────────────────────────── */
-    header {
-      padding-bottom: 40px;
-      margin-bottom: 56px;
-      border-bottom: 1.5px solid var(--text);
-    }
-    .banner {
-      width: 100%;
-      aspect-ratio: 4 / 1;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 32px;
-      background: var(--bg3);
-    }
-    .banner img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    h1 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 2.8rem;
-      font-weight: 300;
-      letter-spacing: -0.01em;
-      line-height: 1.1;
-      margin-bottom: 6px;
-    }
-    .role {
-      font-size: 0.92rem;
-      color: var(--muted);
-      font-family: var(--mono);
-      letter-spacing: 0.04em;
-      margin-bottom: 14px;
-    }
-    .keywords-row {
-      font-size: 0.83rem;
-      color: var(--faint);
-      letter-spacing: 0.02em;
-      font-style: italic;
-      margin-bottom: 18px;
-    }
-    .orcid-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 5px 12px;
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      color: var(--accent);
-      text-decoration: none;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .orcid-pill:hover { background: var(--bg3); border-color: var(--border2); }
-    .orcid-dot {
-      width: 14px; height: 14px;
-      background: #a6ce39;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .orcid-dot::after {
-      content: 'iD';
-      font-size: 6px;
-      font-weight: 700;
-      color: white;
-      font-family: sans-serif;
-      letter-spacing: -0.5px;
-    }
+    /* P00 hero */
+    .p00-hero{background:var(--gold-bg);border:1.5px solid var(--gold-bdr);border-radius:8px;padding:32px 34px 28px;margin-bottom:56px;}
+    .p00-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#fff;font-family:var(--mono);font-size:0.67rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:3px;margin-bottom:14px;}
+    .p00-equation{font-family:var(--mono);font-size:1.02rem;letter-spacing:.04em;color:var(--accent);background:rgba(30,58,110,.06);border:1px solid rgba(30,58,110,.15);border-radius:5px;padding:10px 16px;margin:14px 0 18px;display:inline-block;}
+    .p00-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3rem;font-weight:600;color:var(--accent);line-height:1.35;margin-bottom:10px;}
+    .p00-title a{color:inherit;text-decoration:none;}
+    .p00-title a:hover{text-decoration:underline;text-underline-offset:3px;}
+    .p00-abstract{font-size:0.92rem;color:var(--muted);font-style:italic;line-height:1.65;margin-bottom:16px;}
+    .p00-footer{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:0.75rem;}
+    .p00-doi{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(30,58,110,.3);padding-bottom:1px;}
+    .p00-doi:hover{border-color:var(--accent);}
 
-    /* ── Section titles ────────────────────────────────────── */
-    .section { margin-bottom: 64px; }
-    .section-label {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: var(--faint);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-    h2 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.55rem;
-      font-weight: 400;
-      line-height: 1.25;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 10px;
-      margin-bottom: 22px;
-      color: var(--text);
-    }
-    .section-intro {
-      font-size: 0.95rem;
-      color: var(--muted);
-      font-style: italic;
-      line-height: 1.65;
-      margin-bottom: 28px;
-    }
+    /* reading path */
+    .reading-path{margin-bottom:56px;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+    .reading-path-header{background:var(--bg3);border-bottom:1px solid var(--border);padding:14px 22px;}
+    .rph-label{font-family:var(--mono);font-size:0.7rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+    .rph-title{font-size:0.93rem;font-weight:500;color:var(--text);}
+    .reading-path-body{padding:0;}
+    .rp-row{display:flex;align-items:flex-start;gap:16px;padding:12px 22px;border-bottom:1px solid var(--border);}
+    .rp-row:last-child{border-bottom:none;}
+    .rp-label{font-family:var(--mono);font-size:0.68rem;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;min-width:90px;padding-top:3px;flex-shrink:0;}
+    .rp-content{font-size:0.88rem;color:var(--muted);line-height:1.55;}
+    .rp-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;}
+    .rp-link{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:0.7rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:3px 9px;text-decoration:none;color:var(--accent);transition:border-color .12s,background .12s;}
+    .rp-link:hover{border-color:var(--accent);background:var(--bg3);}
+    .rp-link.star{border-color:var(--gold-bdr);background:var(--gold-bg);color:var(--gold);}
+    .rp-link.star:hover{border-color:var(--gold);}
+    .rp-arrow{font-family:var(--mono);font-size:0.75rem;color:var(--border2);align-self:center;user-select:none;}
 
-    /* ── Research statement ────────────────────────────────── */
-    .statement {
-      border-left: 2.5px solid var(--text);
-      padding: 20px 26px;
-      margin-bottom: 56px;
-      font-size: 0.98rem;
-      line-height: 1.75;
-      background: var(--bg2);
-    }
-    .statement p + p { margin-top: 12px; }
-    .statement ul {
-      margin: 14px 0 0 1.4em;
-      list-style: disc;
-    }
-    .statement li { margin-bottom: 8px; }
+    /* overview */
+    .overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:56px;}
+    .overview-card{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:18px 20px;}
+    .overview-card-num{font-family:var(--mono);font-size:0.66rem;color:var(--faint);letter-spacing:.1em;margin-bottom:5px;}
+    .overview-card-role{font-size:0.72rem;font-weight:500;color:var(--accent);margin-bottom:7px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}
+    .overview-card-desc{font-size:0.86rem;color:var(--muted);font-style:italic;line-height:1.5;}
 
-    /* ── P00 Hero block ────────────────────────────────────── */
-    .p00-hero {
-      background: var(--gold-bg);
-      border: 1.5px solid var(--gold-bdr);
-      border-radius: 8px;
-      padding: 32px 34px 28px;
-      margin-bottom: 56px;
-      position: relative;
-    }
-    .p00-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--gold);
-      color: #fff;
-      font-family: var(--mono);
-      font-size: 0.67rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border-radius: 3px;
-      margin-bottom: 14px;
-    }
-    .p00-equation {
-      font-family: var(--mono);
-      font-size: 1.05rem;
-      letter-spacing: 0.04em;
-      color: var(--accent);
-      background: rgba(30,58,110,0.06);
-      border: 1px solid rgba(30,58,110,0.15);
-      border-radius: 5px;
-      padding: 10px 16px;
-      margin: 14px 0 18px;
-      display: inline-block;
-    }
-    .p00-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: var(--accent);
-      line-height: 1.35;
-      margin-bottom: 10px;
-    }
-    .p00-title a { color: inherit; text-decoration: none; }
-    .p00-title a:hover { text-decoration: underline; text-underline-offset: 3px; }
-    .p00-abstract {
-      font-size: 0.92rem;
-      color: var(--muted);
-      font-style: italic;
-      line-height: 1.65;
-      margin-bottom: 16px;
-    }
-    .p00-footer {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      font-family: var(--mono);
-      font-size: 0.75rem;
-    }
-    .p00-doi {
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(30,58,110,0.3);
-      padding-bottom: 1px;
-    }
-    .p00-doi:hover { border-color: var(--accent); }
+    /* principle box */
+    .principle-box{background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 7px 7px 0;padding:22px 26px;margin-bottom:56px;font-size:0.93rem;line-height:1.7;}
+    .principle-box-label{font-family:var(--mono);font-size:0.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;}
+    .principle-box p+p{margin-top:10px;}
 
-    /* ── Reading path ──────────────────────────────────────── */
-    .reading-path {
-      margin-bottom: 56px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .reading-path-header {
-      background: var(--bg3);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 22px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .reading-path-header-label {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .reading-path-header-title {
-      font-size: 0.93rem;
-      font-weight: 500;
-      color: var(--text);
-    }
-    .reading-path-body {
-      padding: 22px 24px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .rp-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .rp-row:last-child { border-bottom: none; }
-    .rp-label {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: var(--faint);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      min-width: 90px;
-      padding-top: 3px;
-      flex-shrink: 0;
-    }
-    .rp-content {
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-    .rp-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 5px;
-    }
-    .rp-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 3px 9px;
-      text-decoration: none;
-      color: var(--accent);
-      transition: border-color 0.12s, background 0.12s;
-    }
-    .rp-link:hover { border-color: var(--accent); background: var(--bg3); }
-    .rp-link.star {
-      border-color: var(--gold-bdr);
-      background: var(--gold-bg);
-      color: var(--gold);
-    }
-    .rp-link.star:hover { border-color: var(--gold); }
-    .rp-arrow {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--border2);
-      align-self: center;
-      user-select: none;
-    }
+    /* sub-heading */
+    .sub-heading{font-family:var(--mono);font-size:0.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:18px 0 10px;border-bottom:1px dashed var(--border);margin-bottom:14px;}
 
-    /* ── Three-line overview ───────────────────────────────── */
-    .overview-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-bottom: 56px;
-    }
-    .overview-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 18px 20px;
-    }
-    .overview-card-num {
-      font-family: var(--mono);
-      font-size: 0.66rem;
-      color: var(--faint);
-      letter-spacing: 0.1em;
-      margin-bottom: 5px;
-    }
-    .overview-card-role {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--accent);
-      margin-bottom: 7px;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .overview-card-desc {
-      font-size: 0.86rem;
-      color: var(--muted);
-      font-style: italic;
-      line-height: 1.5;
-    }
+    /* paper cards */
+    .pub{border:1px solid var(--border);border-radius:7px;padding:18px 22px;margin-bottom:10px;background:#fff;transition:border-color .15s,box-shadow .15s;}
+    .pub:hover{border-color:var(--accent2);box-shadow:0 2px 14px rgba(30,58,110,.07);}
+    .pub-series{font-family:var(--mono);font-size:0.66rem;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;}
+    .pub-title{font-size:1rem;font-weight:500;line-height:1.4;margin-bottom:8px;color:var(--accent);}
+    .pub-title a{color:inherit;text-decoration:none;}
+    .pub-title a:hover{text-decoration:underline;text-underline-offset:3px;}
+    /* bilingual title links — show only correct lang */
+    .pub-title a.en-link, .pub-title a.it-link{display:none;}
+    body.lang-en .pub-title a.en-link{display:inline;}
+    body.lang-it .pub-title a.it-link{display:inline;}
+    .pub-abstract{font-size:0.86rem;color:var(--muted);line-height:1.55;margin-bottom:10px;font-style:italic;}
+    .pub-footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .pub-doi{font-family:var(--mono);font-size:0.73rem;color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(30,58,110,.3);padding-bottom:1px;}
+    .pub-doi:hover{border-color:var(--accent);}
+    /* bilingual DOI links */
+    .pub-doi.en-doi, .pub-doi.it-doi{display:none;}
+    body.lang-en .pub-doi.en-doi{display:inline;}
+    body.lang-it .pub-doi.it-doi{display:inline;}
+    .pub-date{font-family:var(--mono);font-size:0.7rem;color:var(--faint);}
+    .tag{font-family:var(--mono);font-size:0.67rem;background:var(--bg3);color:var(--muted);padding:2px 7px;border-radius:3px;letter-spacing:.03em;}
+    .tag-gold{background:var(--gold-bg);color:var(--gold);border:1px solid rgba(212,184,85,.35);}
 
-    /* ── Principle box ─────────────────────────────────────── */
-    .principle-box {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 7px 7px 0;
-      padding: 22px 26px;
-      margin-bottom: 56px;
-      font-size: 0.93rem;
-      line-height: 1.7;
-    }
-    .principle-box-label {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 12px;
-    }
-    .principle-box p + p { margin-top: 10px; }
+    /* animation block */
+    .anim-block{margin-bottom:42px;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#fff;}
+    .anim-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg2);}
+    .anim-meta{display:flex;align-items:center;gap:10px;}
+    .anim-label{font-family:var(--mono);font-size:0.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;}
+    .anim-title{font-size:0.93rem;font-weight:500;color:var(--text);}
+    .anim-toggle{font-family:var(--mono);font-size:0.72rem;color:var(--accent);background:transparent;border:1px solid var(--border);border-radius:5px;padding:5px 13px;cursor:pointer;transition:background .15s,border-color .15s;white-space:nowrap;}
+    .anim-toggle:hover{background:var(--bg3);border-color:var(--accent);}
+    .anim-desc{padding:12px 20px;font-size:0.86rem;color:var(--muted);font-style:italic;line-height:1.55;border-bottom:1px solid var(--border);}
+    .anim-wrap{position:relative;width:100%;height:520px;overflow:hidden;background:#0c0c10;transition:height .3s ease;}
+    .anim-wrap.collapsed{height:0;}
+    .anim-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block;}
+    .anim-open{display:inline-flex;align-items:center;gap:5px;padding:9px 20px;font-family:var(--mono);font-size:0.72rem;color:var(--muted);text-decoration:none;border-top:1px solid var(--border);transition:color .15s;}
+    .anim-open:hover{color:var(--accent);}
+    .anim-open::before{content:'↗';}
+    /* breathing 3d smaller */
+    .anim-wrap.short{height:420px;}
 
-    /* ── Paper cards ───────────────────────────────────────── */
-    .pub {
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 18px 22px;
-      margin-bottom: 10px;
-      background: #fff;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .pub:hover {
-      border-color: var(--accent2);
-      box-shadow: 0 2px 14px rgba(30,58,110,0.07);
-    }
-    .pub-series {
-      font-family: var(--mono);
-      font-size: 0.66rem;
-      color: var(--faint);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 5px;
-    }
-    .pub-title {
-      font-size: 1rem;
-      font-weight: 500;
-      line-height: 1.4;
-      margin-bottom: 8px;
-      color: var(--accent);
-    }
-    .pub-title a { color: inherit; text-decoration: none; }
-    .pub-title a:hover { text-decoration: underline; text-underline-offset: 3px; }
-    .pub-abstract {
-      font-size: 0.86rem;
-      color: var(--muted);
-      line-height: 1.55;
-      margin-bottom: 10px;
-      font-style: italic;
-    }
-    .pub-footer {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .pub-doi {
-      font-family: var(--mono);
-      font-size: 0.73rem;
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(30,58,110,0.3);
-      padding-bottom: 1px;
-    }
-    .pub-doi:hover { border-color: var(--accent); }
-    .pub-date {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--faint);
-    }
-    .tag {
-      font-family: var(--mono);
-      font-size: 0.67rem;
-      background: var(--bg3);
-      color: var(--muted);
-      padding: 2px 7px;
-      border-radius: 3px;
-      letter-spacing: 0.03em;
-    }
-    .tag-gold {
-      background: var(--gold-bg);
-      color: var(--gold);
-      border: 1px solid rgba(212,184,85,0.35);
-    }
+    /* wip note */
+    .wip-note{font-size:0.86rem;color:var(--faint);font-style:italic;border-top:1px dashed var(--border);margin-top:16px;padding-top:14px;}
 
-    /* ── Subsection dividers within a section ──────────────── */
-    .sub-heading {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding: 18px 0 10px;
-      border-bottom: 1px dashed var(--border);
-      margin-bottom: 14px;
-    }
+    /* links */
+    .links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:14px;}
+    .link-card{display:flex;flex-direction:column;gap:3px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:13px 16px;text-decoration:none;color:var(--text);transition:border-color .15s;}
+    .link-card:hover{border-color:var(--accent);}
+    .link-card-label{font-size:0.7rem;color:var(--faint);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;}
+    .link-card-value{font-size:0.9rem;color:var(--accent);word-break:break-all;}
 
-    /* ── QGT Animation block ───────────────────────────────── */
-    .anim-block {
-      margin-bottom: 56px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      background: #fff;
-    }
-    .anim-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg2);
-    }
-    .anim-meta { display: flex; align-items: center; gap: 10px; }
-    .anim-label {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-    .anim-title {
-      font-size: 0.93rem;
-      font-weight: 500;
-      color: var(--text);
-    }
-    .anim-toggle {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--accent);
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 5px 13px;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-      white-space: nowrap;
-    }
-    .anim-toggle:hover { background: var(--bg3); border-color: var(--accent); }
-    .anim-desc {
-      padding: 12px 20px;
-      font-size: 0.86rem;
-      color: var(--muted);
-      font-style: italic;
-      line-height: 1.55;
-      border-bottom: 1px solid var(--border);
-    }
-    .anim-wrap {
-      position: relative;
-      width: 100%;
-      height: 520px;
-      overflow: hidden;
-      background: #0c0c10;
-      transition: height 0.3s ease;
-    }
-    .anim-wrap.collapsed { height: 0; }
-    .anim-wrap iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      border: none;
-      display: block;
-    }
-    .anim-open {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 9px 20px;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--muted);
-      text-decoration: none;
-      border-top: 1px solid var(--border);
-      transition: color 0.15s;
-    }
-    .anim-open:hover { color: var(--accent); }
-    .anim-open::before { content: '↗'; }
+    /* footer */
+    footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);font-size:0.84rem;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--mono);}
 
-    /* ── Featured / latest block ───────────────────────────── */
-    .featured {
-      background: #fff;
-      border: 1.5px solid var(--accent);
-      border-radius: 8px;
-      padding: 24px 26px 20px;
-      margin-bottom: 42px;
-      position: relative;
-    }
-    .featured-badge {
-      font-family: var(--mono);
-      font-size: 0.67rem;
-      font-weight: 500;
-      color: #fff;
-      background: var(--accent);
-      padding: 2px 9px;
-      border-radius: 3px;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      display: inline-block;
-      margin-bottom: 12px;
-    }
-    .featured-title {
-      font-size: 1.05rem;
-      font-weight: 500;
-      color: var(--accent);
-      line-height: 1.38;
-      margin-bottom: 10px;
-    }
-    .featured-title a { color: inherit; text-decoration: none; }
-    .featured-title a:hover { text-decoration: underline; text-underline-offset: 3px; }
-    .featured-abstract {
-      font-size: 0.88rem;
-      color: var(--muted);
-      font-style: italic;
-      line-height: 1.6;
-      margin-bottom: 14px;
-    }
-    .featured-footer {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      font-family: var(--mono);
-      font-size: 0.73rem;
-    }
+    /* lang visibility */
+    .en,.it{display:none;}
+    body.lang-en .en{display:block;}
+    body.lang-it .it{display:block;}
+    span.en,span.it{display:none;}
+    body.lang-en span.en{display:inline;}
+    body.lang-it span.it{display:inline;}
 
-    /* ── WIP note ──────────────────────────────────────────── */
-    .wip-note {
-      font-size: 0.86rem;
-      color: var(--faint);
-      font-style: italic;
-      border-top: 1px dashed var(--border);
-      margin-top: 16px;
-      padding-top: 14px;
-    }
-
-    /* ── Links section ─────────────────────────────────────── */
-    .links-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 10px;
-      margin-top: 14px;
-    }
-    .link-card {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 13px 16px;
-      text-decoration: none;
-      color: var(--text);
-      transition: border-color 0.15s;
-    }
-    .link-card:hover { border-color: var(--accent); }
-    .link-card-label {
-      font-size: 0.7rem;
-      color: var(--faint);
-      font-family: var(--mono);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .link-card-value {
-      font-size: 0.9rem;
-      color: var(--accent);
-      word-break: break-all;
-    }
-
-    /* ── Footer ────────────────────────────────────────────── */
-    footer {
-      margin-top: 48px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-      font-size: 0.84rem;
-      color: var(--faint);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-family: var(--mono);
-    }
-
-    /* ── Lang visibility ───────────────────────────────────── */
-    .en, .it { display: none; }
-    body.lang-en .en { display: block; }
-    body.lang-it .it { display: block; }
-    span.en, span.it { display: none; }
-    body.lang-en span.en { display: inline; }
-    body.lang-it span.it { display: inline; }
-
-    /* ── Responsive ────────────────────────────────────────── */
-    @media (max-width: 640px) {
-      body { font-size: 16px; }
-      .wrap { padding: 0 16px 80px; }
-      h1 { font-size: 2rem; }
-      .overview-grid { grid-template-columns: 1fr; }
-      .anim-wrap { height: 460px; }
-      .rp-label { min-width: 70px; font-size: 0.63rem; }
+    /* responsive */
+    @media(max-width:640px){
+      body{font-size:16px;}
+      .wrap{padding:0 16px 80px;}
+      h1{font-size:2rem;}
+      .overview-grid{grid-template-columns:1fr;}
+      .anim-wrap{height:420px;}
+      .anim-wrap.short{height:340px;}
+      .rp-label{min-width:70px;font-size:.63rem;}
     }
   </style>
 </head>
@@ -752,7 +193,6 @@
 <body class="lang-en">
 <main class="wrap">
 
-  <!-- Top bar -->
   <div class="topbar">
     <div class="lang-toggle">
       <button class="lang-btn active" onclick="setLang('en')">EN</button>
@@ -760,7 +200,7 @@
     </div>
   </div>
 
-  <!-- ── Header ─────────────────────────────────────────── -->
+  <!-- Header -->
   <header>
     <div class="banner">
       <img src="linkedin_banner.png" alt="Pasquale Camelia — Finite-rank projection, boundary observability, QGT" />
@@ -779,54 +219,47 @@
     </a>
   </header>
 
-  <!-- ── P00 Highlight ──────────────────────────────────── -->
+  <!-- P00 Hero -->
   <div class="p00-hero">
     <div class="p00-badge">★ &nbsp;Axiomatic Core · P00 · QGT Series · Apr 2026</div>
     <div class="p00-title">
-      <a href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener">
-        <span class="en">Physics as the Topology of a Non-Invertible Projection</span>
-        <span class="it">La fisica come topologia di una proiezione non invertibile</span>
-      </a>
+      <a class="en-link" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener">Physics as the Topology of a Non-Invertible Projection</a>
+      <a class="it-link" href="https://doi.org/10.5281/zenodo.19385870" target="_blank" rel="noopener">La fisica come topologia di una proiezione non invertibile</a>
     </div>
-    <div class="p00-equation">∂<sub>I</sub> J<sup>I</sup> = 0, &nbsp; I = 1,…,5, &nbsp; under restricted accessibility</div>
+    <div class="p00-equation">∂<sub>I</sub> J<sup>I</sup> = 0, &nbsp; I = 1,…,5, &nbsp; <span class="en">under restricted accessibility</span><span class="it">sotto accessibilità ristretta</span></div>
     <div class="p00-abstract">
       <span class="en">This single condition — a globally conserved Noetherian flow imposed on the pre-physical finite-rank domain — is the minimal physical input of the QGT series. Imposed on that structure, it forces by necessity: the self-conjugate Majorana bulk field Ξ, the non-invertible rank-5 projection Π : ℳ⁵ → ℝ⁴, the representational manifold ℳ⁵ = ℝ⁴ × S¹(τ), and the golden temporal connection Γ_τ = φ/√5. The zero mode χ ∈ S¹ is logically prior to both bulk and boundary; the boundary emerges as the locus where the zero mode fails to cross the projection interface completely. What does not cross returns as observable physics — with no free parameters.</span>
       <span class="it">Questa singola condizione — un flusso Noetheriano globalmente conservato imposto sul dominio pre-fisico di rango finito — è l'input fisico minimale della serie QGT. Imposta su quella struttura, forza per necessità: il campo bulk di Majorana auto-coniugato Ξ, la proiezione non-invertibile di rango 5 Π : ℳ⁵ → ℝ⁴, la varietà rappresentazionale ℳ⁵ = ℝ⁴ × S¹(τ), e la connessione temporale dorata Γ_τ = φ/√5. Il modo zero χ ∈ S¹ è logicamente anteriore sia al bulk che al bordo; il bordo emerge come il luogo in cui il modo zero non riesce ad attraversare completamente l'interfaccia di proiezione. Ciò che non attraversa ritorna come fisica osservabile — senza parametri liberi.</span>
     </div>
     <div class="p00-footer">
-      <a class="p00-doi" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener">DOI 10.5281/zenodo.19384549</a>
+      <a class="p00-doi en-doi" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener">DOI 10.5281/zenodo.19384549</a>
+      <a class="p00-doi it-doi" href="https://doi.org/10.5281/zenodo.19385870" target="_blank" rel="noopener">DOI 10.5281/zenodo.19385870</a>
       <span class="pub-date">Apr 2026</span>
       <span class="tag tag-gold">axiomatic core</span>
       <span class="tag tag-gold">QGT P00</span>
-      <span class="tag tag-gold">Level A</span>
     </div>
   </div>
 
-  <!-- ── Reading Path ────────────────────────────────────── -->
+  <!-- Reading Path -->
   <div class="reading-path">
     <div class="reading-path-header">
-      <div>
-        <div class="reading-path-header-label">
-          <span class="en">Suggested reading order</span>
-          <span class="it">Ordine di lettura suggerito</span>
-        </div>
-        <div class="reading-path-header-title">
-          <span class="en">How to enter the QGT corpus</span>
-          <span class="it">Come entrare nel corpus QGT</span>
-        </div>
-      </div>
+      <div class="rph-label"><span class="en">Suggested reading order</span><span class="it">Ordine di lettura suggerito</span></div>
+      <div class="rph-title"><span class="en">How to enter the QGT corpus</span><span class="it">Come entrare nel corpus QGT</span></div>
     </div>
     <div class="reading-path-body">
+
       <div class="rp-row">
         <span class="rp-label"><span class="en">Entry point</span><span class="it">Punto d'ingresso</span></span>
         <div class="rp-content">
           <span class="en">Start here — the axiomatic foundation of the entire programme.</span>
           <span class="it">Inizia qui — la fondazione assiomatica dell'intero programma.</span>
           <div class="rp-links">
-            <a class="rp-link star" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener">P00 — Axiomatic Core ★</a>
+            <a class="rp-link star en-link" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener">P00 — Axiomatic Core ★</a>
+            <a class="rp-link star it-link" href="https://doi.org/10.5281/zenodo.19385870" target="_blank" rel="noopener">P00 — Nucleo Assiomatico ★</a>
           </div>
         </div>
       </div>
+
       <div class="rp-row">
         <span class="rp-label"><span class="en">Pre-physical</span><span class="it">Pre-fisico</span></span>
         <div class="rp-content">
@@ -839,75 +272,97 @@
             <span class="rp-arrow">→</span>
             <a class="rp-link" href="https://doi.org/10.5281/zenodo.19402305" target="_blank" rel="noopener">Structural Constraints</a>
             <span class="rp-arrow">→</span>
-            <a class="rp-link" href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener">Structural Ordering (bridge)</a>
+            <a class="rp-link en-link" href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener">Structural Ordering</a>
+            <a class="rp-link it-link" href="https://doi.org/10.5281/zenodo.18107240" target="_blank" rel="noopener">Ordinamento Strutturale</a>
+            <span class="rp-arrow">→</span>
+            <a class="rp-link en-link" href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener">QGT Foundation</a>
+            <a class="rp-link it-link" href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener">QGT Foundation</a>
           </div>
         </div>
       </div>
+
       <div class="rp-row">
         <span class="rp-label"><span class="en">Physical core</span><span class="it">Nucleo fisico</span></span>
         <div class="rp-content">
           <span class="en">Threshold II and physical hierarchy — forced from P00.</span>
           <span class="it">Soglia II e gerarchia fisica — forzata da P00.</span>
           <div class="rp-links">
-            <a class="rp-link star" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener">P00 ★</a>
+            <a class="rp-link star en-link" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener">P00 ★</a>
+            <a class="rp-link star it-link" href="https://doi.org/10.5281/zenodo.19385870" target="_blank" rel="noopener">P00 ★</a>
             <span class="rp-arrow">→</span>
             <a class="rp-link" href="https://doi.org/10.5281/zenodo.19369068" target="_blank" rel="noopener">P09 — Finite-Rank Selection</a>
             <span class="rp-arrow">→</span>
-            <a class="rp-link" href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener">P11 — Fields</a>
+            <a class="rp-link en-link" href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener">P11 — Fields</a>
+            <a class="rp-link it-link" href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener">P11 — Campi</a>
             <span class="rp-arrow">→</span>
             <a class="rp-link" href="https://doi.org/10.5281/zenodo.19433587" target="_blank" rel="noopener">P13 — Global PLL</a>
           </div>
         </div>
       </div>
-      <div class="rp-row">
-        <span class="rp-label"><span class="en">Synthesis</span><span class="it">Sintesi</span></span>
-        <div class="rp-content">
-          <span class="en">Complete closures: α self-consistent, cosmology, emergence of time.</span>
-          <span class="it">Chiusure complete: α auto-consistente, cosmologia, emergenza del tempo.</span>
-          <div class="rp-links">
-            <a class="rp-link" href="https://doi.org/10.5281/zenodo.19433587" target="_blank" rel="noopener">P13 — Global PLL</a>
-            <span class="rp-arrow">→</span>
-            <a class="rp-link" href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener">QGT Foundation</a>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
 
-  <!-- ── Interactive animation ──────────────────────────── -->
+  <!-- Animation 1: Temporal Fibre Projection (v3) -->
   <div class="anim-block">
     <div class="anim-header">
       <div class="anim-meta">
-        <span class="anim-label"><span class="en">Interactive</span><span class="it">Interattivo</span></span>
+        <span class="anim-label"><span class="en">Interactive · 1/2</span><span class="it">Interattivo · 1/2</span></span>
         <span class="anim-title">
-          <span class="en">QGT — Temporal Fibre Projection</span>
-          <span class="it">QGT — Proiezione della Fibra Temporale</span>
+          <span class="en">QGT — Temporal Fibre Projection · S² bulk &amp; boundary R⁴</span>
+          <span class="it">QGT — Proiezione della Fibra Temporale · bulk S² e boundary R⁴</span>
         </span>
       </div>
-      <button class="anim-toggle" id="animToggle" onclick="toggleAnim()" aria-expanded="true">
+      <button class="anim-toggle" id="animToggle1" onclick="toggleAnim('animWrap1','animToggle1')" aria-expanded="true">
         <span class="en">Hide</span><span class="it">Nascondi</span>
       </button>
     </div>
     <div class="anim-desc">
-      <span class="en">The breathing boundary: ξ(t)·η(t) = α⁻¹ conserved at every instant. The two chiral strands oscillate in antiphase — longitudinal (gravitational) and transverse (electromagnetic) — on the hyperbola ξη = α⁻¹ ≈ 137, with 10 nodes per turn encoding the codon structure of the boundary.</span>
-      <span class="it">Il bordo che respira: ξ(t)·η(t) = α⁻¹ conservato ad ogni istante. I due filamenti chirali oscillano in controfase — longitudinale (gravitazionale) e trasverso (elettromagnetico) — sull'iperbole ξη = α⁻¹ ≈ 137, con 10 nodi per giro che codificano la struttura codonica del bordo.</span>
+      <span class="en">The spinor Ψ± travels the golden spiral from north pole (τ=0, bulk) to the equatorial boundary R⁴. Four concentric α layers mark the projection thresholds. Lock-in polygons π/n ∈ {2,3,5,7,11} encode the admissible observable modes — forced by the rank-5 constraint.</span>
+      <span class="it">Lo spinore Ψ± percorre la spirale aurea dal polo nord (τ=0, bulk) al bordo equatoriale R⁴. Quattro strati α concentrici marcano le soglie di proiezione. I poligoni di lock-in π/n ∈ {2,3,5,7,11} codificano i modi osservabili ammissibili — forzati dal vincolo di rango-5.</span>
     </div>
-    <div class="anim-wrap" id="animWrap">
-      <iframe src="qgt_animation_v2.html" title="QGT — Temporal Fibre Projection" loading="lazy" allowfullscreen></iframe>
+    <div class="anim-wrap" id="animWrap1">
+      <iframe src="qgt_animation_v3.html" title="QGT — Temporal Fibre Projection" loading="lazy" allowfullscreen></iframe>
     </div>
-    <a class="anim-open" href="qgt_animation_v2.html" target="_blank" rel="noopener">
+    <a class="anim-open" href="qgt_animation_v3.html" target="_blank" rel="noopener">
       <span class="en">Open in full window</span><span class="it">Apri in finestra intera</span>
     </a>
   </div>
 
-  <!-- ── Research statement ─────────────────────────────── -->
+  <!-- Animation 2: Breathing boundary (3D double helix) -->
+  <div class="anim-block" style="margin-bottom:56px;">
+    <div class="anim-header">
+      <div class="anim-meta">
+        <span class="anim-label"><span class="en">Interactive · 2/2</span><span class="it">Interattivo · 2/2</span></span>
+        <span class="anim-title">
+          <span class="en">QGT — Breathing Boundary · Double Helix ξη = α⁻¹</span>
+          <span class="it">QGT — Bordo che Respira · Doppia Elica ξη = α⁻¹</span>
+        </span>
+      </div>
+      <button class="anim-toggle" id="animToggle2" onclick="toggleAnim('animWrap2','animToggle2')" aria-expanded="true">
+        <span class="en">Hide</span><span class="it">Nascondi</span>
+      </button>
+    </div>
+    <div class="anim-desc">
+      <span class="en">The boundary breathes: ξ(t)·η(t) = α⁻¹ ≈ 137 is conserved at every instant. The two chiral strands — ξ longitudinal (gravitational, teal) and η transverse (electromagnetic, violet) — oscillate in antiphase on the hyperbola, with 10 nodes per turn. Phase plane right: the orbit on ξη = α⁻¹ with the 10 codon nodes marked.</span>
+      <span class="it">Il bordo respira: ξ(t)·η(t) = α⁻¹ ≈ 137 conservato ad ogni istante. I due filamenti chirali — ξ longitudinale (gravitazionale, teal) e η trasverso (elettromagnetico, viola) — oscillano in controfase sull'iperbole, con 10 nodi per giro. Piano di fase a destra: orbita su ξη = α⁻¹ con i 10 nodi codonici marcati.</span>
+    </div>
+    <div class="anim-wrap short" id="animWrap2">
+      <iframe src="qgt_breathing_3d.html" title="QGT — Breathing Boundary" loading="lazy" allowfullscreen></iframe>
+    </div>
+    <a class="anim-open" href="qgt_breathing_3d.html" target="_blank" rel="noopener">
+      <span class="en">Open in full window</span><span class="it">Apri in finestra intera</span>
+    </a>
+  </div>
+
+  <!-- Research statement -->
   <div class="statement">
     <div class="en">
       <p><strong>A single structural result:</strong> finite-rank non-isometric projection necessarily generates observable structure. Metric, temporal ordering, gauge redundancy, and physical fields are not primitive inputs — they arise as <em>unavoidable residuals of irreversible information loss under projection</em>.</p>
       <p>This defines a unified programme across three levels of instantiation:</p>
       <ul>
         <li><strong>Pre-physical structure</strong> (Threshold I) — starting from a conserved Noetherian flow under restricted accessibility, non-invertibility selects metric, time, and gauge as the only admissible structural outcomes.</li>
-        <li><strong>Minimal physical input</strong> (Threshold II, <strong>P00 — suggested entry point</strong>) — one conservation law on the pre-physical domain forces the Majorana bulk, the rank-5 projection, and the golden temporal connection Γ_τ = φ/√5, from which electromagnetism and gravitation emerge as complementary chiral boundary readouts with α⁻¹ ≈ 137 derived without free parameters.</li>
+        <li><strong>Minimal physical input</strong> (Threshold II, <strong>P00 — entry point</strong>) — one conservation law on the pre-physical domain forces the Majorana bulk, the rank-5 projection, and the golden temporal connection Γ_τ = φ/√5, from which electromagnetism and gravitation emerge as complementary chiral boundary readouts with α⁻¹ ≈ 137 derived without free parameters.</li>
         <li><strong>Historical construction</strong> — the Short Cubit and the seked act as projection constants surviving metrological realization, while the underlying scale dynamics is irreversibly discarded — the same structural mechanism at a different scale.</li>
       </ul>
     </div>
@@ -916,13 +371,13 @@
       <p>Questo definisce un programma unificato su tre livelli di istanziazione:</p>
       <ul>
         <li><strong>Struttura pre-fisica</strong> (Soglia I) — a partire da un flusso Noetheriano conservato sotto accessibilità ristretta, la non-invertibilità seleziona metrica, tempo e gauge come uniche strutture ammissibili.</li>
-        <li><strong>Input fisico minimale</strong> (Soglia II, P00) — una legge di conservazione sul dominio pre-fisico forza il bulk di Majorana, la proiezione di rango 5, e la connessione temporale dorata Γ_τ = φ/√5, da cui elettromagnetismo e gravitazione emergono come letture chirali complementari di bordo con α⁻¹ ≈ 137 derivato senza parametri liberi.</li>
+        <li><strong>Input fisico minimale</strong> (Soglia II, <strong>P00 — punto d'ingresso</strong>) — una legge di conservazione sul dominio pre-fisico forza il bulk di Majorana, la proiezione di rango 5, e la connessione temporale dorata Γ_τ = φ/√5, da cui elettromagnetismo e gravitazione emergono come letture chirali complementari di bordo con α⁻¹ ≈ 137 derivato senza parametri liberi.</li>
         <li><strong>Costruzione storica</strong> — il Cubito Corto e il seked agiscono come costanti di proiezione che sopravvivono nella realizzazione metrologica, mentre la dinamica di scala sottostante viene irrevocabilmente persa.</li>
       </ul>
     </div>
   </div>
 
-  <!-- ── Three-line overview ─────────────────────────────── -->
+  <!-- Three-line overview -->
   <div class="overview-grid">
     <div class="overview-card">
       <div class="overview-card-num">Line 01</div>
@@ -950,22 +405,20 @@
     </div>
   </div>
 
-  <!-- ── How the lines connect ──────────────────────────── -->
+  <!-- Principle box -->
   <div class="principle-box">
     <div class="principle-box-label"><span class="en">One constraint, three scales</span><span class="it">Un vincolo, tre scale</span></div>
     <div class="en">
       <p>These are not three independent research areas. They are the same structural constraint — non-invertible finite-rank projection eliminates bulk information and forces structure to emerge as residual — instantiated at three different scales.</p>
-      <p>Results are classified epistemically: <strong>Level A</strong> — closed derivations verified to &lt;0.01%; <strong>Level B</strong> — structurally forced, one open lemma; <strong>Level C</strong> — inferential. The gauge group U(1)×SU(2)×SU(3), α⁻¹ ≈ 137, mₚ/mₑ = 6π⁵, sin²θ_W = 3/13, and the dimensional cascade R_∞ → G → ℓ_P → T_CMB are all Level A or B with no free parameters.</p>
+      <p>The gauge group U(1)×SU(2)×SU(3), α⁻¹ ≈ 137, mₚ/mₑ = 6π⁵, sin²θ_W = 3/13, and the dimensional cascade R_∞ → G → ℓ_P → T_CMB all follow from a single conservation law with no free parameters.</p>
     </div>
     <div class="it">
       <p>Non sono tre aree di ricerca indipendenti. Sono lo stesso vincolo strutturale — la proiezione non-invertibile di rango finito elimina l'informazione bulk e forza la struttura ad emergere come residuo — istanziato a tre scale diverse.</p>
-      <p>I risultati sono classificati epistemicamente: <strong>Livello A</strong> — derivazioni chiuse verificate a &lt;0.01%; <strong>Livello B</strong> — strutturalmente forzati, un lemma aperto; <strong>Livello C</strong> — inferenziali. Il gruppo di gauge U(1)×SU(2)×SU(3), α⁻¹ ≈ 137, mₚ/mₑ = 6π⁵, sin²θ_W = 3/13 e la cascata dimensionale R_∞ → G → ℓ_P → T_CMB sono tutti Livello A o B senza parametri liberi.</p>
+      <p>Il gruppo di gauge U(1)×SU(2)×SU(3), α⁻¹ ≈ 137, mₚ/mₑ = 6π⁵, sin²θ_W = 3/13 e la cascata dimensionale R_∞ → G → ℓ_P → T_CMB seguono tutti da un'unica legge di conservazione senza parametri liberi.</p>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════════
-       LINE 01 — Structural foundations
-       ══════════════════════════════════════════════════════ -->
+  <!-- ══ LINE 01 ══ -->
   <section class="section" id="line01">
     <div class="section-label">Line 01</div>
     <h2>
@@ -977,23 +430,19 @@
       <span class="it">Dalla teoria degli operatori pre-fisica fino alla serie QGT completa. A partire dalla proiezione di rango finito, il programma deriva l'ordinamento temporale, la struttura di gauge, il gruppo di gauge del Modello Standard, α, mₚ/mₑ e la cascata cosmologica — senza parametri liberi e senza assumere la struttura del Modello Standard.</span>
     </p>
 
-    <!-- Pre-physical stratum -->
-    <div class="sub-heading">
-      <span class="en">Pre-physical stratum — Threshold I</span>
-      <span class="it">Strato pre-fisico — Soglia I</span>
-    </div>
+    <div class="sub-heading"><span class="en">Pre-physical stratum — Threshold I</span><span class="it">Strato pre-fisico — Soglia I</span></div>
 
     <div class="pub">
       <div class="pub-series">P01 · DOI 18088773</div>
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18088773" target="_blank" rel="noopener">Projection-Induced SVD of Irrational Scale Invariants</a></div>
       <div class="pub-abstract">
         <span class="en">Finite-rank projection acting on irrational scale invariants produces a singular value decomposition whose discrete residue identifies the fine-structure constant without free parameters. The pre-physical stratum begins here: no dynamics, no Standard Model structure — only the operator-theoretic consequence of restricted observability.</span>
-        <span class="it">La proiezione di rango finito applicata agli invarianti di scala irrazionali produce una decomposizione in valori singolari il cui residuo discreto identifica la costante di struttura fine senza parametri liberi. Lo strato pre-fisico inizia qui.</span>
+        <span class="it">La proiezione di rango finito applicata agli invarianti di scala irrazionali produce una decomposizione in valori singolari il cui residuo discreto identifica la costante di struttura fine senza parametri liberi.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18088773" target="_blank" rel="noopener">DOI 10.5281/zenodo.18088773</a>
         <span class="pub-date">Dec 2025</span>
-        <span class="tag">finite-rank projection</span><span class="tag">SVD</span><span class="tag">fine-structure constant</span><span class="tag">Level A</span>
+        <span class="tag">finite-rank projection</span><span class="tag">SVD</span><span class="tag">fine-structure constant</span>
       </div>
     </div>
 
@@ -1002,37 +451,30 @@
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18097405" target="_blank" rel="noopener">Boundary Metric from Projection-Induced Finite Rank</a></div>
       <div class="pub-abstract">
         <span class="en">The canonical metric kernel K = Π†Π, and the coupled invariant I = ξη = α⁻¹ closes the operative thresholds. The critical theorem: any intrinsic monotone ordering of the observable equivalence classes requires I to be conserved — without this, the pre-physical domain cannot become a physics.</span>
-        <span class="it">Il kernel metrico canonico K = Π†Π, e l'invariante accoppiato I = ξη = α⁻¹ chiude le soglie operative. Il teorema critico: qualsiasi ordinamento monotono intrinseco richiede la conservazione di I — senza questo, il dominio pre-fisico non può diventare una fisica.</span>
+        <span class="it">Il kernel metrico canonico K = Π†Π, e l'invariante accoppiato I = ξη = α⁻¹ chiude le soglie operative. Il teorema critico: qualsiasi ordinamento monotono intrinseco richiede la conservazione di I.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18097405" target="_blank" rel="noopener">DOI 10.5281/zenodo.18097405</a>
         <span class="pub-date">Dec 2025</span>
-        <span class="tag">boundary metric</span><span class="tag">pre-geometric</span><span class="tag">Level A</span>
+        <span class="tag">boundary metric</span><span class="tag">pre-geometric</span>
       </div>
     </div>
 
     <div class="pub">
-      <div class="pub-series">Bridge · DOI 18108626</div>
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener">Structural Ordering from Projection to Time</a></div>
+      <div class="pub-series"><span class="en">Bridge · DOI 18108626 / 18107240</span><span class="it">Ponte · DOI 18108626 / 18107240</span></div>
+      <div class="pub-title">
+        <a class="en-link" href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener">Structural Ordering from Projection to Time</a>
+        <a class="it-link" href="https://doi.org/10.5281/zenodo.18107240" target="_blank" rel="noopener">Ordinamento strutturale dalla proiezione al tempo</a>
+      </div>
       <div class="pub-abstract">
         <span class="en">The architectural bridge between Thresholds I and II. Within the pre-physical finite-rank domain, a Noetherian formulation of conservation is not false — it is undefined, because no ordering parameter is available. Given non-invertibility and finite-rank saturation, time is the only extension compatible with these constraints.</span>
         <span class="it">Il ponte architettonico tra le Soglie I e II. Nel dominio pre-fisico di rango finito, una formulazione Noetheriana della conservazione non è falsa — è indefinita, perché non è disponibile alcun parametro di ordinamento. Il tempo è l'unica estensione compatibile.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener">DOI 10.5281/zenodo.18108626</a>
+        <a class="pub-doi en-doi" href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener">DOI 10.5281/zenodo.18108626 (EN)</a>
+        <a class="pub-doi it-doi" href="https://doi.org/10.5281/zenodo.18107240" target="_blank" rel="noopener">DOI 10.5281/zenodo.18107240 (IT)</a>
         <span class="pub-date">Jan 2026</span>
-        <span class="tag">emergence of time</span><span class="tag">Noether</span><span class="tag">Level A</span>
-      </div>
-    </div>
-
-    <!-- Italian companion -->
-    <div class="pub">
-      <div class="pub-series">Bridge · IT · DOI 18107240</div>
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18107240" target="_blank" rel="noopener">Ordinamento strutturale dalla proiezione al tempo <span style="font-weight:400;font-style:italic">(Italian version)</span></a></div>
-      <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18107240" target="_blank" rel="noopener">DOI 10.5281/zenodo.18107240</a>
-        <span class="pub-date">Jan 2026</span>
-        <span class="tag">Italian</span>
+        <span class="tag">emergence of time</span><span class="tag">Noether</span>
       </div>
     </div>
 
@@ -1041,52 +483,38 @@
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19402305" target="_blank" rel="noopener">Structural Constraints on Observable Algebras from Finite-Rank Non-Invertible Projections</a></div>
       <div class="pub-abstract">
         <span class="en">Model-independent consolidation: four no-go theorems hold for any finite-rank non-isometric projection, without assuming Majorana field content. The theorem ker(Π*) ∋ absolute scale is proved in full generality. The absolute dimensional scale belongs to the inaccessible sector — it cannot be derived from {α, φ, π}.</span>
-        <span class="it">Consolidamento model-independent: quattro teoremi di no-go valgono per qualsiasi proiezione non-isometrica di rango finito, senza assumere contenuto di campo di Majorana. Il teorema ker(Π*) ∋ scala assoluta è dimostrato in piena generalità.</span>
+        <span class="it">Consolidamento model-independent: quattro teoremi di no-go valgono per qualsiasi proiezione non-isometrica di rango finito. Il teorema ker(Π*) ∋ scala assoluta è dimostrato in piena generalità.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19402305" target="_blank" rel="noopener">DOI 10.5281/zenodo.19402305</a>
         <span class="pub-date">Apr 2026</span>
-        <span class="tag">no-go theorems</span><span class="tag">observable algebras</span><span class="tag">Level A</span>
+        <span class="tag">no-go theorems</span><span class="tag">observable algebras</span>
       </div>
     </div>
 
-    <!-- Physical threshold -->
-    <div class="sub-heading">
-      <span class="en">Physical threshold — Threshold II · QGT Series</span>
-      <span class="it">Soglia fisica — Soglia II · Serie QGT</span>
-    </div>
+    <div class="sub-heading"><span class="en">Physical threshold — Threshold II · QGT Series</span><span class="it">Soglia fisica — Soglia II · Serie QGT</span></div>
 
     <!-- P00 compact ref -->
-    <div class="pub" style="border-color: var(--gold-bdr); background: var(--gold-bg);">
-      <div class="pub-series" style="color: var(--gold);">P00 · Axiomatic Core · DOI 19384549</div>
-      <div class="pub-title" style="color: var(--gold);"><a href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener" style="color:inherit;">
-        <span class="en">Physics as the Topology of a Non-Invertible Projection</span>
-        <span class="it">La fisica come topologia di una proiezione non invertibile</span>
-      </a></div>
-      <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener" style="color:var(--gold); border-color: rgba(139,105,20,0.4);">DOI 10.5281/zenodo.19384549</a>
-        <span class="pub-date">Apr 2026</span>
-        <span class="tag tag-gold">axiomatic core</span><span class="tag tag-gold">★ highlighted above</span>
+    <div class="pub" style="border-color:var(--gold-bdr);background:var(--gold-bg);">
+      <div class="pub-series" style="color:var(--gold);">P00 · Axiomatic Core</div>
+      <div class="pub-title" style="color:var(--gold);">
+        <a class="en-link" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener" style="color:inherit;">Physics as the Topology of a Non-Invertible Projection</a>
+        <a class="it-link" href="https://doi.org/10.5281/zenodo.19385870" target="_blank" rel="noopener" style="color:inherit;">La fisica come topologia di una proiezione non invertibile</a>
       </div>
-    </div>
-
-    <!-- Italian P00 -->
-    <div class="pub">
-      <div class="pub-series">P00 · IT · DOI 19385870</div>
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19385870" target="_blank" rel="noopener">La fisica come topologia di una proiezione non invertibile <span style="font-weight:400;font-style:italic">(versione italiana)</span></a></div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19385870" target="_blank" rel="noopener">DOI 10.5281/zenodo.19385870</a>
+        <a class="pub-doi en-doi" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener" style="color:var(--gold);border-color:rgba(139,105,20,.4);">DOI 10.5281/zenodo.19384549 (EN)</a>
+        <a class="pub-doi it-doi" href="https://doi.org/10.5281/zenodo.19385870" target="_blank" rel="noopener" style="color:var(--gold);border-color:rgba(139,105,20,.4);">DOI 10.5281/zenodo.19385870 (IT)</a>
         <span class="pub-date">Apr 2026</span>
-        <span class="tag">Italian</span><span class="tag">P00</span>
+        <span class="tag tag-gold">★ entry point</span>
       </div>
     </div>
 
     <div class="pub">
       <div class="pub-series">QGT Foundation · DOI 18331744</div>
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener">A Quantum Gauge Theory of Time (QGT): Foundations from a Noetherian Balance</a></div>
+      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener">A Quantum Gauge Theory of Time: Foundations from a Noetherian Balance</a></div>
       <div class="pub-abstract">
-        <span class="en">The extended discursive companion to P00. P00 is the axiomatic form; this is the explanatory form — not competitors, but a pair. Develops the Majorana bulk field, the breathing boundary ξη = α⁻¹, and the temporal gauge connection from first principles.</span>
-        <span class="it">Il compagno discorsivo esteso di P00. P00 è la forma assiomatica; questo è la forma esplicativa — non concorrenti, ma una coppia. Sviluppa il campo bulk di Majorana, il bordo respirante ξη = α⁻¹, e la connessione di gauge temporale dai primi principi.</span>
+        <span class="en">The extended discursive companion to P00. P00 is the axiomatic form; this is the explanatory form — a pair, not competitors. Develops the Majorana bulk field, the breathing boundary ξη = α⁻¹, and the temporal gauge connection from first principles.</span>
+        <span class="it">Il compagno discorsivo esteso di P00. P00 è la forma assiomatica; questo è la forma esplicativa — una coppia, non concorrenti. Sviluppa il campo bulk di Majorana, il bordo respirante ξη = α⁻¹, e la connessione di gauge temporale dai primi principi.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener">DOI 10.5281/zenodo.18331744</a>
@@ -1099,38 +527,31 @@
       <div class="pub-series">P09 · DOI 19369068</div>
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19369068" target="_blank" rel="noopener">Finite-Rank Selection and the Gauge Structure of the Observable Boundary</a></div>
       <div class="pub-abstract">
-        <span class="en">The holonomy selection theorem: q = e^{iπ/5} derived from first principles, [5]_q = 0 by the rank-5 constraint, and the Penrose quasicrystalline tiling of the transverse plane encoding the H_proj/H_dyn decomposition geometrically. Closes U(1)×SU(2)×SU(3) and sin²θ_W = 3/13 at Level A.</span>
-        <span class="it">Il teorema di selezione dell'olonomia: q = e^{iπ/5} derivato dai primi principi, [5]_q = 0 dal vincolo di rango-5, e la tassellatura quasicristallina di Penrose del piano trasverso. Chiude U(1)×SU(2)×SU(3) e sin²θ_W = 3/13 al Livello A.</span>
+        <span class="en">The holonomy selection theorem: q = e^{iπ/5} derived from first principles, [5]_q = 0 by the rank-5 constraint, and the Penrose quasicrystalline tiling encoding the H_proj/H_dyn decomposition geometrically. Closes U(1)×SU(2)×SU(3) and sin²θ_W = 3/13.</span>
+        <span class="it">Il teorema di selezione dell'olonomia: q = e^{iπ/5} derivato dai primi principi, [5]_q = 0 dal vincolo di rango-5, e la tassellatura quasicristallina di Penrose. Chiude U(1)×SU(2)×SU(3) e sin²θ_W = 3/13.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19369068" target="_blank" rel="noopener">DOI 10.5281/zenodo.19369068</a>
         <span class="pub-date">Apr 2026</span>
-        <span class="tag">gauge structure</span><span class="tag">Temperley-Lieb</span><span class="tag">Level A</span>
+        <span class="tag">gauge structure</span><span class="tag">Temperley-Lieb</span>
       </div>
     </div>
 
     <div class="pub">
-      <div class="pub-series">P11 · Flagship · DOI 19337219</div>
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener">Electromagnetism and Gravitation as Chiral Boundary Readouts of a Majorana Bulk</a></div>
+      <div class="pub-series"><span class="en">P11 · Flagship · DOI 19337219 / 19339600</span><span class="it">P11 · Flagship · DOI 19337219 / 19339600</span></div>
+      <div class="pub-title">
+        <a class="en-link" href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener">Electromagnetism and Gravitation as Chiral Boundary Readouts of a Majorana Bulk</a>
+        <a class="it-link" href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener">Elettromagnetismo e gravitazione come letture chirali di bordo di un bulk di Majorana</a>
+      </div>
       <div class="pub-abstract">
-        <span class="en">Electromagnetism and gravitation are not two fields to be unified — they are the two chiral boundary readouts of a single neutral Majorana spinor on a 5-dimensional temporal manifold. Maxwell's equations and Einstein's gravitational equation emerge simultaneously from one conservation law. α⁻¹ ≈ 137, mₚ/mₑ = 6π⁵, and sin²θ_W = 3/13 — no free parameters.</span>
+        <span class="en">Electromagnetism and gravitation are not two fields to be unified — they are the two chiral boundary readouts of a single neutral Majorana spinor on a 5-dimensional temporal manifold. Maxwell's equations and Einstein's gravitational equation emerge simultaneously from one conservation law. α⁻¹ ≈ 137, mₚ/mₑ = 6π⁵, sin²θ_W = 3/13 — no free parameters.</span>
         <span class="it">Elettromagnetismo e gravitazione sono le due letture chirali di bordo di un unico spinore di Majorana neutro su una varietà temporale a 5 dimensioni. Le equazioni di Maxwell e di Einstein emergono simultaneamente da un'unica legge di conservazione. α⁻¹ ≈ 137, mₚ/mₑ = 6π⁵, sin²θ_W = 3/13 — nessun parametro libero.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener">DOI 10.5281/zenodo.19337219</a>
+        <a class="pub-doi en-doi" href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener">DOI 10.5281/zenodo.19337219 (EN)</a>
+        <a class="pub-doi it-doi" href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener">DOI 10.5281/zenodo.19339600 (IT)</a>
         <span class="pub-date">Mar 2026</span>
-        <span class="tag">unification</span><span class="tag">Majorana</span><span class="tag">Level A/B</span>
-      </div>
-    </div>
-
-    <!-- Italian P11 -->
-    <div class="pub">
-      <div class="pub-series">P11 · IT · DOI 19339600</div>
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener">Elettromagnetismo e gravitazione come letture chirali di bordo di un bulk di Majorana <span style="font-weight:400;font-style:italic">(versione italiana)</span></a></div>
-      <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener">DOI 10.5281/zenodo.19339600</a>
-        <span class="pub-date">Mar 2026</span>
-        <span class="tag">Italian</span><span class="tag">P11</span>
+        <span class="tag">unification</span><span class="tag">Majorana</span>
       </div>
     </div>
 
@@ -1138,35 +559,32 @@
       <div class="pub-series">P13 · DOI 19433587</div>
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19433587" target="_blank" rel="noopener">The Global Phase-Locked Loop</a></div>
       <div class="pub-abstract">
-        <span class="en">The transfer operator ℒ_{α,φ} with eigenvalue F_nm = (2√5)^{5/2}φ²/(9π²) ≈ 1.24658 (Level A). Closes the dimensional cascade R_∞ → G → ℓ_P → T_CMB with loop gain f ≈ 1.003463 and invariant measure ρ(x) = (1/6)x^{-1/3}. T_CMB = 2.72499 K within 0.018% of CODATA.</span>
-        <span class="it">L'operatore di trasferimento ℒ_{α,φ} con autovalore F_nm = (2√5)^{5/2}φ²/(9π²) ≈ 1.24658 (Livello A). Chiude la cascata dimensionale R_∞ → G → ℓ_P → T_CMB con guadagno di loop f ≈ 1.003463. T_CMB = 2.72499 K a 0.018% da CODATA.</span>
+        <span class="en">The transfer operator ℒ_{α,φ} closes the dimensional cascade R_∞ → G → ℓ_P → T_CMB with loop gain f ≈ 1.003463. T_CMB = 2.72499 K within 0.018% of CODATA, with no free parameters.</span>
+        <span class="it">L'operatore di trasferimento ℒ_{α,φ} chiude la cascata dimensionale R_∞ → G → ℓ_P → T_CMB con guadagno di loop f ≈ 1.003463. T_CMB = 2.72499 K a 0.018% da CODATA, senza parametri liberi.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19433587" target="_blank" rel="noopener">DOI 10.5281/zenodo.19433587</a>
         <span class="pub-date">Apr 2026</span>
-        <span class="tag">cosmology</span><span class="tag">PLL</span><span class="tag">Level A</span>
+        <span class="tag">cosmology</span><span class="tag">PLL</span>
       </div>
     </div>
 
-    <!-- Decoherence / 1/f -->
     <div class="pub">
       <div class="pub-series">Standalone · DOI 19337549</div>
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19337549" target="_blank" rel="noopener">Projection-Induced Decoherence and the Emergence of 1/f Noise</a></div>
       <div class="pub-abstract">
         <span class="en">1/f noise as the n=0 spectral residue of the non-invertible temporal projection. Flicker noise is not an environmental effect but a structural spectral residue — the frequency-domain signature of the inaccessible sector.</span>
-        <span class="it">Il rumore 1/f come residuo spettrale n=0 della proiezione temporale non-invertibile. Il rumore flicker non è un effetto ambientale ma un residuo spettrale strutturale.</span>
+        <span class="it">Il rumore 1/f come residuo spettrale n=0 della proiezione temporale non-invertibile. Il rumore flicker è un residuo spettrale strutturale — la firma nel dominio delle frequenze del settore inaccessibile.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19337549" target="_blank" rel="noopener">DOI 10.5281/zenodo.19337549</a>
         <span class="pub-date">Mar 2026</span>
-        <span class="tag">1/f noise</span><span class="tag">decoherence</span><span class="tag">Level A</span>
+        <span class="tag">1/f noise</span><span class="tag">decoherence</span>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════════════════════
-       LINE 02 — Boundary observability
-       ══════════════════════════════════════════════════════ -->
+  <!-- ══ LINE 02 ══ -->
   <section class="section" id="line02">
     <div class="section-label">Line 02</div>
     <h2>
@@ -1183,7 +601,7 @@
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18114856" target="_blank" rel="noopener">Dimensional Reduction / Boundary Phase Inference</a></div>
       <div class="pub-abstract">
         <span class="en">Dimensional reduction at wave-bearing boundaries is not an approximation — it is an intrinsic property of the bulk-to-boundary map. The evanescent sector is structurally inaccessible prior to any measurement or inversion procedure.</span>
-        <span class="it">La riduzione dimensionale alle interfacce che supportano onde non è un'approssimazione — è una proprietà intrinseca della mappa bulk-to-boundary. Il settore evanescente è strutturalmente inaccessibile prima di qualsiasi procedura di misura o inversione.</span>
+        <span class="it">La riduzione dimensionale alle interfacce che supportano onde non è un'approssimazione — è una proprietà intrinseca della mappa bulk-to-boundary.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18114856" target="_blank" rel="noopener">DOI 10.5281/zenodo.18114856</a>
@@ -1197,7 +615,7 @@
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18157411" target="_blank" rel="noopener">Boundary-Induced Phase Locking / SAR Doppler Giza</a></div>
       <div class="pub-abstract">
         <span class="en">Boundary-induced phase locking and guided helical modes in SAR Doppler tomography of the Giza Plateau — the structural prediction of boundary observability confirmed in independent remote sensing data.</span>
-        <span class="it">Phase locking indotto dal bordo e modi elicoidali guidati nella tomografia SAR Doppler della Piana di Giza — la previsione strutturale dell'osservabilità di bordo confermata in dati di telerilevamento indipendenti.</span>
+        <span class="it">Phase locking indotto dal bordo e modi elicoidali guidati nella tomografia SAR Doppler della Piana di Giza — previsione strutturale confermata in dati di telerilevamento indipendenti.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18157411" target="_blank" rel="noopener">DOI 10.5281/zenodo.18157411</a>
@@ -1207,9 +625,7 @@
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════════════════════
-       LINE 03 — Egyptian metrology
-       ══════════════════════════════════════════════════════ -->
+  <!-- ══ LINE 03 ══ -->
   <section class="section" id="line03">
     <div class="section-label">Line 03</div>
     <h2>
@@ -1217,16 +633,16 @@
       <span class="it">Costruzione storica — metrologia egizia e selezione strutturale</span>
     </h2>
     <p class="section-intro">
-      <span class="en">The same non-invertible projection mechanism operative in ancient Egyptian construction, without any formal framework. The Short Cubit ratio and the seked are projection constants. The seked's rank-one constructive regime constrains Giza's three pyramids to exactly three planimetric solutions — without free parameters, matching Petrie's surveys within 1%.</span>
-      <span class="it">Lo stesso meccanismo di proiezione non-invertibile operante nella costruzione egizia antica, senza alcun framework formale. Il rapporto del Cubito Corto e il seked sono costanti di proiezione. Il regime costruttivo di rango uno del seked vincola le tre piramidi di Giza a esattamente tre soluzioni planimetriche — senza parametri liberi, corrispondendo ai rilievi di Petrie entro l'1%.</span>
+      <span class="en">The same non-invertible projection mechanism operative in ancient Egyptian construction, without any formal framework. The seked's rank-one constructive regime constrains Giza's three pyramids to exactly three planimetric solutions — without free parameters, matching Petrie's surveys within 1%.</span>
+      <span class="it">Lo stesso meccanismo di proiezione non-invertibile operante nella costruzione egizia antica. Il regime costruttivo di rango uno del seked vincola le tre piramidi di Giza a esattamente tre soluzioni planimetriche — senza parametri liberi, corrispondendo ai rilievi di Petrie entro l'1%.</span>
     </p>
 
     <div class="pub">
       <div class="pub-series">DOI 18077184</div>
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18077184" target="_blank" rel="noopener">The Short Cubit as a Structural Invariant</a></div>
       <div class="pub-abstract">
-        <span class="en">The Short Cubit is reframed at two pre-metrical levels: as a dilatation normalization expressed by 1/√5, and as a discrete generative step by the non-tessellating angle π/7. The ratio C_r/C_s = φ²/√5 is a projection constant that survives metrological realization while the underlying scale dynamics is irreversibly discarded.</span>
-        <span class="it">Il Cubito Corto è reinterpretato a due livelli pre-metrici. Il rapporto C_r/C_s = φ²/√5 è una costante di proiezione che sopravvive alla realizzazione metrologica mentre la dinamica di scala sottostante viene irrevocabilmente scartata.</span>
+        <span class="en">The ratio C_r/C_s = φ²/√5 is a projection constant that survives metrological realization while the underlying scale dynamics is irreversibly discarded.</span>
+        <span class="it">Il rapporto C_r/C_s = φ²/√5 è una costante di proiezione che sopravvive alla realizzazione metrologica mentre la dinamica di scala sottostante viene irrevocabilmente scartata.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18077184" target="_blank" rel="noopener">DOI 10.5281/zenodo.18077184</a>
@@ -1240,7 +656,7 @@
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18226792" target="_blank" rel="noopener">Metrological Non-Invertibility and Projection Constants</a></div>
       <div class="pub-abstract">
         <span class="en">The Short Cubit ratio and the seked are structural residues of a non-invertible projection from scale dynamics to observable construction. A projection constant is identified: a dimensionless scalar that survives realization while the underlying scale action is irreversibly discarded.</span>
-        <span class="it">Il rapporto del Cubito Corto e il seked sono residui strutturali di una proiezione non-invertibile dalla dinamica di scala alla costruzione osservabile. Una costante di proiezione è identificata.</span>
+        <span class="it">Il rapporto del Cubito Corto e il seked sono residui strutturali di una proiezione non-invertibile dalla dinamica di scala alla costruzione osservabile.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18226792" target="_blank" rel="noopener">DOI 10.5281/zenodo.18226792</a>
@@ -1253,13 +669,13 @@
       <div class="pub-series">DOI 19208560</div>
       <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19208560" target="_blank" rel="noopener">Constrained Form: Rank-One Constructive Regime at Giza</a></div>
       <div class="pub-abstract">
-        <span class="en">A constructive process operating with a single slope rule and without global coordinates is not free to generate arbitrary forms: the process itself selects the admissible outcomes. The Egyptian seked constrains planimetric form to exactly three distinct solutions by arithmetic necessity. The three pyramids of Giza realise all three. Measured dimensions match Petrie's surveys within 1% with zero free parameters.</span>
-        <span class="it">Un processo costruttivo che opera con una sola regola di pendenza e senza coordinate globali seleziona gli esiti ammissibili. Il seked egizio vincola la forma planimetrica a esattamente tre soluzioni distinte per necessità aritmetica. Le tre piramidi di Giza le realizzano tutte e tre. Zero parametri liberi.</span>
+        <span class="en">The Egyptian seked constrains planimetric form to exactly three distinct solutions by arithmetic necessity. The three pyramids of Giza realise all three. Measured dimensions match Petrie's surveys within 1% with zero free parameters.</span>
+        <span class="it">Il seked egizio vincola la forma planimetrica a esattamente tre soluzioni distinte per necessità aritmetica. Le tre piramidi di Giza le realizzano tutte e tre. Zero parametri liberi.</span>
       </div>
       <div class="pub-footer">
         <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19208560" target="_blank" rel="noopener">DOI 10.5281/zenodo.19208560</a>
         <span class="pub-date">Mar 2026</span>
-        <span class="tag">seked</span><span class="tag">Giza</span><span class="tag">rank-one regime</span><span class="tag">configurational collapse</span>
+        <span class="tag">seked</span><span class="tag">Giza</span><span class="tag">rank-one regime</span>
       </div>
     </div>
 
@@ -1269,13 +685,10 @@
     </div>
   </section>
 
-  <!-- ── Links ───────────────────────────────────────────── -->
+  <!-- Links -->
   <section class="section">
     <div class="section-label">External</div>
-    <h2>
-      <span class="en">Links</span>
-      <span class="it">Link</span>
-    </h2>
+    <h2><span class="en">Links</span><span class="it">Link</span></h2>
     <div class="links-grid">
       <a class="link-card" href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener">
         <span class="link-card-label">ORCID</span>
@@ -1289,9 +702,13 @@
         <span class="link-card-label">OpenAIRE</span>
         <span class="link-card-value"><span class="en">Research outputs</span><span class="it">Output di ricerca</span></span>
       </a>
-      <a class="link-card" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener">
-        <span class="link-card-label">Flagship paper</span>
-        <span class="link-card-value">P00 — Axiomatic Core</span>
+      <a class="link-card en-link" href="https://doi.org/10.5281/zenodo.19384549" target="_blank" rel="noopener">
+        <span class="link-card-label">Entry point</span>
+        <span class="link-card-value">P00 — Axiomatic Core (EN)</span>
+      </a>
+      <a class="link-card it-link" href="https://doi.org/10.5281/zenodo.19385870" target="_blank" rel="noopener">
+        <span class="link-card-label">Punto d'ingresso</span>
+        <span class="link-card-value">P00 — Nucleo Assiomatico (IT)</span>
       </a>
     </div>
   </section>
@@ -1307,34 +724,34 @@
 </main>
 
 <script>
-  function toggleAnim() {
-    const wrap = document.getElementById('animWrap');
-    const btn  = document.getElementById('animToggle');
-    const open = !wrap.classList.contains('collapsed');
-    wrap.classList.toggle('collapsed', open);
-    btn.setAttribute('aria-expanded', String(!open));
-    const en = btn.querySelector('.en'), it = btn.querySelector('.it');
-    if (open) {
-      if (en) en.textContent = 'Show';
-      if (it) it.textContent = 'Mostra';
-    } else {
-      if (en) en.textContent = 'Hide';
-      if (it) it.textContent = 'Nascondi';
-    }
+function toggleAnim(wrapId, btnId) {
+  const wrap = document.getElementById(wrapId);
+  const btn  = document.getElementById(btnId);
+  const open = !wrap.classList.contains('collapsed');
+  wrap.classList.toggle('collapsed', open);
+  btn.setAttribute('aria-expanded', String(!open));
+  const en = btn.querySelector('.en'), it = btn.querySelector('.it');
+  if (open) {
+    if (en) en.textContent = 'Show';
+    if (it) it.textContent = 'Mostra';
+  } else {
+    if (en) en.textContent = 'Hide';
+    if (it) it.textContent = 'Nascondi';
   }
+}
 
-  function setLang(lang) {
-    document.body.className = 'lang-' + lang;
-    document.documentElement.lang = lang;
-    document.querySelectorAll('.lang-btn').forEach(b => {
-      b.classList.toggle('active', b.textContent.toLowerCase() === lang);
-    });
-    try { localStorage.setItem('preferred-lang', lang); } catch(e) {}
-  }
-  try {
-    const saved = localStorage.getItem('preferred-lang');
-    if (saved === 'it') setLang('it');
-  } catch(e) {}
+function setLang(lang) {
+  document.body.className = 'lang-' + lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.toLowerCase() === lang);
+  });
+  try { localStorage.setItem('preferred-lang', lang); } catch(e) {}
+}
+try {
+  const saved = localStorage.getItem('preferred-lang');
+  if (saved === 'it') setLang('it');
+} catch(e) {}
 </script>
 
 <script data-goatcounter="https://pasqualecamelia.goatcounter.com/count"
