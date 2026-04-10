@@ -207,15 +207,15 @@ const c2=$('c2d'), x2=c2.getContext('2d');
 
 function sizeCanvases(){
   const wrap=document.querySelector('.canvases');
-  const W=wrap.clientWidth, H=wrap.clientHeight;
-  const s3=Math.min(W*0.52,H-4)|0;
-  const c2w=Math.min(W*0.44,H*0.50)|0;
-  const c2h=Math.min(H-4,c2w*2.1)|0;
+  const W=Math.max(wrap.clientWidth,  200);
+  const H=Math.max(wrap.clientHeight, 200);
+  const s3=Math.max(100, Math.min(W*0.52, H-4)|0);
+  const c2w=Math.max(80,  Math.min(W*0.44, H*0.50)|0);
+  const c2h=Math.max(160, Math.min(H-4,   c2w*2.1)|0);
   c3.width=s3; c3.height=s3;
   c2.width=c2w; c2.height=c2h;
 }
-sizeCanvases();
-window.addEventListener('resize',sizeCanvases);
+window.addEventListener('resize', sizeCanvases);
 
 // ── Projection: matplotlib-style orthographic ─────────────────────
 // elev=16°, azim rotates slowly — z is vertical (temporal axis τ)
@@ -776,6 +776,7 @@ function updateUI(){
 // ── Loop ──────────────────────────────────────────────────────────
 let LT=null;
 function loop(ts){
+  if(LT===null){ sizeCanvases(); } // size on first frame when layout is ready
   if(LT!==null){
     const dt=Math.min((ts-LT)/1000,0.05);
     t_phys+=dt;
