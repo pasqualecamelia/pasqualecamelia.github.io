@@ -277,13 +277,43 @@ function draw3D(){
     x3.stroke();
   });
 
-  // σ axis
+  // σ axis — with bulk/entropy direction labels
   x3.strokeStyle='rgba(240,168,40,0.22)'; x3.lineWidth=1.2; x3.setLineDash([6,4]);
   var pa=p(0,0,-Z/2-0.15),pb=p(0,0,Z/2+0.15);
   x3.beginPath(); x3.moveTo(pa[0],pa[1]); x3.lineTo(pb[0],pb[1]); x3.stroke();
   x3.setLineDash([]);
   x3.fillStyle='rgba(240,168,40,0.80)'; x3.font='bold '+fs+'px monospace';
   x3.fillText('σ=ξη=α⁻¹',pb[0]+5,pb[1]+4);
+  // bulk label (bottom = θ→0, pure coherence)
+  x3.fillStyle='rgba(100,140,255,0.60)'; x3.font=(fs-1)+'px monospace';
+  x3.fillText('◀ bulk (θ→0)',pa[0]+5,pa[1]-4);
+  // entropy label (top = θ→π, full entropy)
+  x3.fillStyle='rgba(200,100,255,0.60)'; x3.font=(fs-1)+'px monospace';
+  x3.fillText('entropy (θ→π) ▶',pb[0]+5,pb[1]+fs+4);
+
+  // ── A: PRESENT MOMENT — equator ring at z=0, θ=π/2, t=0 ──────
+  // This is where ξη=α⁻¹ is the lock-in surface (P06 §discrete)
+  var NC_eq=48;
+  // Glowing white ring
+  x3.strokeStyle='rgba(255,255,255,0.55)'; x3.lineWidth=1.8;
+  x3.beginPath();
+  for(var j=0;j<=NC_eq;j++){
+    var b=2*Math.PI*j/NC_eq, pp=p(ROUT*1.05*Math.cos(b),ROUT*1.05*Math.sin(b),0);
+    j===0?x3.moveTo(pp[0],pp[1]):x3.lineTo(pp[0],pp[1]);
+  }
+  x3.stroke();
+  // Inner fill glow
+  var peq=p(0,0,0);
+  var geq=x3.createRadialGradient(peq[0],peq[1],0,peq[0],peq[1],sc*ROUT*1.8);
+  geq.addColorStop(0,'rgba(255,255,255,0.07)');
+  geq.addColorStop(1,'rgba(255,255,255,0)');
+  x3.fillStyle=geq; x3.fillRect(0,0,W,H);
+  // Label
+  var peql=p(ROUT*1.08,0,0);
+  x3.fillStyle='rgba(255,255,255,0.75)'; x3.font='bold '+fs+'px monospace';
+  x3.fillText('t=0 · θ=π/2',peql[0]+4,peql[1]+4);
+  x3.fillStyle='rgba(200,220,255,0.50)'; x3.font=(fs-1)+'px monospace';
+  x3.fillText('present moment',peql[0]+4,peql[1]+fs+5);
 
   // Edge modes
   [0,Math.PI/2,Math.PI,3*Math.PI/2].forEach(function(ae){
@@ -328,8 +358,13 @@ function draw3D(){
   for(var i=0;i<NP;i++){
     var fr=i/(NP-1),z=-Z/2+fr*Z,ang=kh*z+phi0;
     var uloc=A*Math.sin(GAMMA*tPhys*sm-kh*z*0.3);
-    var lL=Math.max(0.25,Math.min(1,0.55+uloc*0.55/Math.max(A,0.01)));
-    var lR=Math.max(0.25,Math.min(1,0.55-uloc*0.55/Math.max(A,0.01)));
+    // ── B: Evanescent decay from P06 — δ_U = 1 - 3π/(2√5)^(3/2) ──
+    // Coherence is maximum at z=0 (present moment θ=π/2)
+    // and decays toward DW1 (top) and DW2 (bottom)
+    var DELTA_U = 1 - 3*Math.PI/Math.pow(2*Math.sqrt(5), 1.5); // ≈ 0.023
+    var decay = Math.exp(-Math.abs(z) * DELTA_U * 4.0); // evanescent envelope
+    var lL=Math.max(0.15,Math.min(1,(0.55+uloc*0.55/Math.max(A,0.01))*decay));
+    var lR=Math.max(0.15,Math.min(1,(0.55-uloc*0.55/Math.max(A,0.01))*decay));
     var xL=R*Math.cos(ang),yL=R*Math.sin(ang);
     var xR=R*Math.cos(ang+Math.PI),yR=R*Math.sin(ang+Math.PI);
     var dang=kh*Z/(NP-1);
@@ -519,6 +554,28 @@ function draw2D(){
   x2.fillStyle='rgba(46,200,152,0.55)'; x2.font=fss+'px monospace'; x2.fillText('ξ →',bx1-fss*2,hl[1]+fss);
   x2.fillStyle='rgba(255,128,48,0.55)'; x2.fillText('η ↑',vl[0]+4,by0+fss);
   x2.fillStyle='rgba(180,190,230,0.65)'; x2.font=fss+'px monospace'; x2.fillText('‖α‖ = '+naa.toExponential(3),bx0,by1-3);
+
+  // ── C: Conformal time arrow t(θ) = ln(tan(θ/2)) — P06 §discrete ──
+  // Draw as a subtle vertical gradient bar on the right edge of phase plane
+  // showing how the breathing cycle maps to physical time
+  var barX=bx1-6, barY0=by0+4, barY1=by1-4, barH=barY1-barY0;
+  var tgrad=x2.createLinearGradient(barX,barY0,barX,barY1);
+  tgrad.addColorStop(0,  'rgba(100,140,255,0.55)'); // θ→π entropy top
+  tgrad.addColorStop(0.5,'rgba(255,255,255,0.70)'); // θ=π/2 present moment
+  tgrad.addColorStop(1,  'rgba(200,100,255,0.55)'); // θ→0 bulk bottom
+  x2.fillStyle=tgrad; x2.fillRect(barX,barY0,4,barH);
+
+  // Mark present moment on bar (t=0, θ=π/2)
+  var pmY=barY0+barH*0.5;
+  x2.fillStyle='rgba(255,255,255,0.90)';
+  x2.fillRect(barX-3,pmY-1,10,2);
+  x2.fillStyle='rgba(255,255,255,0.70)'; x2.font=fss+'px monospace';
+  x2.fillText('t=0',barX-fss*2-4,pmY+4);
+  // entropy/bulk labels
+  x2.fillStyle='rgba(100,140,255,0.55)'; x2.font=(fss-1)+'px monospace';
+  x2.fillText('θ→π',barX-fss*2-2,barY0+fss);
+  x2.fillStyle='rgba(200,100,255,0.55)';
+  x2.fillText('θ→0',barX-fss*2-2,barY1);
 }
 
 // ---- UPDATE PANEL ----
