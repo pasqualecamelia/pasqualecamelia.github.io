@@ -29,29 +29,29 @@ header{
 .lang-toggle button{background:transparent;border:none;cursor:pointer;padding:4px 9px;font-size:9px;font-family:var(--mono);color:#404a6a;transition:background .15s,color .15s;}
 .lang-toggle button.active{background:#1a1a38;color:var(--txt3);}
 .lang-toggle button:hover:not(.active){background:#0e0e22;}
-.main{display:grid;grid-template-columns:1fr 280px;overflow:hidden;}
+.main{display:grid;grid-template-columns:1fr 240px;overflow:hidden;}
 .canvases{display:grid;grid-template-columns:1fr 1fr;overflow:hidden;padding:6px 4px 6px 8px;align-items:center;justify-items:center;gap:4px;}
 canvas{display:block;border-radius:6px;}
 .panel{background:var(--bg2);border-left:.5px solid var(--bdr);display:flex;flex-direction:column;overflow-y:auto;}
 .panel::-webkit-scrollbar{width:3px;}
 .panel::-webkit-scrollbar-thumb{background:#161630;border-radius:2px;}
-.pblock{padding:12px 16px;border-bottom:.5px solid var(--bdr);}
+.pblock{padding:10px 13px;border-bottom:.5px solid var(--bdr);}
 .pblock:last-child{border-bottom:none;flex:1;}
-.ptitle{font-size:11px;color:#5a6888;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;font-weight:700;}
-.cr{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
-.cl{font-size:13px;color:#7a8aaa;min-width:72px;}
-.cv{font-size:13px;color:var(--txt2);min-width:36px;text-align:right;font-weight:600;}
+.ptitle{font-size:10px;color:#5a6888;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;font-weight:600;}
+.cr{display:flex;align-items:center;gap:5px;margin-bottom:6px;}
+.cl{font-size:12px;color:#7a8aaa;min-width:66px;}
+.cv{font-size:12px;color:var(--txt2);min-width:32px;text-align:right;font-weight:600;}
 input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:#101028;border-radius:2px;outline:none;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--amb);border-radius:50%;cursor:pointer;}
-.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 8px;}
-.sl{font-size:10px;color:#485868;margin-bottom:2px;}
-.sv{font-size:15px;color:#aac8e8;font-weight:700;}
-.ldots{display:flex;flex-direction:column;gap:6px;margin-top:5px;}
-.ldot-item{display:flex;align-items:center;gap:7px;font-size:12px;color:#6a7a92;}
-.ldot-item .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.ldot-item .sq{width:10px;height:5px;border-radius:1px;flex-shrink:0;opacity:.7;}
-.fnote{font-size:10px;color:#3a4858;line-height:1.65;margin-top:6px;padding-top:6px;border-top:.5px solid var(--bdr);}
-footer{border-top:.5px solid var(--bdr);padding:6px 16px;background:var(--bg2);font-size:11px;color:#405060;display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--amb);border-radius:50%;cursor:pointer;}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 6px;}
+.sl{font-size:9px;color:#485868;margin-bottom:2px;}
+.sv{font-size:14px;color:#aac8e8;font-weight:700;}
+.ldots{display:flex;flex-direction:column;gap:5px;margin-top:4px;}
+.ldot-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#6a7a92;}
+.ldot-item .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.ldot-item .sq{width:9px;height:5px;border-radius:1px;flex-shrink:0;opacity:.7;}
+.fnote{font-size:9px;color:#3a4858;line-height:1.65;margin-top:5px;padding-top:5px;border-top:.5px solid var(--bdr);}
+footer{border-top:.5px solid var(--bdr);padding:5px 14px;background:var(--bg2);font-size:10px;color:#405060;display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
 footer a{color:var(--amb);text-decoration:none;opacity:.75;}footer a:hover{opacity:1;}
 </style>
 </head>
@@ -620,10 +620,10 @@ function draw2D(){
 
   // ── Dynamic class from nTurns ─────────────────────────────────
   const classLabel = LISSAJOUS_CLASSES[nTurns] || ('Turns: '+nTurns);
-  // Extract ratio for XY display: how many ξ dots vs η dots per cycle
-  // Class 2(2:5)→2 nodes, Class 3(3:5)→3 nodes, Class 1(11:5)→11 nodes
   const ratioMap = {1:1, 1.5:3, 2:2, 2.5:5, 3:3, 3.5:7, 4:4, 4.5:9, 5:11};
   const nDots = ratioMap[nTurns] || Math.round(nTurns);
+  // rxL/ryL = first dot position (for ξ/η labels)
+  const rxL=Math.cos(ang_rot)*sc2, ryL=Math.sin(ang_rot)*sc2;
 
   // Draw n dots distributed on the ring — showing the p:q ratio
   for(let k=0;k<nDots;k++){
