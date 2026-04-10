@@ -8,7 +8,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#07070e;--bg2:#0b0b16;--bdr:#16162a;
-  --txt:#6878a0;--txt2:#a8b8d0;--txt3:#dde4f4;
+  --txt:#8898b8;--txt2:#c8d8f0;--txt3:#e8eef8;
   --xi:#2ec898;--eta:#ff8030;--amb:#f0a828;
   --dw1:#4488ff;--dw2:#cc44ff;--edge:#f0a828;
   --mono:'JetBrains Mono','Fira Code','Consolas',monospace;
@@ -29,30 +29,30 @@ header{
 .lang-toggle button{background:transparent;border:none;cursor:pointer;padding:4px 9px;font-size:9px;font-family:var(--mono);color:#404a6a;transition:background .15s,color .15s;}
 .lang-toggle button.active{background:#1a1a38;color:var(--txt3);}
 .lang-toggle button:hover:not(.active){background:#0e0e22;}
-.main{display:grid;grid-template-columns:1fr 192px;overflow:hidden;}
+.main{display:grid;grid-template-columns:1fr 230px;overflow:hidden;}
 .canvases{display:grid;grid-template-columns:1fr 1fr;overflow:hidden;padding:6px 4px 6px 8px;align-items:center;justify-items:center;gap:4px;}
 canvas{display:block;border-radius:6px;}
 .panel{background:var(--bg2);border-left:.5px solid var(--bdr);display:flex;flex-direction:column;overflow-y:auto;}
 .panel::-webkit-scrollbar{width:3px;}
 .panel::-webkit-scrollbar-thumb{background:#161630;border-radius:2px;}
-.pblock{padding:9px 11px;border-bottom:.5px solid var(--bdr);}
+.pblock{padding:11px 14px;border-bottom:.5px solid var(--bdr);}
 .pblock:last-child{border-bottom:none;flex:1;}
-.ptitle{font-size:8.5px;color:#283050;letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px;font-weight:500;}
-.cr{display:flex;align-items:center;gap:5px;margin-bottom:5px;}
-.cl{font-size:9px;color:#3a4a6a;min-width:58px;}
-.cv{font-size:9px;color:var(--txt2);min-width:28px;text-align:right;}
-input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:#101028;border-radius:2px;outline:none;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--amb);border-radius:50%;cursor:pointer;}
-.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 5px;}
-.sl{font-size:7.5px;color:#202a3c;margin-bottom:1px;}
-.sv{font-size:11.5px;color:#88a0c0;font-weight:500;}
-.ldots{display:flex;flex-direction:column;gap:3px;margin-top:3px;}
-.ldot-item{display:flex;align-items:center;gap:5px;font-size:8px;color:#303a52;}
-.ldot-item .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.ldot-item .sq{width:8px;height:4px;border-radius:1px;flex-shrink:0;opacity:.6;}
-.fnote{font-size:7.5px;color:#1a2232;line-height:1.65;margin-top:4px;padding-top:4px;border-top:.5px solid var(--bdr);}
-footer{border-top:.5px solid var(--bdr);padding:5px 14px;background:var(--bg2);font-size:8.5px;color:#202838;display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
-footer a{color:var(--amb);text-decoration:none;opacity:.6;}footer a:hover{opacity:1;}
+.ptitle{font-size:10px;color:#4a5878;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;font-weight:600;}
+.cr{display:flex;align-items:center;gap:5px;margin-bottom:6px;}
+.cl{font-size:11px;color:#6a7a9a;min-width:62px;}
+.cv{font-size:11px;color:var(--txt2);min-width:32px;text-align:right;}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:#101028;border-radius:2px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--amb);border-radius:50%;cursor:pointer;}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 6px;}
+.sl{font-size:9px;color:#384858;margin-bottom:2px;}
+.sv{font-size:13px;color:#9ab8d8;font-weight:600;}
+.ldots{display:flex;flex-direction:column;gap:5px;margin-top:4px;}
+.ldot-item{display:flex;align-items:center;gap:6px;font-size:10px;color:#5a6a82;}
+.ldot-item .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.ldot-item .sq{width:9px;height:5px;border-radius:1px;flex-shrink:0;opacity:.7;}
+.fnote{font-size:9px;color:#2a3848;line-height:1.65;margin-top:5px;padding-top:5px;border-top:.5px solid var(--bdr);}
+footer{border-top:.5px solid var(--bdr);padding:5px 14px;background:var(--bg2);font-size:10px;color:#304050;display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+footer a{color:var(--amb);text-decoration:none;opacity:.7;}footer a:hover{opacity:1;}
 </style>
 </head>
 <body>
