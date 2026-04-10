@@ -480,71 +480,56 @@ function draw3D(){
   const allSegs=[];
   for(let i=1;i<N;i++){
     const g0=segs[i-1],g1=segs[i];
-    const depL=(g0.dL+g1.dL)*0.5;
-    const depR=(g0.dR+g1.dR)*0.5;
-    allSegs.push({type:'L',i,dep:depL});
-    allSegs.push({type:'R',i,dep:depR});
+    allSegs.push({type:'L',i,dep:(g0.dL+g1.dL)*0.5});
+    allSegs.push({type:'R',i,dep:(g0.dR+g1.dR)*0.5});
   }
-  allSegs.sort((a,b)=>a.dep-b.dep); // back to front
+  allSegs.sort((a,bb)=>a.dep-bb.dep); // back to front
 
   for(const seg of allSegs){
     const i=seg.i;
     const g0=segs[i-1],g1=segs[i];
+    const dep=seg.dep;
+    // depth factor 0=back, 1=front
+    const t01=Math.max(0,Math.min(1,(dep+R_OUT)/(2*R_OUT)));
 
     if(seg.type==='L'){
-      // ξ ribbon — teal
-      const lum=(g0.lumL+g1.lumL)*0.5;
-      const dep=seg.dep;
-      const t01=Math.max(0,Math.min(1,(dep+R_OUT)/(2*R_OUT)));
-      const lit=ribbonLight(g0.cxL,g0.cyL,g0.cz);
-      const brightness=lum*lit;
-      const alpha=0.55+0.45*t01;
-      const r=Math.round(46*brightness)|0;
-      const g=Math.round(200*brightness)|0;
-      const b2=Math.round(152*brightness)|0;
+      // ξ ribbon — teal #2ec898
+      const lum=(g0.lumL+g1.lumL)*0.5; // breathing luminosity
+      const alpha=(0.45+0.55*t01)*lum;
+      const lw=1.0+3.5*t01;
 
-      // Draw ribbon quad as two triangles via filled path
       const[p1x,p1y]=p(g0.e1Lx,g0.e1Ly,g0.e1Lz);
       const[p2x,p2y]=p(g0.e2Lx,g0.e2Ly,g0.e2Lz);
       const[p3x,p3y]=p(g1.e1Lx,g1.e1Ly,g1.e1Lz);
       const[p4x,p4y]=p(g1.e2Lx,g1.e2Ly,g1.e2Lz);
 
-      x3.fillStyle=`rgba(${r},${g},${b2},${alpha.toFixed(2)})`;
+      // Fill quad
+      x3.fillStyle=`rgba(46,200,152,${alpha.toFixed(3)})`;
       x3.beginPath();
       x3.moveTo(p1x,p1y); x3.lineTo(p2x,p2y); x3.lineTo(p4x,p4y); x3.lineTo(p3x,p3y);
       x3.closePath(); x3.fill();
-
-      // Bright edge highlight
-      const edgeAlpha=(0.6+0.4*t01)*brightness;
-      x3.strokeStyle=`rgba(${Math.min(255,r+80)},${Math.min(255,g+30)},${Math.min(255,b2+60)},${edgeAlpha.toFixed(2)})`;
-      x3.lineWidth=0.6+t01*0.8;
+      // Bright spine
+      x3.strokeStyle=`rgba(120,255,200,${(alpha*0.9).toFixed(3)})`;
+      x3.lineWidth=lw;
       x3.beginPath(); x3.moveTo(p1x,p1y); x3.lineTo(p3x,p3y); x3.stroke();
 
     } else {
-      // η ribbon — orange
+      // η ribbon — orange #ff8030
       const lum=(g0.lumR+g1.lumR)*0.5;
-      const dep=seg.dep;
-      const t01=Math.max(0,Math.min(1,(dep+R_OUT)/(2*R_OUT)));
-      const lit=ribbonLight(g0.cxR,g0.cyR,g0.cz);
-      const brightness=lum*lit;
-      const alpha=0.55+0.45*t01;
-      const r=Math.round(255*brightness)|0;
-      const g=Math.round(128*brightness)|0;
-      const b2=Math.round(48*brightness)|0;
+      const alpha=(0.45+0.55*t01)*lum;
+      const lw=1.0+3.5*t01;
 
       const[p1x,p1y]=p(g0.e1Rx,g0.e1Ry,g0.e1Rz);
       const[p2x,p2y]=p(g0.e2Rx,g0.e2Ry,g0.e2Rz);
       const[p3x,p3y]=p(g1.e1Rx,g1.e1Ry,g1.e1Rz);
       const[p4x,p4y]=p(g1.e2Rx,g1.e2Ry,g1.e2Rz);
 
-      x3.fillStyle=`rgba(${r},${g},${b2},${alpha.toFixed(2)})`;
+      x3.fillStyle=`rgba(255,128,48,${alpha.toFixed(3)})`;
       x3.beginPath();
       x3.moveTo(p1x,p1y); x3.lineTo(p2x,p2y); x3.lineTo(p4x,p4y); x3.lineTo(p3x,p3y);
       x3.closePath(); x3.fill();
-
-      const edgeAlpha=(0.6+0.4*t01)*brightness;
-      x3.strokeStyle=`rgba(${Math.min(255,r+30)},${Math.min(255,g+60)},${Math.min(255,b2+80)},${edgeAlpha.toFixed(2)})`;
-      x3.lineWidth=0.6+t01*0.8;
+      x3.strokeStyle=`rgba(255,200,100,${(alpha*0.9).toFixed(3)})`;
+      x3.lineWidth=lw;
       x3.beginPath(); x3.moveTo(p1x,p1y); x3.lineTo(p3x,p3y); x3.stroke();
     }
   }
