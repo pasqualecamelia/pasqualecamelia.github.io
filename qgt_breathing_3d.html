@@ -124,7 +124,7 @@ footer a:hover{opacity:1;}
       <div class="ptitle t" data-en="Legend" data-it="Legenda">Legend</div>
       <div class="ldots">
         <div class="ldot-item"><span style="background:var(--xi)"></span> ξ <span class="t" data-en="longitudinal (gravitational)" data-it="longitudinale (gravitazionale)">longitudinal</span></div>
-        <div class="ldot-item"><span style="background:var(--eta)"></span> η <span class="t" data-en="transverse (EM)" data-it="trasverso (EM)">transverse (EM)</span></div>
+        <div class="ldot-item"><span style="background:#FF9F40"></span> η <span class="t" data-en="transverse (EM)" data-it="trasverso (EM)">transverse (EM)</span></div>
         <div class="ldot-item"><span style="background:var(--amb)"></span> <span class="t" data-en="codon nodes · 10/turn" data-it="nodi codonici · 10/giro">codon nodes · 10/turn</span></div>
         <div class="ldot-item"><span style="background:var(--ax)"></span> τ <span class="t" data-en="temporal axis" data-it="asse temporale">temporal axis</span></div>
         <div class="ldot-item"><span style="background:#EF9F27;opacity:.5;border-radius:2px;"></span> <span class="t" data-en="α⁻¹ = 137 reference cylinder" data-it="cilindro di riferimento α⁻¹ = 137">α⁻¹ = 137 reference cylinder</span></div>
@@ -157,304 +157,398 @@ function setLang(l){
   });
 }
 
-// ── Constants ─────────────────────────────────────────────────────
-const phi=(1+Math.sqrt(5))/2;
-const Gamma=phi/Math.sqrt(5);   // ≈ 0.7265
-const inv_a=137.036, sq_a=Math.sqrt(inv_a); // 1/√α ≈ 11.71
-const STEPS=10;                 // codons per turn
+// ── QGT / Physical constants ──────────────────────────────────────
+const phi  = (1+Math.sqrt(5))/2;
+const Gamma= phi/Math.sqrt(5);      // ≈ 0.7265  golden temporal connection
+const inv_a= 137.036;
+const sq_a = Math.sqrt(inv_a);      // 1/√α ≈ 11.71
+const STEPS= 10;                    // codon nodes per turn
+
+// ── Helix geometry (fixed, matching Python script) ─────────────────
+// R = helix backbone radius (fixed — breathing is NOT radial)
+const R_helix = 0.52;
+// k_helix: angle per unit-z  →  nTurns full turns over Z_total
+// controlled by slider; pitch = Z_total / nTurns
+const Z_total = 2.0;   // normalised height (bottom = -1, top = +1)
 
 // ── Controls ──────────────────────────────────────────────────────
-let sm=1.0, A=2.2, nTurns=1.5, rotAmp=0.25;
-document.getElementById('speed').oninput=e=>{sm=+e.target.value;document.getElementById('sv').textContent=(sm%1===0?sm:sm.toFixed(2))+'×';};
-document.getElementById('amp').oninput=e=>{A=+e.target.value;document.getElementById('av').textContent=(+e.target.value).toFixed(1);};
-document.getElementById('turns').oninput=e=>{nTurns=+e.target.value;document.getElementById('tv').textContent=(+e.target.value).toFixed(1);};
-document.getElementById('rot').oninput=e=>{rotAmp=+e.target.value;document.getElementById('rotv').textContent=(+e.target.value).toFixed(2);};
+let sm=1.0, A_breath=1.8, nTurns=2.0, rotAmp=0.20;
+document.getElementById('speed').oninput  = e=>{sm=+e.target.value; document.getElementById('sv').textContent=(sm%1===0?sm:sm.toFixed(2))+'×';};
+document.getElementById('amp').oninput    = e=>{A_breath=+e.target.value; document.getElementById('av').textContent=(+e.target.value).toFixed(1);};
+document.getElementById('turns').oninput  = e=>{nTurns=+e.target.value; document.getElementById('tv').textContent=(+e.target.value).toFixed(1);};
+document.getElementById('rot').oninput    = e=>{rotAmp=+e.target.value; document.getElementById('rotv').textContent=(+e.target.value).toFixed(2);};
 
 // ── Canvases ──────────────────────────────────────────────────────
-const c3=document.getElementById('c3d'),x3=c3.getContext('2d');
-const c2=document.getElementById('c2d'),x2=c2.getContext('2d');
+const c3=document.getElementById('c3d'), x3=c3.getContext('2d');
+const c2=document.getElementById('c2d'), x2=c2.getContext('2d');
 
 function sizeCanvases(){
   const wrap=document.querySelector('.canvases');
-  const W=wrap.clientWidth,H=wrap.clientHeight;
-  const s3=Math.min(W*0.52,H-8)|0;
-  const s2=Math.min(W*0.44,H-8)|0;
-  c3.width=s3;c3.height=s3;
-  c2.width=s2;c2.height=s2;
+  const W=wrap.clientWidth, H=wrap.clientHeight;
+  const s3=Math.min(W*0.52,H-6)|0;
+  const s2=Math.min(W*0.44,H-6)|0;
+  c3.width=s3; c3.height=s3;
+  c2.width=s2; c2.height=s2;
 }
 sizeCanvases();
 window.addEventListener('resize',sizeCanvases);
 
-// ── Geometry helpers ──────────────────────────────────────────────
-// Simple isometric-like 3D projection
-function proj(x,y,z,el,az,cx,cy,sc){
-  const ea=el*Math.PI/180,a=az*Math.PI/180;
-  const rx=x*Math.cos(a)+y*Math.sin(a);
-  const ry=-x*Math.sin(a)+y*Math.cos(a);
-  return[cx+rx*sc, cy-(-z*Math.sin(ea)+ry*Math.cos(ea))*sc];
+// ── Projection (matches Python: elev=16°, azim=35°, z=vertical) ──
+// Standard matplotlib-style: azimuth rotates in XY plane, elevation tilts up.
+// Orthographic projection onto screen:
+//   screen_x =  (x·cos(az) + y·sin(az))
+//   screen_y = -(x·sin(az) - y·cos(az))·sin(el) + z·cos(el)   (y_screen up)
+// We flip screen_y because canvas y goes down.
+let azm_deg = 35.0;   // starts at Python default, rotates slowly
+const EL_DEG = 16.0;  // fixed elevation like Python
+
+function pt3(x,y,z, cx,cy,sc){
+  const az=azm_deg*Math.PI/180, el=EL_DEG*Math.PI/180;
+  const sx =  x*Math.cos(az) + y*Math.sin(az);
+  const sy = -(x*Math.sin(az) - y*Math.cos(az))*Math.sin(el) + z*Math.cos(el);
+  return [cx + sx*sc, cy - sy*sc];   // canvas y flipped
 }
 
-// ── xi/eta at time t ──────────────────────────────────────────────
-function xiEta(t){
-  const s=A*Math.sin(Gamma*t*sm);
-  return{xi:sq_a*Math.exp(s), eta:sq_a*Math.exp(-s)};
+// Depth for painter's algo (forward = large)
+function dep3(x,y){
+  const az=azm_deg*Math.PI/180;
+  // depth ∝ -y_rotated (closer to viewer = larger)
+  return -(x*Math.sin(az) - y*Math.cos(az));
 }
-function radiusNorm(v){
-  const vmin=sq_a*Math.exp(-A), vmax=sq_a*Math.exp(A);
-  return 0.20+(v-vmin)/(vmax-vmin)*0.72;
+
+// ── ξ/η breathing values ──────────────────────────────────────────
+function xiEta(t){
+  const s = A_breath * Math.sin(Gamma * t * sm);
+  return { xi: sq_a*Math.exp(s), eta: sq_a*Math.exp(-s) };
 }
 
 // ── State ─────────────────────────────────────────────────────────
-let t_phys=0, azm=-55;
-const N_PTS=300;
+let t_phys=0;
+const N_PTS=400;
 
-// Phase history for right panel
-const BSAMP=100;
-const xi_hist=new Float32Array(BSAMP).fill(sq_a);
+const BSAMP=120;
+const xi_hist =new Float32Array(BSAMP).fill(sq_a);
 const eta_hist=new Float32Array(BSAMP).fill(sq_a);
 
-// ── Draw 3D double helix ──────────────────────────────────────────
+// ── DRAW 3D — double helix, asse z verticale ──────────────────────
 function draw3D(){
-  const W=c3.width,H=c3.height;
-  const cx=W*0.50,cy=H*0.48;
-  const sc=W*0.24;
-  const el=22;
-  function pt(x,y,z){return proj(x,y,z,el,azm,cx,cy,sc);}
+  const W=c3.width, H=c3.height;
+  x3.clearRect(0,0,W,H);
+  x3.fillStyle='#0b0b0f'; x3.fillRect(0,0,W,H);
 
-  x3.clearRect(0,0,W,H);x3.fillStyle='#0c0c10';x3.fillRect(0,0,W,H);
+  // Scale: helix R maps to ~28% of canvas width
+  const sc = W * 0.28;
+  const cx  = W * 0.50;
+  const cy  = H * 0.50;
+  function p(x,y,z){ return pt3(x,y,z,cx,cy,sc); }
+  function d(x,y)  { return dep3(x,y); }
 
-  // Axis τ
-  const[a1x,a1y]=pt(0,0,-1.25),[a2x,a2y]=pt(0,0,1.25);
-  x3.strokeStyle='rgba(68,68,85,.55)';x3.lineWidth=.7;x3.setLineDash([4,4]);
-  x3.beginPath();x3.moveTo(a1x,a1y);x3.lineTo(a2x,a2y);x3.stroke();x3.setLineDash([]);
-  x3.fillStyle='rgba(127,119,221,.65)';x3.font='11px monospace';
-  x3.fillText('τ',a2x+3,a2y-3);
-
-  // Helix window: z fixed -1..+1, angle advances with t
-  const ang_start=Gamma*t_phys*sm;
-  const ang_arr=new Float32Array(N_PTS);
-  const z_arr=new Float32Array(N_PTS);
-  for(let i=0;i<N_PTS;i++){
-    ang_arr[i]=ang_start-nTurns*2*Math.PI+i/(N_PTS-1)*nTurns*2*Math.PI;
-    z_arr[i]=-1.0+i/(N_PTS-1)*2.0;
-  }
-
-  // ── Compute 3D world coords for both strands ──────────────────
-  // DNA geometry: both helices wind in the SAME direction (right-handed),
-  // offset by π in angle, radii in TRUE antiphase: r_η = radiusNorm(exp(-s))
-  // when r_ξ = radiusNorm(exp(+s)). Same s, opposite exponent sign.
-  // This means when ξ bulges OUT, η pulls IN — exactly like the Python original.
-
-  const pts3_plus  = []; // {x3d,y3d,z3d, px,py, depth, s_val}
-  const pts3_minus = [];
-  const r_eq = radiusNorm(sq_a);
-
-  for(let i=0;i<N_PTS;i++){
-    const t_local = t_phys*sm - (ang_start - ang_arr[i]) / Gamma;
-    const s = A * Math.sin(Gamma * t_local);
-    const rp = radiusNorm(sq_a * Math.exp( s));
-    const rm = radiusNorm(sq_a * Math.exp(-s));   // true antiphase
-
-    const ang = ang_arr[i];
-    const z   = z_arr[i];
-
-    // ξ strand
-    const xp = rp * Math.cos(ang), yp = rp * Math.sin(ang);
-    const [ppx, ppy] = pt(xp, yp, z);
-    // depth: raw y after azimuth rotation (used for painter's sort)
-    const dep_p = -xp*Math.sin(azm*Math.PI/180) + yp*Math.cos(azm*Math.PI/180);
-    pts3_plus.push({xw:xp,yw:yp,zw:z, px:ppx,py:ppy, dep:dep_p, s, idx:i});
-
-    // η strand — offset π in angle, antiphase radius
-    const xm = rm * Math.cos(ang + Math.PI), ym = rm * Math.sin(ang + Math.PI);
-    const [pmx, pmy] = pt(xm, ym, z);
-    const dep_m = -xm*Math.sin(azm*Math.PI/180) + ym*Math.cos(azm*Math.PI/180);
-    pts3_minus.push({xw:xm,yw:ym,zw:z, px:pmx,py:pmy, dep:dep_m, s:-s, idx:i});
-  }
-
-  // ── α reference cylinder ──────────────────────────────────────
-  const N_CYL=64;
-  for(const zr of[-1.0, 0.0, 1.0]){
-    x3.strokeStyle='rgba(239,159,39,0.30)'; x3.lineWidth=0.9;
+  // ── Outer wireframe cylinder (like Python shell wireframe) ────
+  const N_CYL=36;
+  const R_outer = R_helix * 1.55;   // outer shell radius
+  // rings
+  for(const zr of[-Z_total/2, 0, Z_total/2]){
+    x3.strokeStyle='rgba(107,114,128,0.40)'; x3.lineWidth=0.6;
     x3.beginPath();
     for(let j=0;j<=N_CYL;j++){
       const b=2*Math.PI*j/N_CYL;
-      const[px,py]=pt(r_eq*Math.cos(b), r_eq*Math.sin(b), zr);
+      const[px,py]=p(R_outer*Math.cos(b), R_outer*Math.sin(b), zr);
       j===0?x3.moveTo(px,py):x3.lineTo(px,py);
     }
     x3.stroke();
   }
-  for(let j=0;j<N_CYL;j+=8){
+  // verticals
+  for(let j=0;j<N_CYL;j+=3){
     const b=2*Math.PI*j/N_CYL;
-    x3.strokeStyle='rgba(239,159,39,0.12)'; x3.lineWidth=0.5;
+    x3.strokeStyle='rgba(107,114,128,0.22)'; x3.lineWidth=0.4;
     x3.beginPath();
-    const[px1,py1]=pt(r_eq*Math.cos(b), r_eq*Math.sin(b),-1.0);
-    const[px2,py2]=pt(r_eq*Math.cos(b), r_eq*Math.sin(b), 1.0);
-    x3.moveTo(px1,py1); x3.lineTo(px2,py2); x3.stroke();
+    const[x1,y1]=p(R_outer*Math.cos(b),R_outer*Math.sin(b),-Z_total/2);
+    const[x2,y2]=p(R_outer*Math.cos(b),R_outer*Math.sin(b), Z_total/2);
+    x3.moveTo(x1,y1); x3.lineTo(x2,y2); x3.stroke();
   }
-  // label at top of cylinder
-  const[lax,lay]=pt(r_eq*0.7, r_eq*0.7, 1.08);
-  x3.fillStyle='rgba(239,159,39,0.72)'; x3.font='10px monospace';
-  x3.fillText('α⁻¹ = 137 ref.',lax,lay);
 
-  // ── Draw strands with depth-aware line width ──────────────────
-  // Split each strand into segments, draw back-to-front with varying
-  // opacity/linewidth to give a strong 3D impression.
-  function drawStrand(pts, color){
-    // draw as continuous polyline but with per-segment alpha based on depth
-    const n = pts.length;
-    for(let i=1;i<n;i++){
-      const p0=pts[i-1], p1=pts[i];
-      // depth: -1 = farthest back, +1 = closest front
-      const dep = (p0.dep + p1.dep) * 0.5;
-      // dep is in world units ~[-r,+r]; normalise to [0,1]
-      const t = (dep + 0.95) / 1.90;
-      const alpha = 0.35 + 0.65 * Math.max(0, Math.min(1, t));
-      const lw    = 1.0  + 2.0  * Math.max(0, Math.min(1, t));
-      x3.strokeStyle = color + Math.round(alpha*255).toString(16).padStart(2,'0');
-      x3.lineWidth   = lw;
-      x3.beginPath();
-      x3.moveTo(p0.px, p0.py);
-      x3.lineTo(p1.px, p1.py);
-      x3.stroke();
+  // ── Inner core wireframe (like Python inner wireframe) ────────
+  const R_inner = R_helix * 0.70;
+  for(let j=0;j<N_CYL;j+=3){
+    const b=2*Math.PI*j/N_CYL;
+    x3.strokeStyle='rgba(156,163,175,0.22)'; x3.lineWidth=0.35;
+    x3.beginPath();
+    const[x1,y1]=p(R_inner*Math.cos(b),R_inner*Math.sin(b),-Z_total/2);
+    const[x2,y2]=p(R_inner*Math.cos(b),R_inner*Math.sin(b), Z_total/2);
+    x3.moveTo(x1,y1); x3.lineTo(x2,y2); x3.stroke();
+  }
+
+  // ── α reference cylinder (amber, helix radius) ────────────────
+  for(const zr of[-Z_total/2, 0, Z_total/2]){
+    x3.strokeStyle='rgba(239,159,39,0.32)'; x3.lineWidth=0.9;
+    x3.beginPath();
+    for(let j=0;j<=N_CYL;j++){
+      const b=2*Math.PI*j/N_CYL;
+      const[px,py]=p(R_helix*Math.cos(b), R_helix*Math.sin(b), zr);
+      j===0?x3.moveTo(px,py):x3.lineTo(px,py);
+    }
+    x3.stroke();
+  }
+  for(let j=0;j<N_CYL;j+=6){
+    const b=2*Math.PI*j/N_CYL;
+    x3.strokeStyle='rgba(239,159,39,0.10)'; x3.lineWidth=0.5;
+    x3.beginPath();
+    const[x1,y1]=p(R_helix*Math.cos(b),R_helix*Math.sin(b),-Z_total/2);
+    const[x2,y2]=p(R_helix*Math.cos(b),R_helix*Math.sin(b), Z_total/2);
+    x3.moveTo(x1,y1); x3.lineTo(x2,y2); x3.stroke();
+  }
+
+  // ── Central τ axis ────────────────────────────────────────────
+  x3.strokeStyle='rgba(100,100,160,0.55)'; x3.lineWidth=0.8; x3.setLineDash([4,4]);
+  const[tax,tay]=p(0,0,-Z_total/2-0.12), [tbx,tby]=p(0,0,Z_total/2+0.12);
+  x3.beginPath(); x3.moveTo(tax,tay); x3.lineTo(tbx,tby); x3.stroke();
+  x3.setLineDash([]);
+  x3.fillStyle='rgba(180,170,240,0.75)'; x3.font='12px monospace';
+  x3.fillText('τ', tbx+5, tby+3);
+
+  // ── Build helix points ────────────────────────────────────────
+  // Phase: like Python — phase = k_helix*z + Omega*t
+  // k_helix = (nTurns * 2π) / Z_total   (angle per unit z)
+  // Omega = slow precession, same as Python slow rotation
+  const k_h    = (nTurns * 2*Math.PI) / Z_total;
+  const Omega  = Gamma * 0.18 * sm;  // slow precession
+  const phi0   = Omega * t_phys;     // global rotation offset
+
+  const { xi, eta } = xiEta(t_phys);
+  const s_now = A_breath * Math.sin(Gamma * t_phys * sm);
+
+  // Build segments array
+  const segs=[];
+  for(let i=0;i<N_PTS;i++){
+    const frac = i/(N_PTS-1);
+    const z    = -Z_total/2 + frac*Z_total;
+    const ang  = k_h*z + phi0;
+
+    // Both strands wind in the SAME direction (right-handed helix)
+    // L strand (ξ, teal) at angle ang
+    const xL = R_helix*Math.cos(ang),   yL = R_helix*Math.sin(ang);
+    // R strand (η, violet) offset π → antipodal
+    const xR = R_helix*Math.cos(ang+Math.PI), yR = R_helix*Math.sin(ang+Math.PI);
+
+    // Breathing amplitude at this z (propagates from top)
+    // Use global s_now — same instant, both strands feel same wave
+    // ξ is inflated when s>0, η deflated (antiphase)
+    const s_local = A_breath * Math.sin(Gamma*t_phys*sm - k_h*z*0.5);
+
+    const [ppx,ppy]=p(xL,yL,z);
+    const [pmx,pmy]=p(xR,yR,z);
+    segs.push({ xL,yL, xR,yR, z, ppx,ppy, pmx,pmy,
+      dL: d(xL,yL), dR: d(xR,yR),
+      s:  s_local });
+  }
+
+  // ── Rungs (like DNA base pairs) ───────────────────────────────
+  const rStep=Math.max(1, Math.floor(N_PTS/(nTurns*STEPS*2)));
+  for(let i=0;i<N_PTS;i+=rStep){
+    const g=segs[i];
+    const dep=(g.dL+g.dR)*0.5, t01=Math.max(0,Math.min(1,(dep+R_outer)/(2*R_outer)));
+    x3.strokeStyle=`rgba(163,163,163,${(0.07+0.16*t01).toFixed(2)})`;
+    x3.lineWidth=0.7;
+    x3.beginPath(); x3.moveTo(g.ppx,g.ppy); x3.lineTo(g.pmx,g.pmy); x3.stroke();
+  }
+
+  // ── Draw strands segment-by-segment (depth + breathing) ──────
+  // Breathing → lineWidth and luminosity pulse, NOT radius.
+  // ξ (teal): bright when s>0 (inflated), dim when s<0
+  // η (violet): opposite — bright when s<0 (inflated)
+  const Rng = R_outer;  // normalisation for depth
+  function drawStrand(getXY, getD, getS, colorHex){
+    const rC=parseInt(colorHex.slice(1,3),16);
+    const gC=parseInt(colorHex.slice(3,5),16);
+    const bC=parseInt(colorHex.slice(5,7),16);
+    for(let i=1;i<N_PTS;i++){
+      const g0=segs[i-1], g1=segs[i];
+      const [px0,py0]=getXY(g0), [px1,py1]=getXY(g1);
+      const dep=(getD(g0)+getD(g1))*0.5;
+      const s_m=(getS(g0)+getS(g1))*0.5;
+      // depth: normalise to [0,1]
+      const d01=Math.max(0,Math.min(1,(dep+Rng)/(2*Rng)));
+      // breathing luminosity: 0→dim, 1→bright
+      const lum=Math.max(0,Math.min(1,0.4 + s_m*0.6/Math.max(A_breath,0.1)));
+      const alpha=0.35+0.65*d01;
+      const lw=0.9+3.0*d01;
+      // colour × lum for breathing pulse
+      const rr=Math.round(rC*lum)|0, gg=Math.round(gC*lum)|0, bb=Math.round(bC*lum)|0;
+      x3.strokeStyle=`rgba(${rr},${gg},${bb},${alpha.toFixed(2)})`;
+      x3.lineWidth=lw;
+      x3.beginPath(); x3.moveTo(px0,py0); x3.lineTo(px1,py1); x3.stroke();
     }
   }
 
-  drawStrand(pts3_plus,  '#5DCAA5');
-  drawStrand(pts3_minus, '#7F77DD');
+  // ξ: s positive → bright
+  drawStrand(g=>[g.ppx,g.ppy], g=>g.dL, g=>g.s,       '#5DCAA5');
+  // η: s negative → bright (antiphase: pass -s)
+  drawStrand(g=>[g.pmx,g.pmy], g=>g.dR, g=>-g.s,      '#FF9F40');
 
-  // ── Rungs between the two strands (like DNA base pairs) ───────
-  // draw every ~18° (every STEPS/2 rung)
-  const RUNG_STEP = Math.max(1, Math.floor(N_PTS / (Math.round(nTurns * STEPS * 2))));
-  for(let i=0;i<N_PTS;i+=RUNG_STEP){
-    const pp=pts3_plus[i], pm=pts3_minus[i];
-    const dep=(pp.dep+pm.dep)*0.5;
-    const t=(dep+0.95)/1.90;
-    const alpha=0.12+0.25*Math.max(0,Math.min(1,t));
-    x3.strokeStyle=`rgba(180,180,200,${alpha.toFixed(2)})`;
-    x3.lineWidth=0.7;
-    x3.beginPath(); x3.moveTo(pp.px,pp.py); x3.lineTo(pm.px,pm.py); x3.stroke();
+  // ── Codon nodes on both strands, depth-sorted ─────────────────
+  const nodePts=[];
+  const nN=Math.round(nTurns*STEPS);
+  for(let k=0;k<=nN;k++){
+    const frac=k/nN;
+    const z=-Z_total/2+frac*Z_total;
+    const ang=k_h*z+phi0;
+    const xL=R_helix*Math.cos(ang),       yL=R_helix*Math.sin(ang);
+    const xR=R_helix*Math.cos(ang+Math.PI), yR=R_helix*Math.sin(ang+Math.PI);
+    const[plx,ply]=p(xL,yL,z), [prx,pry]=p(xR,yR,z);
+    nodePts.push({px:plx,py:ply,dep:d(xL,yL),col:'#5DCAA5'});
+    nodePts.push({px:prx,py:pry,dep:d(xR,yR),col:'#FF9F40'});
   }
-
-  // ── Codon nodes (amber) ───────────────────────────────────────
-  const nNodes = Math.floor(nTurns * STEPS) + 1;
-  const nodePts = [];
-  for(let k=0;k<nNodes;k++){
-    const frac = k / STEPS;
-    const ang_node = ang_start - nTurns*2*Math.PI + frac*nTurns*2*Math.PI;
-    const z_node   = -1.0 + frac*2.0;
-    if(z_node < -1.02 || z_node > 1.02) continue;
-    const t_node = t_phys*sm - (ang_start - ang_node)/Gamma;
-    const s_node = A * Math.sin(Gamma * t_node);
-    const rp = radiusNorm(sq_a * Math.exp( s_node));
-    const rm = radiusNorm(sq_a * Math.exp(-s_node));
-    const[npx,npy]=pt(rp*Math.cos(ang_node), rp*Math.sin(ang_node), z_node);
-    const[nmx,nmy]=pt(rm*Math.cos(ang_node+Math.PI), rm*Math.sin(ang_node+Math.PI), z_node);
-    const dep_p = -rp*Math.cos(ang_node)*Math.sin(azm*Math.PI/180) + rp*Math.sin(ang_node)*Math.cos(azm*Math.PI/180);
-    const dep_m = -rm*Math.cos(ang_node+Math.PI)*Math.sin(azm*Math.PI/180) + rm*Math.sin(ang_node+Math.PI)*Math.cos(azm*Math.PI/180);
-    nodePts.push({px:npx,py:npy,dep:dep_p},{px:nmx,py:nmy,dep:dep_m});
-  }
-  // sort nodes back-to-front
   nodePts.sort((a,b)=>a.dep-b.dep);
   for(const np of nodePts){
-    const t=(np.dep+0.95)/1.90;
-    const alpha=0.50+0.50*Math.max(0,Math.min(1,t));
-    const r=2.5+2.0*Math.max(0,Math.min(1,t));
+    const d01=Math.max(0,Math.min(1,(np.dep+Rng)/(2*Rng)));
+    const alpha=0.50+0.50*d01, r=2.0+2.8*d01;
     x3.fillStyle=`rgba(239,159,39,${alpha.toFixed(2)})`;
     x3.beginPath(); x3.arc(np.px,np.py,r,0,2*Math.PI); x3.fill();
   }
 
-  // Head dots at top of each strand
-  const headP = pts3_plus[N_PTS-1];
-  x3.fillStyle='white';x3.strokeStyle='#5DCAA5';x3.lineWidth=2;
-  x3.beginPath();x3.arc(headP.px,headP.py,5,0,2*Math.PI);x3.fill();x3.stroke();
-  const headM = pts3_minus[N_PTS-1];
-  x3.fillStyle='white';x3.strokeStyle='#7F77DD';x3.lineWidth=2;
-  x3.beginPath();x3.arc(headM.px,headM.py,5,0,2*Math.PI);x3.fill();x3.stroke();
+  // ── Rotors: current phase marker on each strand ───────────────
+  // z position of rotor: sweep slowly up and down
+  const z_rot = 0.0; // fixed at mid; or animate: Math.sin(t_phys*Omega)*Z_total*0.4
+  const ang_rot = k_h*z_rot + phi0;
+  const rxL=R_helix*Math.cos(ang_rot), ryL=R_helix*Math.sin(ang_rot);
+  const rxR=R_helix*Math.cos(ang_rot+Math.PI), ryR=R_helix*Math.sin(ang_rot+Math.PI);
+  const[rlx,rly]=p(rxL,ryL,z_rot), [rrx,rry]=p(rxR,ryR,z_rot);
 
-  // Labels
-  const{xi,eta}=xiEta(t_phys);
-  const direction=xi>sq_a?'ξ↑ η↓':'ξ↓ η↑';
-  x3.fillStyle='rgba(93,202,165,.75)';x3.font='10px monospace';x3.fillText('ξ — longitudinal',8,16);
-  x3.fillStyle='rgba(127,119,221,.75)';x3.font='10px monospace';x3.fillText('η — transverse',8,28);
-  x3.fillStyle='rgba(239,159,39,.65)';x3.font='10px monospace';x3.fillText(direction,8,H-8);
-  x3.fillStyle='rgba(127,119,221,.45)';x3.font='10px monospace';x3.fillText('S¹(τ) — bulk',8,H-20);
+  // Horizontal ring at rotor level
+  x3.strokeStyle='rgba(163,163,163,0.55)'; x3.lineWidth=0.9;
+  x3.beginPath();
+  for(let j=0;j<=N_CYL;j++){
+    const b=2*Math.PI*j/N_CYL;
+    const[px,py]=p(R_helix*Math.cos(b),R_helix*Math.sin(b),z_rot);
+    j===0?x3.moveTo(px,py):x3.lineTo(px,py);
+  }
+  x3.stroke();
+
+  // Rotor dots
+  x3.fillStyle='#5DCAA5';x3.strokeStyle='#000';x3.lineWidth=0.5;
+  x3.beginPath();x3.arc(rlx,rly,6,0,2*Math.PI);x3.fill();x3.stroke();
+  x3.fillStyle='#FF9F40';
+  x3.beginPath();x3.arc(rrx,rry,6,0,2*Math.PI);x3.fill();x3.stroke();
+
+  // ── Labels ───────────────────────────────────────────────────
+  const dir=xi>sq_a?'ξ↑ η↓':'ξ↓ η↑';
+  x3.fillStyle='rgba(93,202,165,0.85)';  x3.font='10px monospace'; x3.fillText('ξ  longitudinal (gravitational)',8,16);
+  x3.fillStyle='rgba(255,159,64,0.85)';  x3.font='10px monospace'; x3.fillText('η  transverse (EM)',8,28);
+  x3.fillStyle='rgba(239,159,39,0.65)';  x3.font='10px monospace'; x3.fillText('α⁻¹ = 137 — ref. cylinder',8,40);
+  x3.fillStyle='rgba(239,159,39,0.70)';  x3.font='10px monospace'; x3.fillText(dir,8,H-8);
 }
 
-// ── Draw phase diagram ────────────────────────────────────────────
+// ── DRAW 2D — XY cross-section (like Python ax2) ──────────────────
+// Shows the XY view at current z_rot: two antipodal points on the ring,
+// plus the ξη phase orbit on the right.
 function draw2D(){
-  const W=c2.width,H=c2.height;
-  const cx=W*0.50,cy=H*0.50;
-  x2.clearRect(0,0,W,H);x2.fillStyle='#0c0c10';x2.fillRect(0,0,W,H);
+  const W=c2.width, H=c2.height;
+  x2.clearRect(0,0,W,H);
+  x2.fillStyle='#0b0b0f'; x2.fillRect(0,0,W,H);
 
-  const vmin=sq_a*Math.exp(-A)*0.85;
-  const vmax=sq_a*Math.exp( A)*1.15;
+  // ── Top half: XY cross-section ────────────────────────────────
+  const cx2=W/2, cy2=H*0.30, sc2=H*0.22;
 
-  // Map (xi,eta) to canvas coords
-  // x-axis: ξ left→right; y-axis: η top→bottom (inverted)
-  function mapXY(xi_v,eta_v){
-    const px=cx+(xi_v-sq_a)/(vmax-vmin)*W*0.82;
-    const py=cy-(eta_v-sq_a)/(vmax-vmin)*H*0.82;
+  // Outer ring
+  x2.strokeStyle='rgba(107,114,128,0.45)'; x2.lineWidth=1.0;
+  x2.beginPath(); x2.arc(cx2,cy2,sc2*1.55,0,2*Math.PI); x2.stroke();
+  // Inner core ring
+  x2.strokeStyle='rgba(156,163,175,0.30)'; x2.lineWidth=0.6;
+  x2.beginPath(); x2.arc(cx2,cy2,sc2*0.70,0,2*Math.PI); x2.stroke();
+  // α reference ring (helix)
+  x2.strokeStyle='rgba(239,159,39,0.45)'; x2.lineWidth=1.0;
+  x2.beginPath(); x2.arc(cx2,cy2,sc2,0,2*Math.PI); x2.stroke();
+
+  // Current rotor angle
+  const k_h=(nTurns*2*Math.PI)/Z_total;
+  const Omega=Gamma*0.18*sm;
+  const phi0=Omega*t_phys;
+  const ang_rot=k_h*0+phi0;
+
+  // ξ point (teal)
+  const rxL=Math.cos(ang_rot)*sc2, ryL=Math.sin(ang_rot)*sc2;
+  x2.fillStyle='#5DCAA5'; x2.strokeStyle='#000'; x2.lineWidth=0.5;
+  x2.beginPath(); x2.arc(cx2+rxL,cy2+ryL,5.5,0,2*Math.PI); x2.fill(); x2.stroke();
+  // η point (orange)
+  x2.fillStyle='#FF9F40';
+  x2.beginPath(); x2.arc(cx2-rxL,cy2-ryL,5.5,0,2*Math.PI); x2.fill(); x2.stroke();
+
+  // Labels
+  x2.fillStyle='rgba(239,159,39,0.60)'; x2.font='9px monospace';
+  x2.fillText('XY — boundary R⁴',8,13);
+  x2.fillStyle='rgba(93,202,165,0.70)'; x2.font='9px monospace';
+  x2.fillText('ξ',cx2+rxL+7,cy2+ryL+4);
+  x2.fillStyle='rgba(255,159,64,0.70)'; x2.font='9px monospace';
+  x2.fillText('η',cx2-rxL+7,cy2-ryL+4);
+
+  // Divider
+  x2.strokeStyle='rgba(40,40,60,0.80)'; x2.lineWidth=0.5;
+  x2.beginPath(); x2.moveTo(8,H*0.56); x2.lineTo(W-8,H*0.56); x2.stroke();
+
+  // ── Bottom half: ξη phase orbit on hyperbola ──────────────────
+  const { xi, eta } = xiEta(t_phys);
+  const vmin=sq_a*Math.exp(-A_breath)*0.88, vmax=sq_a*Math.exp(A_breath)*1.12;
+  const cx3=W/2, cy3=H*0.79, sc3=H*0.19;
+
+  function mapPh(xv,yv){
+    const px=cx3+(xv-sq_a)/(vmax-vmin)*W*0.82;
+    const py=cy3-(yv-sq_a)/(vmax-vmin)*sc3*2;
     return[px,py];
   }
 
-  // Hyperbola ξη = α⁻¹
-  x2.strokeStyle='rgba(239,159,39,.35)';x2.lineWidth=0.9;x2.setLineDash([4,3]);
+  // Hyperbola
+  x2.strokeStyle='rgba(239,159,39,0.30)'; x2.lineWidth=0.8; x2.setLineDash([3,3]);
   x2.beginPath();
-  for(let i=0;i<=80;i++){
-    const xi_v=vmin+i/80*(vmax-vmin);
-    if(xi_v<0.1)continue;
-    const eta_v=inv_a/xi_v;
-    if(eta_v>vmax||eta_v<vmin)continue;
-    const[px,py]=mapXY(xi_v,eta_v);
-    i===0?x2.moveTo(px,py):x2.lineTo(px,py);
-  }x2.stroke();x2.setLineDash([]);
-
-  // Axes (ξ=sq_a, η=sq_a)
-  x2.strokeStyle='rgba(68,68,85,.55)';x2.lineWidth=.6;x2.setLineDash([3,3]);
-  const[axl]=mapXY(vmin,sq_a),[axr]=mapXY(vmax,sq_a);
-  x2.beginPath();x2.moveTo(axl,mapXY(vmin,sq_a)[1]);x2.lineTo(axr,mapXY(vmax,sq_a)[1]);x2.stroke();
-  const[,ayt]=mapXY(sq_a,vmax),[,ayb]=mapXY(sq_a,vmin);
-  x2.beginPath();x2.moveTo(mapXY(sq_a,vmax)[0],ayt);x2.lineTo(mapXY(sq_a,vmin)[0],ayb);x2.stroke();
-  x2.setLineDash([]);
-
-  // Trajectory
-  if(xi_hist[0]>0.1){
-    x2.strokeStyle='rgba(50,50,60,.8)';x2.lineWidth=1.0;
-    x2.beginPath();
-    for(let i=0;i<BSAMP;i++){
-      if(xi_hist[i]<0.1)continue;
-      const[px,py]=mapXY(xi_hist[i],eta_hist[i]);
-      i===0?x2.moveTo(px,py):x2.lineTo(px,py);
-    }x2.stroke();
+  let first=true;
+  for(let i=0;i<=60;i++){
+    const xv=vmin+i/60*(vmax-vmin);
+    if(xv<0.5)continue;
+    const yv=inv_a/xv;
+    if(yv<vmin||yv>vmax)continue;
+    const[px,py]=mapPh(xv,yv);
+    first?x2.moveTo(px,py):x2.lineTo(px,py); first=false;
   }
+  x2.stroke(); x2.setLineDash([]);
+
+  // Axes
+  x2.strokeStyle='rgba(60,60,80,0.55)'; x2.lineWidth=0.5; x2.setLineDash([2,2]);
+  const[ax1,ay1]=mapPh(sq_a,vmin),[ax2,ay2]=mapPh(sq_a,vmax);
+  x2.beginPath(); x2.moveTo(ax1,ay1); x2.lineTo(ax2,ay2); x2.stroke();
+  const[bx1,by1]=mapPh(vmin,sq_a),[bx2,by2]=mapPh(vmax,sq_a);
+  x2.beginPath(); x2.moveTo(bx1,by1); x2.lineTo(bx2,by2); x2.stroke();
+  x2.setLineDash([]);
 
   // 10 codon nodes on hyperbola
   for(let k=0;k<STEPS;k++){
-    const t_node=k*(2*Math.PI/Gamma)/STEPS;
-    const s=A*Math.sin(Gamma*t_node);
-    const xi_n=sq_a*Math.exp(s), eta_n=sq_a*Math.exp(-s);
-    const[px,py]=mapXY(xi_n,eta_n);
-    x2.fillStyle='#EF9F27';x2.beginPath();x2.arc(px,py,3.5,0,2*Math.PI);x2.fill();
+    const t_n=k*(2*Math.PI/Gamma)/STEPS;
+    const s=A_breath*Math.sin(Gamma*t_n);
+    const[px,py]=mapPh(sq_a*Math.exp(s), sq_a*Math.exp(-s));
+    x2.fillStyle='rgba(239,159,39,0.75)'; x2.beginPath(); x2.arc(px,py,3,0,2*Math.PI); x2.fill();
   }
 
-  // Current point
-  const{xi,eta}=xiEta(t_phys);
-  const[cpx,cpy]=mapXY(xi,eta);
-  x2.fillStyle='#7F77DD';x2.beginPath();x2.arc(cpx,cpy,6,0,2*Math.PI);x2.fill();
-  x2.strokeStyle='#5DCAA5';x2.lineWidth=1.5;x2.stroke();
+  // History trail
+  x2.strokeStyle='rgba(40,40,55,0.85)'; x2.lineWidth=0.9;
+  x2.beginPath(); let fst=true;
+  for(let i=0;i<BSAMP;i++){
+    if(xi_hist[i]<0.5){fst=true;continue;}
+    const[px,py]=mapPh(xi_hist[i],eta_hist[i]);
+    fst?x2.moveTo(px,py):x2.lineTo(px,py); fst=false;
+  }
+  x2.stroke();
 
-  // Labels
-  x2.fillStyle='rgba(239,159,39,.60)';x2.font='9px monospace';x2.fillText('ξη = α⁻¹',8,13);
-  x2.fillStyle='rgba(127,119,221,.55)';x2.font='9px monospace';
-  const lbl=LANG==='it'?'Piano di fase':'Phase plane';
-  x2.fillText(lbl,8,H-8);
-  x2.fillStyle='rgba(93,202,165,.60)';x2.font='9px monospace';
-  x2.fillText('ξ →',W-28,cy+12);
-  x2.fillText('η ↑',cx+5,14);
+  // Current point
+  const[cpx,cpy]=mapPh(xi,eta);
+  x2.fillStyle='rgba(255,159,64,0.90)'; x2.beginPath(); x2.arc(cpx,cpy,5.5,0,2*Math.PI); x2.fill();
+  x2.strokeStyle='#5DCAA5'; x2.lineWidth=1.5; x2.stroke();
+
+  // Phase labels
+  x2.fillStyle='rgba(239,159,39,0.55)'; x2.font='9px monospace';
+  x2.fillText('ξη = α⁻¹ ≈ 137',8,H*0.60);
+  x2.fillStyle='rgba(93,202,165,0.55)'; x2.fillText('ξ →',W-26,cy3+4);
+  x2.fillStyle='rgba(255,159,64,0.55)'; x2.fillText('η ↑',cx3+5,H*0.62);
 }
 
-// ── Update panel ──────────────────────────────────────────────────
+// ── Update side panel ─────────────────────────────────────────────
 function updateUI(){
   const{xi,eta}=xiEta(t_phys);
   const theta=((t_phys*sm*Gamma)%(2*Math.PI))*180/Math.PI;
@@ -471,13 +565,12 @@ function updateUI(){
 let LT=null;
 function loop(ts){
   if(LT!==null){
-    const dt=Math.min((ts-LT)/1000,.05);
+    const dt=Math.min((ts-LT)/1000,0.05);
     t_phys+=dt;
-    azm=(azm+rotAmp*0.15)%360;
+    azm_deg=(azm_deg+rotAmp*0.14)%360;
 
-    // Update history
     const{xi,eta}=xiEta(t_phys);
-    xi_hist.copyWithin(0,1); xi_hist[BSAMP-1]=xi;
+    xi_hist.copyWithin(0,1);  xi_hist[BSAMP-1]=xi;
     eta_hist.copyWithin(0,1); eta_hist[BSAMP-1]=eta;
 
     draw3D(); draw2D(); updateUI();
