@@ -89,9 +89,12 @@ footer a{color:var(--amb);text-decoration:none;opacity:.6;}footer a:hover{opacit
         <span class="cv" id="av">0.8</span>
       </div>
       <div class="cr">
-        <span class="cl t" data-en="Turns" data-it="Giri">Turns</span>
-        <input type="range" id="turns" min="1" max="5" step="0.5" value="3">
-        <span class="cv" id="tv">3</span>
+        <span class="cl t" data-en="Turns (class)" data-it="Giri (classe)">Turns (class)</span>
+        <input type="range" id="turns" min="1" max="5" step="0.5" value="2">
+        <span class="cv" id="tv">2</span>
+      </div>
+      <div style="font-size:8px;color:#3a5080;margin-top:2px;line-height:1.5;" id="class-label">
+        Class 2 (2:5) — fermionic zero mode · B-DNA
       </div>
       <div class="cr">
         <span class="cl t" data-en="Ribbon W" data-it="Largh. nastro">Ribbon W</span>
@@ -175,11 +178,26 @@ const ETA_STAR =  5*Math.sqrt(INV_A/55);   // ≈  8.44
 const STEPS = 10;   // codon nodes per turn, winding step π/5 = 36°
 
 // ── Controls ──────────────────────────────────────────────────────
-let sm=0.6, A_breath=0.8, nTurns=3.0, ribbonW=0.055, rotAmp=0.18;
+let sm=0.6, A_breath=0.8, nTurns=2.0, ribbonW=0.055, rotAmp=0.18;
 const $=id=>document.getElementById(id);
 $('speed').oninput  =e=>{sm=+e.target.value;   $('sv').textContent=(+sm).toFixed(1)+'×';};
 $('amp').oninput    =e=>{A_breath=+e.target.value; $('av').textContent=(+A_breath).toFixed(2);};
-$('turns').oninput  =e=>{nTurns=+e.target.value;   $('tv').textContent=nTurns;};
+const LISSAJOUS_CLASSES={
+  1:'Class ? (1:5) — entry',
+  1.5:'Class ? (3:10) —',
+  2:'Class 2 (2:5) — fermionic · B-DNA',
+  2.5:'Class ? (5:10) —',
+  3:'Class 3 (3:5) — EW sector W±Z⁰',
+  3.5:'Class ? —',
+  4:'Class 4 (4:5) —',
+  4.5:'Class ? —',
+  5:'Class 1 (11:5) — parent soliton',
+};
+function updateClassLabel(n){
+  const cl=LISSAJOUS_CLASSES[n]||('Turns: '+n);
+  $('class-label').textContent=cl;
+}
+$('turns').oninput=e=>{nTurns=+e.target.value; $('tv').textContent=nTurns; updateClassLabel(nTurns);};
 $('ribw').oninput   =e=>{ribbonW=+e.target.value;  $('rw').textContent=(+ribbonW).toFixed(3);};
 $('rot').oninput    =e=>{rotAmp=+e.target.value;   $('rotv').textContent=(+rotAmp).toFixed(2);};
 
@@ -566,17 +584,21 @@ function draw3D(){
     x3.beginPath(); x3.arc(px,py,5,0,2*Math.PI); x3.fill(); x3.stroke();
   }
 
-  // ── Labels ───────────────────────────────────────────────────
-  const dir=xi>XI_STAR?'ξ↑ η↓':'ξ↓ η↑';
-  x3.fillStyle='rgba(46,200,152,0.82)';  x3.font='9px monospace'; x3.fillText('Ψ⁺ ξ longitudinal (gravity)',8,14);
-  x3.fillStyle='rgba(255,128,48,0.82)';  x3.font='9px monospace'; x3.fillText('Ψ⁻ η transverse (EM)',8,25);
-  x3.fillStyle='rgba(240,168,40,0.75)';  x3.font='9px monospace'; x3.fillText(dir,8,H-8);
+  // ── Labels (font scaled to canvas size) ──────────────────────
+  const fs = Math.max(11, Math.round(W*0.022));  // responsive font size
+  const fs2= Math.max(10, Math.round(W*0.018));
+  const dir=xi>XI_STAR?'ξ↑  η↓':'ξ↓  η↑';
+  x3.fillStyle='rgba(46,200,152,0.90)';  x3.font=`bold ${fs}px monospace`;
+  x3.fillText('Ψ⁺  ξ  longitudinal (gravity)',10,fs+4);
+  x3.fillStyle='rgba(255,128,48,0.90)';  x3.font=`bold ${fs}px monospace`;
+  x3.fillText('Ψ⁻  η  transverse (EM)',10,fs*2+6);
+  x3.fillStyle='rgba(240,168,40,0.85)';  x3.font=`bold ${fs}px monospace`;
+  x3.fillText(dir, 10, H-fs-6);
 
-  // Breathing equation label
   const normA=alphaNorm(xi,eta);
   const dtau=(Math.PI*normA).toExponential(3);
-  x3.fillStyle='rgba(100,110,160,0.55)'; x3.font='8px monospace';
-  x3.fillText('δτ=π‖α‖='+dtau, 8, H-20);
+  x3.fillStyle='rgba(140,150,200,0.70)'; x3.font=`${fs2}px monospace`;
+  x3.fillText('δτ = π‖α‖ = '+dtau, 10, H-6);
 }
 
 // ── DRAW 2D ───────────────────────────────────────────────────────
@@ -603,9 +625,12 @@ function draw2D(){
   // σ = ξη = α⁻¹ ring (the real invariant reference — amber)
   x2.strokeStyle='rgba(240,168,40,0.45)'; x2.lineWidth=1.1;
   x2.beginPath(); x2.arc(cx2,cy2,sc2,0,2*Math.PI); x2.stroke();
-  // label
-  x2.fillStyle='rgba(240,168,40,0.55)'; x2.font='7.5px monospace';
-  x2.fillText('σ=ξη=α⁻¹',cx2-22,cy2-sc2-5);
+  const fs2d = Math.max(11, Math.round(W*0.048));  // responsive
+  const fs2d_sm = Math.max(10, Math.round(W*0.040));
+
+  // σ = ξη = α⁻¹ ring label
+  x2.fillStyle='rgba(240,168,40,0.65)'; x2.font=`${fs2d_sm}px monospace`;
+  x2.fillText('σ = ξη = α⁻¹',cx2-28,cy2-sc2-6);
 
   // Rotor dots — ξ and η antipodal
   const rxL=Math.cos(ang_rot)*sc2, ryL=Math.sin(ang_rot)*sc2;
@@ -624,18 +649,22 @@ function draw2D(){
   // connector line
   x2.strokeStyle='rgba(140,150,180,0.15)'; x2.lineWidth=0.6;
   x2.beginPath(); x2.moveTo(cx2+rxL,cy2+ryL); x2.lineTo(cx2-rxL,cy2-ryL); x2.stroke();
-  // labels
-  x2.fillStyle='rgba(46,200,152,0.65)'; x2.font='8px monospace';
-  x2.fillText('ξ',cx2+rxL+7,cy2+ryL+4);
-  x2.fillStyle='rgba(255,128,48,0.65)';
-  x2.fillText('η',cx2-rxL+7,cy2-ryL+4);
-  // lock-in reference point (anisotropic: ξ* at different radius from η*)
-  x2.fillStyle='rgba(240,168,40,0.30)'; x2.font='7px monospace';
-  x2.fillText('ξ*/η*=11/5',cx2-20,TOP_H-5);
+  // labels — readable size
+  const fs2d    = Math.max(12, Math.round(W*0.052));
+  const fs2d_sm = Math.max(11, Math.round(W*0.044));
 
-  // XY label
-  x2.fillStyle='rgba(240,168,40,0.50)'; x2.font='8.5px monospace';
-  x2.fillText('XY — boundary R⁴',6,11);
+  x2.fillStyle='rgba(46,200,152,0.80)'; x2.font=`bold ${fs2d}px monospace`;
+  x2.fillText('ξ',cx2+rxL+8,cy2+ryL+5);
+  x2.fillStyle='rgba(255,128,48,0.80)'; x2.font=`bold ${fs2d}px monospace`;
+  x2.fillText('η',cx2-rxL+8,cy2-ryL+5);
+  x2.fillStyle='rgba(240,168,40,0.50)'; x2.font=`${fs2d_sm}px monospace`;
+  x2.fillText('ξ*/η* = 11/5',cx2-32,TOP_H-4);
+
+  // XY label + class
+  x2.fillStyle='rgba(240,168,40,0.65)'; x2.font=`bold ${fs2d}px monospace`;
+  x2.fillText('XY — boundary R⁴',6,fs2d+2);
+  x2.fillStyle='rgba(140,160,220,0.55)'; x2.font=`${fs2d_sm}px monospace`;
+  x2.fillText('Class 2 (2:5) — B-DNA · π/5 step',6,fs2d*2+2);
 
   // ── SEPARATOR ─────────────────────────────────────────────────
   const SEP=H*0.50;
@@ -687,8 +716,8 @@ function draw2D(){
   grLP.addColorStop(0,'rgba(240,168,40,0.9)'); grLP.addColorStop(1,'rgba(240,168,40,0)');
   x2.fillStyle=grLP; x2.beginPath(); x2.arc(lpx,lpy,8,0,2*Math.PI); x2.fill();
   x2.fillStyle='rgba(255,220,100,1)'; x2.beginPath(); x2.arc(lpx,lpy,3,0,2*Math.PI); x2.fill();
-  x2.fillStyle='rgba(240,168,40,0.65)'; x2.font='7px monospace';
-  x2.fillText('ξ*/η*=11/5',lpx+5,lpy-4);
+  x2.fillStyle='rgba(240,168,40,0.70)'; x2.font=`${fs2d_sm}px monospace`;
+  x2.fillText('ξ*/η*=11/5',lpx+6,lpy-5);
 
   // 10 codon nodes on hyperbola
   for(let k=0;k<STEPS;k++){
@@ -719,14 +748,16 @@ function draw2D(){
   x2.fillStyle='rgba(255,180,80,1)'; x2.strokeStyle='rgba(46,200,152,0.8)'; x2.lineWidth=1.5;
   x2.beginPath(); x2.arc(cpx,cpy,4.5,0,2*Math.PI); x2.fill(); x2.stroke();
 
-  // ‖α‖ label
+  // ‖α‖ label — readable
   const normA=alphaNorm(xi,eta);
-  x2.fillStyle='rgba(240,168,40,0.50)'; x2.font='8px monospace';
-  x2.fillText('ξη=α⁻¹≈137',6,SEP+11);
-  x2.fillStyle='rgba(46,200,152,0.45)'; x2.fillText('ξ →',bx1-22,hyL+10);
-  x2.fillStyle='rgba(255,128,48,0.45)'; x2.fillText('η ↑',vxL+4,by0+9);
-  x2.fillStyle='rgba(160,170,210,0.45)'; x2.font='7.5px monospace';
-  x2.fillText('‖α‖='+normA.toExponential(3), bx0, by1-3);
+  x2.fillStyle='rgba(240,168,40,0.65)'; x2.font=`bold ${fs2d}px monospace`;
+  x2.fillText('ξη = α⁻¹ ≈ 137',6,SEP+fs2d+2);
+  x2.fillStyle='rgba(46,200,152,0.55)'; x2.font=`${fs2d_sm}px monospace`;
+  x2.fillText('ξ →',bx1-fs2d*2-4,hyL+fs2d_sm);
+  x2.fillStyle='rgba(255,128,48,0.55)';
+  x2.fillText('η ↑',vxL+4,by0+fs2d_sm);
+  x2.fillStyle='rgba(180,190,230,0.60)'; x2.font=`${fs2d_sm}px monospace`;
+  x2.fillText('‖α‖ = '+normA.toExponential(3), bx0, by1-3);
 }
 
 // ── Update side panel ─────────────────────────────────────────────
