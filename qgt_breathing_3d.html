@@ -606,6 +606,10 @@ function draw2D(){
   const W=c2.width, H=c2.height;
   x2.clearRect(0,0,W,H); x2.fillStyle='#07070e'; x2.fillRect(0,0,W,H);
 
+  // Font sizes — declared first, used everywhere below
+  const fs2d    = Math.max(12, Math.round(W*0.052));
+  const fs2d_sm = Math.max(11, Math.round(W*0.044));
+
   const {xi,eta}=xiEta(t_phys);
   const k_h=(nTurns*2*Math.PI)/Z;
   const phi0=GAMMA*0.15*sm*t_phys;
@@ -650,9 +654,6 @@ function draw2D(){
   x2.strokeStyle='rgba(140,150,180,0.15)'; x2.lineWidth=0.6;
   x2.beginPath(); x2.moveTo(cx2+rxL,cy2+ryL); x2.lineTo(cx2-rxL,cy2-ryL); x2.stroke();
   // labels — readable size
-  const fs2d    = Math.max(12, Math.round(W*0.052));
-  const fs2d_sm = Math.max(11, Math.round(W*0.044));
-
   x2.fillStyle='rgba(46,200,152,0.80)'; x2.font=`bold ${fs2d}px monospace`;
   x2.fillText('ξ',cx2+rxL+8,cy2+ryL+5);
   x2.fillStyle='rgba(255,128,48,0.80)'; x2.font=`bold ${fs2d}px monospace`;
