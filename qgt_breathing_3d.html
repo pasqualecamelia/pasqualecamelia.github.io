@@ -186,9 +186,11 @@ function sizeCanvases(){
   const wrap=document.querySelector('.canvases');
   const W=wrap.clientWidth, H=wrap.clientHeight;
   const s3=Math.min(W*0.52,H-6)|0;
-  const s2=Math.min(W*0.44,H-6)|0;
+  // c2 is taller than wide so both panels fit without overlap
+  const c2w=Math.min(W*0.43,H*0.52)|0;
+  const c2h=Math.min(H-6, c2w*2.1)|0;
   c3.width=s3; c3.height=s3;
-  c2.width=s2; c2.height=s2;
+  c2.width=c2w; c2.height=c2h;
 }
 sizeCanvases();
 window.addEventListener('resize',sizeCanvases);
@@ -438,70 +440,94 @@ function draw3D(){
   x3.fillStyle='rgba(239,159,39,0.70)';  x3.font='10px monospace'; x3.fillText(dir,8,H-8);
 }
 
-// ── DRAW 2D — XY cross-section (like Python ax2) ──────────────────
-// Shows the XY view at current z_rot: two antipodal points on the ring,
-// plus the ξη phase orbit on the right.
+// ── DRAW 2D — XY cross-section (top) + ξη phase plane (bottom) ──
 function draw2D(){
   const W=c2.width, H=c2.height;
   x2.clearRect(0,0,W,H);
   x2.fillStyle='#0b0b0f'; x2.fillRect(0,0,W,H);
 
-  // ── Top half: XY cross-section ────────────────────────────────
-  const cx2=W/2, cy2=H*0.30, sc2=H*0.22;
+  const k_h  =(nTurns*2*Math.PI)/Z_total;
+  const Omega=Gamma*0.18*sm;
+  const phi0 =Omega*t_phys;
+  const ang_rot=k_h*0+phi0;
+
+  // ────────────────────────────────────────────────────────────
+  // TOP HALF: XY cross-section (0 .. H*0.46)
+  // ────────────────────────────────────────────────────────────
+  const TOP_H = H*0.46;
+  const cx2=W/2, cy2=TOP_H*0.50;
+  const sc2=Math.min(W,TOP_H)*0.30;
 
   // Outer ring
-  x2.strokeStyle='rgba(107,114,128,0.45)'; x2.lineWidth=1.0;
+  x2.strokeStyle='rgba(107,114,128,0.40)'; x2.lineWidth=1.0;
   x2.beginPath(); x2.arc(cx2,cy2,sc2*1.55,0,2*Math.PI); x2.stroke();
   // Inner core ring
-  x2.strokeStyle='rgba(156,163,175,0.30)'; x2.lineWidth=0.6;
+  x2.strokeStyle='rgba(156,163,175,0.25)'; x2.lineWidth=0.6;
   x2.beginPath(); x2.arc(cx2,cy2,sc2*0.70,0,2*Math.PI); x2.stroke();
-  // α reference ring (helix)
+  // α reference ring (helix radius)
   x2.strokeStyle='rgba(239,159,39,0.45)'; x2.lineWidth=1.0;
   x2.beginPath(); x2.arc(cx2,cy2,sc2,0,2*Math.PI); x2.stroke();
 
-  // Current rotor angle
-  const k_h=(nTurns*2*Math.PI)/Z_total;
-  const Omega=Gamma*0.18*sm;
-  const phi0=Omega*t_phys;
-  const ang_rot=k_h*0+phi0;
-
-  // ξ point (teal)
+  // ξ rotor dot (teal)
   const rxL=Math.cos(ang_rot)*sc2, ryL=Math.sin(ang_rot)*sc2;
   x2.fillStyle='#5DCAA5'; x2.strokeStyle='#000'; x2.lineWidth=0.5;
   x2.beginPath(); x2.arc(cx2+rxL,cy2+ryL,5.5,0,2*Math.PI); x2.fill(); x2.stroke();
-  // η point (orange)
+  // η rotor dot (orange) — antipodal
   x2.fillStyle='#FF9F40';
   x2.beginPath(); x2.arc(cx2-rxL,cy2-ryL,5.5,0,2*Math.PI); x2.fill(); x2.stroke();
 
+  // Diameter line connecting the two
+  x2.strokeStyle='rgba(163,163,163,0.20)'; x2.lineWidth=0.6;
+  x2.beginPath(); x2.moveTo(cx2+rxL,cy2+ryL); x2.lineTo(cx2-rxL,cy2-ryL); x2.stroke();
+
   // Labels
   x2.fillStyle='rgba(239,159,39,0.60)'; x2.font='9px monospace';
-  x2.fillText('XY — boundary R⁴',8,13);
+  x2.fillText('XY — boundary R⁴',6,12);
   x2.fillStyle='rgba(93,202,165,0.70)'; x2.font='9px monospace';
   x2.fillText('ξ',cx2+rxL+7,cy2+ryL+4);
   x2.fillStyle='rgba(255,159,64,0.70)'; x2.font='9px monospace';
   x2.fillText('η',cx2-rxL+7,cy2-ryL+4);
 
-  // Divider
-  x2.strokeStyle='rgba(40,40,60,0.80)'; x2.lineWidth=0.5;
-  x2.beginPath(); x2.moveTo(8,H*0.56); x2.lineTo(W-8,H*0.56); x2.stroke();
+  // ────────────────────────────────────────────────────────────
+  // SEPARATOR
+  // ────────────────────────────────────────────────────────────
+  const SEP_Y = H*0.50;
+  x2.strokeStyle='rgba(30,30,50,1.0)'; x2.lineWidth=1.5;
+  x2.beginPath(); x2.moveTo(0,SEP_Y); x2.lineTo(W,SEP_Y); x2.stroke();
 
-  // ── Bottom half: ξη phase orbit on hyperbola ──────────────────
+  // ────────────────────────────────────────────────────────────
+  // BOTTOM HALF: ξη phase orbit on hyperbola (SEP_Y .. H)
+  // ────────────────────────────────────────────────────────────
+  const BOT_H = H - SEP_Y;
   const { xi, eta } = xiEta(t_phys);
-  const vmin=sq_a*Math.exp(-A_breath)*0.88, vmax=sq_a*Math.exp(A_breath)*1.12;
-  const cx3=W/2, cy3=H*0.79, sc3=H*0.19;
+  const vmin=sq_a*Math.exp(-A_breath)*0.90, vmax=sq_a*Math.exp(A_breath)*1.10;
+
+  // Margins inside bottom section
+  const MX=14, MY=10;
+  const bx0=MX, bx1=W-MX, by0=SEP_Y+MY, by1=H-MY;
+  const bW=bx1-bx0, bH=by1-by0;
 
   function mapPh(xv,yv){
-    const px=cx3+(xv-sq_a)/(vmax-vmin)*W*0.82;
-    const py=cy3-(yv-sq_a)/(vmax-vmin)*sc3*2;
+    const px=bx0 + (xv-vmin)/(vmax-vmin)*bW;
+    const py=by1 - (yv-vmin)/(vmax-vmin)*bH;
     return[px,py];
   }
 
-  // Hyperbola
-  x2.strokeStyle='rgba(239,159,39,0.30)'; x2.lineWidth=0.8; x2.setLineDash([3,3]);
-  x2.beginPath();
-  let first=true;
-  for(let i=0;i<=60;i++){
-    const xv=vmin+i/60*(vmax-vmin);
+  // Axis lines
+  x2.strokeStyle='rgba(50,50,70,0.70)'; x2.lineWidth=0.5; x2.setLineDash([2,2]);
+  // ξ = sq_a (vertical)
+  const[vx,vy0]=mapPh(sq_a,vmin), [,vy1]=mapPh(sq_a,vmax);
+  x2.beginPath(); x2.moveTo(vx,vy0); x2.lineTo(vx,vy1); x2.stroke();
+  // η = sq_a (horizontal)
+  const[hx0,hy]=mapPh(vmin,sq_a), [hx1]=mapPh(vmax,sq_a);
+  x2.beginPath(); x2.moveTo(hx0,hy); x2.lineTo(hx1,hy); x2.stroke();
+  x2.setLineDash([]);
+
+  // Hyperbola ξη = α⁻¹
+  x2.strokeStyle='rgba(239,159,39,0.35)'; x2.lineWidth=0.9; x2.setLineDash([3,3]);
+  x2.beginPath(); let first=true;
+  for(let i=0;i<=80;i++){
+    const xv=vmin+i/80*(vmax-vmin);
     if(xv<0.5)continue;
     const yv=inv_a/xv;
     if(yv<vmin||yv>vmax)continue;
@@ -510,24 +536,16 @@ function draw2D(){
   }
   x2.stroke(); x2.setLineDash([]);
 
-  // Axes
-  x2.strokeStyle='rgba(60,60,80,0.55)'; x2.lineWidth=0.5; x2.setLineDash([2,2]);
-  const[ax1,ay1]=mapPh(sq_a,vmin),[ax2,ay2]=mapPh(sq_a,vmax);
-  x2.beginPath(); x2.moveTo(ax1,ay1); x2.lineTo(ax2,ay2); x2.stroke();
-  const[bx1,by1]=mapPh(vmin,sq_a),[bx2,by2]=mapPh(vmax,sq_a);
-  x2.beginPath(); x2.moveTo(bx1,by1); x2.lineTo(bx2,by2); x2.stroke();
-  x2.setLineDash([]);
-
   // 10 codon nodes on hyperbola
   for(let k=0;k<STEPS;k++){
     const t_n=k*(2*Math.PI/Gamma)/STEPS;
     const s=A_breath*Math.sin(Gamma*t_n);
     const[px,py]=mapPh(sq_a*Math.exp(s), sq_a*Math.exp(-s));
-    x2.fillStyle='rgba(239,159,39,0.75)'; x2.beginPath(); x2.arc(px,py,3,0,2*Math.PI); x2.fill();
+    x2.fillStyle='rgba(239,159,39,0.75)'; x2.beginPath(); x2.arc(px,py,2.5,0,2*Math.PI); x2.fill();
   }
 
   // History trail
-  x2.strokeStyle='rgba(40,40,55,0.85)'; x2.lineWidth=0.9;
+  x2.strokeStyle='rgba(45,45,60,0.90)'; x2.lineWidth=0.9;
   x2.beginPath(); let fst=true;
   for(let i=0;i<BSAMP;i++){
     if(xi_hist[i]<0.5){fst=true;continue;}
@@ -538,14 +556,16 @@ function draw2D(){
 
   // Current point
   const[cpx,cpy]=mapPh(xi,eta);
-  x2.fillStyle='rgba(255,159,64,0.90)'; x2.beginPath(); x2.arc(cpx,cpy,5.5,0,2*Math.PI); x2.fill();
+  x2.fillStyle='rgba(255,159,64,0.90)'; x2.beginPath(); x2.arc(cpx,cpy,5,0,2*Math.PI); x2.fill();
   x2.strokeStyle='#5DCAA5'; x2.lineWidth=1.5; x2.stroke();
 
-  // Phase labels
+  // Axis labels
   x2.fillStyle='rgba(239,159,39,0.55)'; x2.font='9px monospace';
-  x2.fillText('ξη = α⁻¹ ≈ 137',8,H*0.60);
-  x2.fillStyle='rgba(93,202,165,0.55)'; x2.fillText('ξ →',W-26,cy3+4);
-  x2.fillStyle='rgba(255,159,64,0.55)'; x2.fillText('η ↑',cx3+5,H*0.62);
+  x2.fillText('ξη = α⁻¹',6,SEP_Y+12);
+  x2.fillStyle='rgba(93,202,165,0.55)'; x2.font='9px monospace';
+  x2.fillText('ξ →',bx1-20,hy+10);
+  x2.fillStyle='rgba(255,159,64,0.55)'; x2.font='9px monospace';
+  x2.fillText('η ↑',vx+4,by0+10);
 }
 
 // ── Update side panel ─────────────────────────────────────────────
