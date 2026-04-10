@@ -629,9 +629,6 @@ function draw2D(){
   // σ = ξη = α⁻¹ ring (the real invariant reference — amber)
   x2.strokeStyle='rgba(240,168,40,0.45)'; x2.lineWidth=1.1;
   x2.beginPath(); x2.arc(cx2,cy2,sc2,0,2*Math.PI); x2.stroke();
-  const fs2d = Math.max(11, Math.round(W*0.048));  // responsive
-  const fs2d_sm = Math.max(10, Math.round(W*0.040));
-
   // σ = ξη = α⁻¹ ring label
   x2.fillStyle='rgba(240,168,40,0.65)'; x2.font=`${fs2d_sm}px monospace`;
   x2.fillText('σ = ξη = α⁻¹',cx2-28,cy2-sc2-6);
