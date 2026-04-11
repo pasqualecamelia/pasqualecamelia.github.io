@@ -796,159 +796,132 @@ function drawPoly(){
 // Shows the 4 Lissajous orbit classes C1-C4 in the (ξ,η) plane
 // evolving on ξη ≈ α⁻¹ (P09)
 // ── DRAW LISSAJOUS — annular boundary shell (P11) ──────────────────
+// ── DRAW LISSAJOUS — correct (ξ,η) plane, P09 geometry ─────────────
+// Lissajous orbits are CARTESIAN figures in the (ξ,η) plane.
+// ξ = longitudinal/gravitational (x-axis), η = transverse/EM (y-axis).
+// The boundary annulus is the frame; R4 circle is the lock-in surface.
+// The (ξ,η) plane is mapped linearly into the annular canvas region.
+// ── DRAW LISSAJOUS — P09 cartesian (xi,eta) plane ──────────────────
+// ── DRAW LISSAJOUS — transverse XY cross-section of the cylinder ───
+// The two helices Psi+/Psi- wind around the xi axis.
+// This is the XY cross-section: a circle.
+// Psi+ and Psi- trace antipodal points on the ring.
+// Their quasi-periodic traces form Lissajous-like patterns on the annulus.
+// DW1=outer breathing ring, DW2=inner breathing ring, R4=stable white circle.
+// ξ(t)=ξ*·(1+A·sin(p·t)), η(t)=η*·(1+A·sin(q·t))
+// In the XY plane: the spinor position angle = ξ(t)/XI_STAR * 2π
+//                  the spinor radius        = η(t)/ETA_STAR * R_mid
 function drawLissajous(){
   var W=c2.width,H=c2.height;
   x2.clearRect(0,0,W,H);x2.fillStyle='#07070d';x2.fillRect(0,0,W,H);
-  var fss=9, fs=11;
-  var cx=W/2, cy=H/2;
-
-  var xi_cur=xi_hist[BS-1], eta_cur=eta_hist[BS-1];
+  var fss=9,fs=11;
+  var cx=W/2,cy=H/2;
+  var xi_cur=xi_hist[BS-1],eta_cur=eta_hist[BS-1];
   var bk=8*(xi_cur/XI_STAR)*(eta_cur/ETA_STAR);
   var breath=Math.sin(Gamma*t_phys*sm);
+  var sc=Math.min(W,H)/2*0.88;
+  var R_dw1=sc*(1.00+0.06*breath);
+  var R_dw2=sc*(0.52-0.04*breath);
+  var R_r4=(R_dw1+R_dw2)*0.5;
+  var R_mid=(R_dw1+R_dw2)*0.5;
+  var R_hw=(R_dw1-R_dw2)*0.48; // almost full shell width
 
-  // Radii: DW2=inner, DW1=outer, shell breathes
-  var sc=Math.min(W,H)/2*0.90;
-  var R_inner=sc*0.54*(1-0.06*breath);
-  var R_outer=sc*0.95*(1+0.06*breath);
+  // Bulk interior
+  var gB=x2.createRadialGradient(cx,cy,0,cx,cy,R_dw2);
+  gB.addColorStop(0,'rgba(12,12,35,1)');gB.addColorStop(1,'rgba(6,6,18,1)');
+  x2.fillStyle=gB;x2.beginPath();x2.arc(cx,cy,R_dw2,0,2*Math.PI);x2.fill();
+  x2.fillStyle='rgba(60,70,120,0.45)';x2.font='bold '+fss+'px monospace';
+  x2.textAlign='center';x2.fillText('ker Pi bulk',cx,cy+4);x2.textAlign='left';
 
-  // Bulk interior (ker Pi)
-  var gB=x2.createRadialGradient(cx,cy,0,cx,cy,R_inner);
-  gB.addColorStop(0,'rgba(15,15,40,1)');gB.addColorStop(1,'rgba(8,8,20,1)');
-  x2.fillStyle=gB;x2.beginPath();x2.arc(cx,cy,R_inner,0,2*Math.PI);x2.fill();
-  x2.fillStyle='rgba(70,80,130,0.50)';x2.font='bold '+fss+'px monospace';
-  x2.textAlign='center';x2.fillText('ker Π  bulk M⁵',cx,cy+4);x2.textAlign='left';
+  // Shell fill
+  var gS=x2.createRadialGradient(cx,cy,R_dw2,cx,cy,R_dw1);
+  gS.addColorStop(0,'rgba(80,30,8,0.12)');
+  gS.addColorStop(0.5,'rgba(140,55,12,0.22)');
+  gS.addColorStop(1,'rgba(80,30,8,0.10)');
+  x2.fillStyle=gS;x2.beginPath();
+  x2.arc(cx,cy,R_dw1,0,2*Math.PI);
+  x2.arc(cx,cy,R_dw2,0,2*Math.PI,true);x2.fill();
 
-  // Shell R4
-  var gS=x2.createRadialGradient(cx,cy,R_inner,cx,cy,R_outer);
-  gS.addColorStop(0,'rgba(140,55,10,0.20)');
-  gS.addColorStop(0.5,'rgba(190,80,20,0.35)');
-  gS.addColorStop(1,'rgba(140,55,10,0.18)');
-  x2.fillStyle=gS;
-  x2.beginPath();x2.arc(cx,cy,R_outer,0,2*Math.PI);
-  x2.arc(cx,cy,R_inner,0,2*Math.PI,true);x2.fill();
-
-  // DW2 inner — violet
+  // DW2 violet inner
   x2.strokeStyle='rgba(190,60,255,0.85)';x2.lineWidth=2.0;
-  x2.beginPath();x2.arc(cx,cy,R_inner,0,2*Math.PI);x2.stroke();
-  // DW1 outer — blue, pulses
+  x2.beginPath();x2.arc(cx,cy,R_dw2,0,2*Math.PI);x2.stroke();
+  // DW1 blue outer pulsing
   var p1=0.5+0.5*Math.abs(breath);
   x2.strokeStyle='rgba(68,136,255,'+(0.55+0.35*p1).toFixed(2)+')';
   x2.lineWidth=1.5+p1;
-  x2.beginPath();x2.arc(cx,cy,R_outer,0,2*Math.PI);x2.stroke();
-
-  // ── R⁴ — stable circle at midpoint, our spacetime ────────────────
-  // R⁴ is the fixed locus between the two breathing DWs
-  // It does NOT breathe — it is the Noether lock-in surface ξη=α⁻¹
-  var R_R4=(R_inner+R_outer)*0.5;
-  x2.strokeStyle='rgba(255,255,255,0.90)';
-  x2.lineWidth=2.8;
-  x2.beginPath();x2.arc(cx,cy,R_R4,0,2*Math.PI);x2.stroke();
-  // Glow
-  var gR4=x2.createRadialGradient(cx,cy,R_R4-4,cx,cy,R_R4+4);
-  gR4.addColorStop(0,'rgba(255,255,255,0)');
-  gR4.addColorStop(0.5,'rgba(255,255,255,0.15)');
-  gR4.addColorStop(1,'rgba(255,255,255,0)');
-  x2.strokeStyle=gR4;x2.lineWidth=8;
-  x2.beginPath();x2.arc(cx,cy,R_R4,0,2*Math.PI);x2.stroke();
-  // Label
-  x2.fillStyle='rgba(255,255,255,0.90)';x2.font='bold '+fss+'px monospace';
-  x2.textAlign='center';
-  x2.fillText('R⁴  ξη=α⁻¹',cx,cy-R_R4-5);
+  x2.beginPath();x2.arc(cx,cy,R_dw1,0,2*Math.PI);x2.stroke();
+  // R4 white stable
+  x2.strokeStyle='rgba(255,255,255,0.88)';x2.lineWidth=2.5;
+  x2.beginPath();x2.arc(cx,cy,R_r4,0,2*Math.PI);x2.stroke();
+  x2.fillStyle='rgba(255,255,255,0.75)';x2.font='bold '+fss+'px monospace';
+  x2.textAlign='center';x2.fillText('R4  xih=a-1',cx,cy-R_r4-5);
   x2.textAlign='left';
 
-  // Lissajous orbits mapped into shell: xi->radial, eta->angular
-  // Each class has ratio p:q — angular speed scales by q, radial by p
-  // This gives the correct quasi-periodic winding on the annulus
-  var R_mid=(R_inner+R_outer)/2;
-  var R_hw=(R_outer-R_inner)*0.42;
-  LISS_CLASSES.forEach(function(cls){
-    if(!cls.show)return;
-    var hist=LISS_HIST[cls.id];
-    if(hist.length<2)return;
-    // Phase offset per class so they don't overlap at start
-    var phase_off=LISS_CLASSES.indexOf(cls)*Math.PI*0.5;
-    for(var i=1;i<hist.length;i++){
-      var t01=i/(hist.length-1);
-      var h0=hist[i-1],h1=hist[i];
-      // Radial: ξ deviation from lock-in
-      var r0=R_mid+(h0.xi-XI_STAR)/XI_STAR*R_hw;
-      var r1=R_mid+(h1.xi-XI_STAR)/XI_STAR*R_hw;
-      // Angular: η deviation scaled by class ratio q/p for correct winding
-      var q_ratio=cls.q/cls.p;
-      var a0=(h0.eta-ETA_STAR)/ETA_STAR*Math.PI*2*q_ratio+phase_off-Math.PI/2;
-      var a1=(h1.eta-ETA_STAR)/ETA_STAR*Math.PI*2*q_ratio+phase_off-Math.PI/2;
-      var alp=0.04+0.70*t01*t01; // quadratic fade — old points very transparent
-      x2.strokeStyle=cls.col+Math.round(alp*255).toString(16).padStart(2,'0');
-      x2.lineWidth=0.5+t01*1.2;
-      x2.beginPath();
-      x2.moveTo(cx+r0*Math.cos(a0),cy+r0*Math.sin(a0));
-      x2.lineTo(cx+r1*Math.cos(a1),cy+r1*Math.sin(a1));
-      x2.stroke();
-    }
-    if(hist.length>0){
-      var cur=hist[hist.length-1];
-      var rc=R_mid+(cur.xi-XI_STAR)/XI_STAR*R_hw;
-      var ac=(cur.eta-ETA_STAR)/ETA_STAR*Math.PI*2-Math.PI/2;
-      var px=cx+rc*Math.cos(ac), py=cy+rc*Math.sin(ac);
-      var gc=x2.createRadialGradient(px,py,0,px,py,9);
-      gc.addColorStop(0,cls.col+'dd');gc.addColorStop(1,cls.col+'00');
-      x2.fillStyle=gc;x2.beginPath();x2.arc(px,py,9,0,2*Math.PI);x2.fill();
-      x2.fillStyle=cls.col;x2.beginPath();x2.arc(px,py,3,0,2*Math.PI);x2.fill();
-    }
-  });
+  // Show only the selected active class (or C1 if all visible)
+  var activeCls=null;
+  LISS_CLASSES.forEach(function(cls){if(cls.show)activeCls=cls;});
+  // prefer C1 if multiple visible
+  LISS_CLASSES.forEach(function(cls){if(cls.show&&cls.id===1)activeCls=cls;});
+  if(!activeCls)return;
 
-  // Poynting vector xi — radial outward (top)
-  var S_n=Math.min(1,(xi_cur*eta_cur)/inv_a);
-  var pw=(R_outer-R_inner)*0.85*S_n;
-  x2.strokeStyle='rgba(46,200,152,0.90)';x2.lineWidth=2.2;
-  x2.beginPath();x2.moveTo(cx,cy-R_inner-2);x2.lineTo(cx,cy-R_inner-pw);x2.stroke();
-  x2.fillStyle='rgba(46,200,152,0.90)';
-  x2.beginPath();x2.moveTo(cx,cy-R_inner-pw);
-  x2.lineTo(cx-5,cy-R_inner-pw+9);x2.lineTo(cx+5,cy-R_inner-pw+9);
-  x2.closePath();x2.fill();
-  x2.fillStyle='rgba(46,200,152,0.80)';x2.font='bold '+fss+'px monospace';
-  x2.textAlign='center';x2.fillText('ξ S∝α⁻¹',cx,cy-R_inner-pw-4);x2.textAlign='left';
+  var hist=LISS_HIST[activeCls.id];
+  if(hist.length<2){
+    // labels and return
+    x2.fillStyle='rgba(240,168,40,0.75)';x2.font='bold '+fs+'px monospace';
+    x2.textAlign='center';x2.fillText('dV cross-section  Bk='+bk.toFixed(2),cx,H-fss-2);x2.textAlign='left';
+    return;
+  }
 
-  // eta tangential arrow
-  x2.strokeStyle='rgba(255,128,48,0.70)';x2.lineWidth=1.5;
-  var ea=R_inner*0.65;
-  x2.beginPath();x2.moveTo(cx+R_inner+3,cy);x2.lineTo(cx+R_inner+3+ea,cy);x2.stroke();
-  x2.fillStyle='rgba(255,128,48,0.70)';
-  x2.beginPath();x2.moveTo(cx+R_inner+3+ea,cy);
-  x2.lineTo(cx+R_inner+3+ea-7,cy-4);x2.lineTo(cx+R_inner+3+ea-7,cy+4);
-  x2.closePath();x2.fill();
-  x2.fillStyle='rgba(255,128,48,0.65)';x2.font=fss+'px monospace';
-  x2.fillText('η',cx+R_inner+3+ea+4,cy+4);
+  // Draw the Lissajous as a continuous path on the annulus.
+  // We accumulate the angle continuously (no wrapping jumps) from xi(t).
+  // eta(t) maps to radius. The result is a spirograph-like pattern on the ring.
+  var angles=[], radii=[];
+  var cumAngle=0;
+  var prev_xi=hist[0].xi;
+  for(var i=0;i<hist.length;i++){
+    var h=hist[i];
+    // incremental angle from xi change — avoids large jumps
+    var dxi=h.xi-prev_xi;
+    cumAngle+=dxi/XI_STAR*Math.PI*activeCls.p;
+    prev_xi=h.xi;
+    var r=R_mid+(h.eta-ETA_STAR)/ETA_STAR*R_hw;
+    r=Math.max(R_dw2+1.5,Math.min(R_dw1-1.5,r));
+    angles.push(cumAngle-Math.PI/2);
+    radii.push(r);
+  }
 
-  // DCE pump arrows outward on DW1
-  for(var k=0;k<4;k++){
-    var ang=-Math.PI/2+k*Math.PI/2+Gamma*t_phys*sm*0.4;
-    x2.strokeStyle='rgba(240,168,40,0.45)';x2.lineWidth=1.2;
+  // Draw trail with fade
+  for(var i=1;i<hist.length;i++){
+    var t01=i/(hist.length-1);
+    var alp=0.03+0.82*t01*t01;
+    x2.strokeStyle=activeCls.col+Math.round(alp*255).toString(16).padStart(2,'0');
+    x2.lineWidth=0.6+t01*1.5;
     x2.beginPath();
-    x2.moveTo(cx+R_outer*0.93*Math.cos(ang),cy+R_outer*0.93*Math.sin(ang));
-    x2.lineTo(cx+(R_outer+9)*Math.cos(ang),cy+(R_outer+9)*Math.sin(ang));
+    x2.moveTo(cx+radii[i-1]*Math.cos(angles[i-1]),cy+radii[i-1]*Math.sin(angles[i-1]));
+    x2.lineTo(cx+radii[i]*Math.cos(angles[i]),cy+radii[i]*Math.sin(angles[i]));
     x2.stroke();
   }
 
+  // Current point glow
+  var last=hist.length-1;
+  var pcx=cx+radii[last]*Math.cos(angles[last]);
+  var pcy=cy+radii[last]*Math.sin(angles[last]);
+  var gc=x2.createRadialGradient(pcx,pcy,0,pcx,pcy,12);
+  gc.addColorStop(0,activeCls.col+'ee');gc.addColorStop(1,activeCls.col+'00');
+  x2.fillStyle=gc;x2.beginPath();x2.arc(pcx,pcy,12,0,2*Math.PI);x2.fill();
+  x2.fillStyle=activeCls.col;x2.strokeStyle='rgba(255,255,255,0.5)';x2.lineWidth=1.2;
+  x2.beginPath();x2.arc(pcx,pcy,5,0,2*Math.PI);x2.fill();x2.stroke();
+
   // Labels
-  x2.fillStyle='rgba(68,136,255,0.80)';x2.font='bold '+fss+'px monospace';
-  x2.fillText('DW₁',2,cy+2);
-  x2.fillStyle='rgba(190,60,255,0.80)';x2.font='bold '+fss+'px monospace';
-  x2.fillText('DW₂',cx-R_inner*0.9,cy-R_inner*0.55);
-  x2.fillStyle='rgba(240,168,40,0.75)';x2.font='bold '+fs+'px monospace';
-  x2.textAlign='center';x2.fillText('∂V · R⁴ breathing shell',cx,H-fss-2);
-  x2.fillStyle='rgba(200,180,100,0.55)';x2.font=fss+'px monospace';
-  x2.fillText('ξη=α⁻¹  B_k='+bk.toFixed(2),cx,H-2);
+  x2.fillStyle='rgba(68,136,255,0.80)';x2.font='bold '+fss+'px monospace';x2.fillText('DW1',3,cy+2);
+  x2.fillStyle='rgba(190,60,255,0.75)';x2.font=fss+'px monospace';
+  x2.textAlign='center';x2.fillText('DW2',cx,cy+R_dw2-fss-3);x2.textAlign='left';
+  x2.fillStyle=activeCls.col;x2.font='bold '+fs+'px monospace';
+  x2.textAlign='center';
+  x2.fillText('C'+activeCls.id+'  '+activeCls.p+':'+activeCls.q+'  Bk='+bk.toFixed(2),cx,H-fss-2);
   x2.textAlign='left';
-  LISS_CLASSES.forEach(function(cls,i){
-    if(!cls.show)return;
-    x2.fillStyle=cls.col+'cc';x2.font='bold '+fss+'px monospace';
-    x2.fillText(cls.name+' '+cls.p+':'+cls.q,W-fss*5,fss*(i+1)+4);
-  });
 }
 
-
-// ── DRAW BREATHING CHART ──────────────────────────────────────────
 function drawBreath(){
   var W=cb.width,H=cb.height;
   xb.clearRect(0,0,W,H);xb.fillStyle='#09090e';xb.fillRect(0,0,W,H);
