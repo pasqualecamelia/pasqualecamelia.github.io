@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pasquale Camelia — Quantum Gauge Theory of Time · Finite-Rank Projection · Foundations of Physics</title>
-  <meta name="description" content="Pasquale Camelia, independent researcher. A single structural result: finite-rank non-isometric projection necessarily generates observable structure. Metric, time, gauge, and physical fields are necessary residuals of irreversible information loss. QGT series, 18 preprints on Zenodo." />
+  <meta name="description" content="Pasquale Camelia, independent researcher. A single structural result: finite-rank non-isometric projection necessarily generates observable structure. Metric, time, gauge, and physical fields are necessary residuals of irreversible information loss. QGT series, 25 preprints. Re-archiving on OSF Preprints." />
   <meta name="author" content="Pasquale Camelia" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://pasqualecamelia.github.io/" />
   <meta property="og:type" content="profile" />
   <meta property="og:title" content="Pasquale Camelia — Quantum Gauge Theory of Time" />
-  <meta property="og:description" content="Independent researcher. QGT series: physics as the topology of a non-invertible projection. 18 preprints on Zenodo. ORCID 0009-0006-4779-4647." />
+  <meta property="og:description" content="Independent researcher. QGT series: physics as the topology of a non-invertible projection. 25 preprints. Re-archiving on OSF Preprints. ORCID 0009-0006-4779-4647." />
   <meta property="og:url" content="https://pasqualecamelia.github.io/" />
   <meta name="citation_author" content="Camelia, Pasquale" />
   <meta name="citation_title" content="Physics as the Topology of a Non-Invertible Projection" />
@@ -151,6 +151,18 @@
 
     footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);font-size:0.84rem;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--mono);}
 
+    /* Zenodo status notice */
+    .zenodo-notice{background:#fff8f0;border:1.5px solid #e0a020;border-radius:8px;padding:18px 24px;margin-bottom:48px;font-size:0.88rem;line-height:1.7;}
+    .zenodo-notice-title{font-family:var(--mono);font-size:0.72rem;text-transform:uppercase;letter-spacing:.1em;color:#b06010;margin-bottom:8px;font-weight:700;}
+    .zenodo-notice p{color:#5a3a10;margin-bottom:6px;}
+    .zenodo-notice a{color:#1e3a6e;text-decoration:underline;text-underline-offset:2px;}
+    .zenodo-notice p:last-child{margin-bottom:0;}
+
+    /* OSF badge */
+    .osf-badge{display:inline-flex;align-items:center;gap:6px;background:#1a6e3a;color:#fff;font-family:var(--mono);font-size:0.68rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:3px;text-decoration:none;}
+    .osf-badge:hover{background:#155c30;}
+    .doi-note{font-family:var(--mono);font-size:0.68rem;color:var(--faint);font-style:italic;margin-left:6px;}
+
     /* lang text visibility */
     .en,.it{display:none;}
     body.lang-en .en{display:block;}
@@ -196,6 +208,36 @@
       <span class="orcid-dot"></span>ORCID 0009-0006-4779-4647
     </a>
   </header>
+
+  <!-- Zenodo Status Notice -->
+  <div class="zenodo-notice">
+    <div class="zenodo-notice-title">
+      <span class="en">&#9888; Repository status notice — May 2026</span>
+      <span class="it">&#9888; Avviso stato repository — Maggio 2026</span>
+    </div>
+    <p class="en">
+      The Zenodo repository records associated with this research programme are currently inaccessible
+      following a scope decision by Zenodo (May 2026), which the author is formally contesting.
+      All DOI identifiers remain valid and are preserved as proof of priority.
+      The manuscripts are being re-archived on <strong>OSF Preprints</strong> and remain available directly from the author.
+    </p>
+    <p class="it">
+      I record Zenodo associati a questo programma di ricerca sono attualmente inaccessibili
+      a seguito di una decisione di ambito di Zenodo (maggio 2026), che l'autore sta formalmente contestando.
+      Tutti gli identificatori DOI rimangono validi e sono preservati come prova di priorità.
+      I manoscritti vengono ri-archiviati su <strong>OSF Preprints</strong> e rimangono disponibili direttamente dall'autore.
+    </p>
+    <p class="en">
+      For access to any manuscript: <a href="mailto:pasquale.camelia@gmail.com">pasquale.camelia@gmail.com</a> &#183;
+      OSF archive: <a href="https://osf.io" target="_blank" rel="noopener">osf.io</a> (in progress) &#183;
+      ORCID record: <a href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener">0009-0006-4779-4647</a>
+    </p>
+    <p class="it">
+      Per accedere ai manoscritti: <a href="mailto:pasquale.camelia@gmail.com">pasquale.camelia@gmail.com</a> &#183;
+      Archivio OSF: <a href="https://osf.io" target="_blank" rel="noopener">osf.io</a> (in corso) &#183;
+      Record ORCID: <a href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener">0009-0006-4779-4647</a>
+    </p>
+  </div>
 
   <!-- P00 Hero -->
   <div class="p00-hero">
@@ -797,9 +839,13 @@
         <span class="link-card-label">ORCID</span>
         <span class="link-card-value">0009-0006-4779-4647</span>
       </a>
-      <a class="link-card" href="https://zenodo.org/search?q=metadata.creators.person_or_org.identifiers.identifier%3A0009-0006-4779-4647&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener">
-        <span class="link-card-label">Zenodo</span>
-        <span class="link-card-value"><span class="en">All records by ORCID</span><span class="it">Tutti i record per ORCID</span></span>
+      <a class="link-card" href="https://osf.io" target="_blank" rel="noopener">
+        <span class="link-card-label">OSF Preprints</span>
+        <span class="link-card-value"><span class="en">New canonical archive (in progress)</span><span class="it">Nuovo archivio canonico (in corso)</span></span>
+      </a>
+      <a class="link-card" href="https://zenodo.org/search?q=metadata.creators.person_or_org.identifiers.identifier%3A0009-0006-4779-4647&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener" style="opacity:0.6;">
+        <span class="link-card-label">Zenodo <span style="color:#b06010;font-size:0.65rem;">(records contested)</span></span>
+        <span class="link-card-value"><span class="en">DOI records — currently inaccessible</span><span class="it">Record DOI — attualmente inaccessibili</span></span>
       </a>
       <a class="link-card" href="https://explore.openaire.eu/search/find/research-outcomes?q=Camelia+Pasquale" target="_blank" rel="noopener">
         <span class="link-card-label">OpenAIRE</span>
@@ -820,8 +866,8 @@
   <footer>
     <span>Pasquale Camelia · Milan, Italy · <a href="/cdn-cgi/l/email-protection#1b6b7a686a6e7a777e35787a767e77727a5b7c767a727735787476" style="color:inherit;text-decoration:none;"><span class="__cf_email__" data-cfemail="720213010307131e175c11131f171e1b1332151f131b1e5c111d1f">[email&#160;protected]</span></a></span>
     <span>
-      <span class="en">Last updated: April 2026 · 18 preprints on Zenodo</span>
-      <span class="it">Aggiornato: Aprile 2026 · 18 preprint su Zenodo</span>
+      <span class="en">Last updated: May 2026 · 25 preprints (re-archiving on OSF · Zenodo records contested)</span>
+      <span class="it">Aggiornato: Maggio 2026 · 25 preprint (ri-archiviazione su OSF · record Zenodo contestati)</span>
     </span>
   </footer>
 
