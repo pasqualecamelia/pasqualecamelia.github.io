@@ -290,14 +290,12 @@ function updateH3D(fi) {
     '<b>Grid</b>: ' + d.N + '³ · dx = ' + (d.dx||0).toFixed(3) + ' a₀';
 }
 
-// toggleH3DPlay rimosso — usa h3dTogglePlay(), 120);
-  }
-}
+// h3dTogglePlay gestito sotto
 
 function resetH3D() {
-  if(h3d_playing) toggleH3DPlay();
+  if(h3d_playing) h3dTogglePlay();
   h3d_frame = 0;
-  updateH3D(0);
+  h3dDraw(0);
 }
 
 // Auto-init quando la sezione è visibile
@@ -645,7 +643,6 @@ document.addEventListener('DOMContentLoaded', () => {
   <a href="#cascade_vis" onclick="activate(this)">α⁻¹ cascade ✦</a>
   <a href="#filter_vis" onclick="activate(this)">H(z) filter ✦</a>
   <a href="#density_vis" onclick="activate(this)">Density compare ✦</a>
-  <a href="#cascade" onclick="activate(this)">α⁻¹ cascade</a>
   <a href="#constants" onclick="activate(this)">Constants</a>
   <div class="nav-section">Dynamics</div>
   <a href="#breathing" onclick="activate(this)">Breathing</a>
@@ -826,22 +823,26 @@ document.addEventListener('DOMContentLoaded', () => {
   Initial: |1s⟩ + |2p<sub>z</sub>⟩. Norm conserved to 10⁻¹⁰.
   <span style="color:var(--gold);font-size:0.78rem;font-family:var(--mono);">LEVEL_A</span>
 </p>
-<div class="controls">
-  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+<div style="padding:10px 0 8px 0;">
+  <div style="display:flex !important;align-items:center;gap:10px;flex-wrap:wrap;
+              margin-bottom:8px;visibility:visible !important;">
     <button id="h3d-playbtn" onclick="h3dTogglePlay()"
-      style="background:var(--accent);color:#fff;border:none;border-radius:4px;
-             padding:6px 22px;cursor:pointer;font-family:var(--mono);font-size:0.85rem;
-             font-weight:bold;min-width:90px;">▶ Play</button>
-    <button onclick="h3dGoto(0);document.getElementById('h3d-playbtn').textContent='▶ Play';"
-      style="background:var(--bg2);color:var(--text2);border:1px solid var(--border);
-             border-radius:4px;padding:6px 14px;cursor:pointer;font-family:var(--mono);font-size:0.82rem;">
-      ↺ Reset</button>
+      style="display:inline-block !important;background:#e8c850;color:#0a0a14;
+             border:none;border-radius:4px;padding:7px 24px;cursor:pointer;
+             font-family:monospace;font-size:0.9rem;font-weight:bold;
+             min-width:90px;visibility:visible !important;">▶ Play</button>
+    <button onclick="h3dDraw(0);if(h3d_playing)h3dTogglePlay();"
+      style="display:inline-block !important;background:#1a1a28;color:#c8c8d8;
+             border:1px solid #333350;border-radius:4px;padding:7px 16px;
+             cursor:pointer;font-family:monospace;font-size:0.85rem;">↺ Reset</button>
     <input type="range" min="0" max="24" step="1" value="0" id="h3d-slider"
-           oninput="h3dGoto(+this.value)" style="flex:1;min-width:120px;"/>
-    <span class="control-val" id="h3d-tval" style="font-family:var(--mono);font-size:0.82rem;
-          min-width:110px;">t = 0.00 a.u.</span>
+           oninput="h3dGoto(+this.value)"
+           style="flex:1;min-width:140px;cursor:pointer;"/>
+    <span id="h3d-tval"
+          style="font-family:monospace;font-size:0.82rem;color:#c8c8d8;
+                 min-width:110px;display:inline-block;">t = 0.00 a.u.</span>
   </div>
-  <div style="font-family:var(--mono);font-size:0.72rem;color:var(--text3);margin-bottom:4px;">
+  <div style="font-family:monospace;font-size:0.72rem;color:#666688;margin-top:2px;">
     N=32³ · a₀_QGT=Γ²τ · Split-operator FFT · 25 frames · dt=0.24 a.u.
   </div>
 </div>
