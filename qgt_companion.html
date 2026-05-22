@@ -473,7 +473,7 @@
 <h2><span class="sec-num">09</span>Python package — full simulation</h2>
 <p style="font-size:0.85rem; color:var(--text2); margin-bottom:1rem;">
   The Python package <code style="font-family:var(--mono);font-size:0.82rem;">qgt_companion</code>
-  runs the complete ITP Crank–Nicolson hydrogen simulation, all verifications,
+  runs the complete ITP Crank–Nicolson hydrogen simulation, 3D real-time dynamics, all verifications,
   and generates publication-quality figures. Requires Python 3.10+,
   NumPy ≥ 1.24, SciPy ≥ 1.10, Matplotlib ≥ 3.7.
 </p>
@@ -482,6 +482,7 @@
   pip install numpy scipy matplotlib<br/>
   python -m qgt_companion verify<br/>
   python -m qgt_companion hydrogen<br/>
+  python -m qgt_companion hydrogen3d<br/>
   python -m qgt_companion all --plot
 </div>
 <div class="dl-row">
