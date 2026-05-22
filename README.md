@@ -149,3 +149,23 @@ Per N=600 il costo computazionale è < 5 s su qualsiasi laptop moderno.
 - Lehtovaara et al., J. Comput. Phys. **221** (2007) 148
 - CODATA 2018: https://physics.nist.gov/cuu/Constants/
 - Camelia, P. *The Quantum Gauge Theory of Time* (2026), First Edition KDP
+
+---
+
+## Licenza / License
+
+© 2026 Pasquale Camelia — ORCID: [0009-0006-4779-4647](https://orcid.org/0009-0006-4779-4647)
+
+Questo codice e la monografia associata sono distribuiti sotto licenza
+**[Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)**.
+
+This code and the associated monograph are licensed under the
+**[Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)**.
+
+È consentita la riproduzione, distribuzione, adattamento e uso commerciale,
+a condizione di citare:
+
+> Camelia, P. *The Quantum Gauge Theory of Time*, First Edition, 2026.  
+> ORCID: 0009-0006-4779-4647 — https://pasqualecamelia.github.io
+
+[![CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/)

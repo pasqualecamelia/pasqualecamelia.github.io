@@ -1,4 +1,10 @@
 """
+# SPDX-License-Identifier: CC-BY-4.0
+# © 2026 Pasquale Camelia — ORCID: 0009-0006-4779-4647
+# https://pasqualecamelia.github.io
+# Released under Creative Commons Attribution 4.0 International (CC BY 4.0)
+# https://creativecommons.org/licenses/by/4.0/
+#
 QGT Simulator — Quantum Gauge Theory of Time
 Derivato dalla monografia "The Quantum Gauge Theory of Time" (Camelia, 2026)
 
