@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>QGT Companion — Camelia 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg:       #fafaf8;
+    --bg2:      #f2f0eb;
+    --bg3:      #e8e5de;
+    --text:     #1a1916;
+    --text2:    #5a5852;
+    --text3:    #8a8880;
+    --blue:     #1a3a6b;
+    --blue2:    #2554a0;
+    --blue3:    #e8eef8;
+    --gold:     #7a5a10;
+    --gold2:    #f5edda;
+    --green:    #1a5a3a;
+    --green2:   #e0f0e8;
+    --red:      #7a1a1a;
+    --red2:     #f5e0e0;
+    --border:   #d8d4c8;
+    --radius:   8px;
+    --mono:     'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:     #181714;
+      --bg2:    #221f1b;
+      --bg3:    #2c2924;
+      --text:   #e8e4dc;
+      --text2:  #a09890;
+      --text3:  #706860;
+      --blue:   #8ab4f8;
+      --blue2:  #5090e0;
+      --blue3:  #1a2840;
+      --gold:   #e0b860;
+      --gold2:  #2a2010;
+      --green:  #60c090;
+      --green2: #102820;
+      --red:    #f09090;
+      --red2:   #280808;
+      --border: #383430;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2.5rem 1.5rem;
+    background: var(--bg);
+  }
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.4rem;
+  }
+  .header-title {
+    font-size: 1.35rem;
+    font-weight: normal;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .header-title span { color: var(--blue); }
+  .header-sub {
+    font-size: 0.82rem;
+    font-family: var(--mono);
+    color: var(--text3);
+  }
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0.8rem; }
+  .badge {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    padding: 2px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+  .badge-a  { background: var(--green2); color: var(--green); border-color: var(--green); }
+  .badge-b  { background: var(--gold2);  color: var(--gold);  border-color: var(--gold); }
+  .badge-op { background: var(--red2);   color: var(--red);   border-color: var(--red); }
+
+  /* ── Layout ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: calc(100vh - 120px);
+  }
+  nav {
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+    background: var(--bg);
+  }
+  nav a {
+    display: block;
+    padding: 0.45rem 1.5rem;
+    font-size: 0.82rem;
+    font-family: var(--mono);
+    color: var(--text2);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  nav a:hover { color: var(--text); background: var(--bg2); }
+  nav a.active { color: var(--blue); border-left-color: var(--blue); background: var(--blue3); }
+  nav .nav-section {
+    font-size: 0.68rem;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    padding: 1.2rem 1.5rem 0.3rem;
+  }
+
+  main { padding: 2rem 2.5rem; max-width: 860px; }
+
+  /* ── Sections ── */
+  section { margin-bottom: 3.5rem; }
+  h2 {
+    font-size: 1.05rem;
+    font-weight: normal;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+  h2 .sec-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text3);
+    margin-right: 0.6rem;
+  }
+
+  /* ── Cascade table ── */
+  .cascade-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    margin-bottom: 1rem;
+  }
+  .cascade-table th {
+    text-align: left;
+    padding: 0.4rem 0.8rem;
+    background: var(--bg2);
+    color: var(--text3);
+    font-weight: normal;
+    font-size: 0.72rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .cascade-table td {
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .cascade-table tr.highlight td { background: var(--blue3); }
+  .cascade-table tr.final td { background: var(--green2); }
+  .err-good { color: var(--green); }
+  .err-ok   { color: var(--gold); }
+  .err-note { color: var(--text3); font-size: 0.72rem; }
+
+  /* ── Constant cards ── */
+  .const-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .const-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+  }
+  .const-label {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text3);
+    margin-bottom: 0.3rem;
+  }
+  .const-value {
+    font-size: 1.05rem;
+    font-family: var(--mono);
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .const-src {
+    font-size: 0.65rem;
+    font-family: var(--mono);
+    color: var(--blue);
+    margin-top: 0.25rem;
+  }
+  .const-level-a { border-left: 3px solid var(--green); }
+  .const-level-b { border-left: 3px solid var(--gold); }
+
+  /* ── Slider controls ── */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.2rem;
+    align-items: center;
+  }
+  .control-group { display: flex; flex-direction: column; gap: 4px; }
+  .control-label {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text3);
+  }
+  .control-row { display: flex; align-items: center; gap: 8px; }
+  input[type=range] {
+    width: 140px;
+    accent-color: var(--blue2);
+  }
+  .control-val {
+    font-size: 0.82rem;
+    font-family: var(--mono);
+    color: var(--text);
+    min-width: 60px;
+  }
+
+  /* ── Chart containers ── */
+  .chart-wrap {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .chart-title {
+    font-size: 0.78rem;
+    font-family: var(--mono);
+    color: var(--text2);
+    margin-bottom: 0.8rem;
+  }
+
+  /* ── Verify panel ── */
+  .verify-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.83rem;
+  }
+  .verify-row:last-child { border-bottom: none; }
+  .verify-icon { font-size: 1rem; flex-shrink: 0; width: 22px; text-align: center; }
+  .verify-name { font-family: var(--mono); color: var(--text2); min-width: 160px; }
+  .verify-val  { font-family: var(--mono); color: var(--text);  flex: 1; }
+  .verify-err  { font-family: var(--mono); font-size: 0.75rem; min-width: 120px; text-align: right; }
+  .ok   { color: var(--green); }
+  .warn { color: var(--gold); }
+  .open { color: var(--red); }
+
+  /* ── Gate list ── */
+  .gate-list { list-style: none; }
+  .gate-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    display: flex;
+    gap: 10px;
+  }
+  .gate-list li:last-child { border-bottom: none; }
+  .gate-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 6px; flex-shrink: 0;
+  }
+  .dot-a { background: var(--green); }
+  .dot-b { background: var(--gold); }
+  .dot-o { background: var(--red); }
+
+  /* ── Download buttons ── */
+  .dl-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem; }
+  .dl-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0.45rem 1rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    font-family: var(--mono);
+    color: var(--text2);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .dl-btn:hover { background: var(--bg3); color: var(--text); }
+  .dl-btn.primary { background: var(--blue3); border-color: var(--blue2); color: var(--blue); }
+  .dl-btn.primary:hover { background: var(--blue2); color: #fff; }
+
+  @media (max-width: 680px) {
+    .layout { grid-template-columns: 1fr; }
+    nav { display: none; }
+    main { padding: 1.2rem; }
+    header { padding: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="header-title"><span>QGT</span> Companion Simulator</div>
+    <div class="header-sub">v2.0 — Camelia 2026 · First Edition KDP</div>
+  </div>
+  <div style="font-size:0.83rem; color:var(--text2); margin-bottom:0.6rem;">
+    <em>The Quantum Gauge Theory of Time</em> — interactive companion to the monograph.
+    All computations run in-browser. Zero installation required.
+  </div>
+  <div class="badge-row">
+    <span class="badge badge-a">✓ LEVEL_A — closed derivations</span>
+    <span class="badge badge-b">~ LEVEL_B — additional assumptions</span>
+    <span class="badge badge-op">⚠ OPEN — residual gates</span>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="sidebar">
+  <div class="nav-section">Structural</div>
+  <a href="#verify" onclick="activate(this)">Verify all</a>
+  <a href="#cascade" onclick="activate(this)">α⁻¹ cascade</a>
+  <a href="#constants" onclick="activate(this)">Constants</a>
+  <div class="nav-section">Dynamics</div>
+  <a href="#breathing" onclick="activate(this)">Breathing</a>
+  <a href="#soliton" onclick="activate(this)">Soliton</a>
+  <a href="#hydrogen" onclick="activate(this)">Hydrogen ITP</a>
+  <div class="nav-section">Observables</div>
+  <a href="#cmb" onclick="activate(this)">CMB peaks</a>
+  <a href="#gates" onclick="activate(this)">Gate status</a>
+  <div class="nav-section">Download</div>
+  <a href="#download" onclick="activate(this)">Python package</a>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════ VERIFY -->
+<section id="verify">
+<h2><span class="sec-num">01</span>Verify all — structural identities</h2>
+<div id="verify-rows"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ CASCADE -->
+<section id="cascade">
+<h2><span class="sec-num">02</span>α⁻¹ cascade — three algebraic steps (P14)</h2>
+<table class="cascade-table">
+  <thead>
+    <tr><th>Step</th><th>α⁻¹</th><th>Residual from CODATA 2022</th><th>Level</th></tr>
+  </thead>
+  <tbody id="cascade-body"></tbody>
+</table>
+<p style="font-size:0.78rem; color:var(--text3); font-family:var(--mono);">
+  ε₇ = √5·π/7 − 1 ∈ ℤ[√5][π] &nbsp;|&nbsp;
+  f_breath = 2φ×10⁻⁷ = (5−√5)/10·α_QGT ∈ ℤ[√5] &nbsp;|&nbsp;
+  No free parameters.
+</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ CONSTANTS -->
+<section id="constants">
+<h2><span class="sec-num">03</span>Structural constants</h2>
+<div class="const-grid" id="const-grid"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ BREATHING -->
+<section id="breathing">
+<h2><span class="sec-num">04</span>Breathing — hyperbolic rotation on Σ</h2>
+<div class="controls">
+  <div class="control-group">
+    <div class="control-label">time span · Γ_τ</div>
+    <div class="control-row">
+      <input type="range" min="2" max="20" step="0.5" value="8" id="br-tmax"
+             oninput="updateBreathing()"/>
+      <span class="control-val" id="br-tmax-val">8</span>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">ξ₀ / η₀ ratio</div>
+    <div class="control-row">
+      <input type="range" min="0.5" max="4" step="0.1" value="2.2" id="br-ratio"
+             oninput="updateBreathing()"/>
+      <span class="control-val" id="br-ratio-val">2.20</span>
+    </div>
+  </div>
+</div>
+<div class="chart-wrap">
+  <div class="chart-title">ξ(t) · η(t) = α⁻¹ = const &nbsp;—&nbsp; invariant under hyperbolic flow</div>
+  <div style="position:relative; height:240px;"><canvas id="breathing-chart" role="img" aria-label="Breathing hyperbolic rotation chart"></canvas></div>
+</div>
+<div class="chart-wrap">
+  <div class="chart-title">ξ(t)·η(t) — invariant verification (should be flat at α⁻¹ = 137.082)</div>
+  <div style="position:relative; height:100px;"><canvas id="invariant-chart" role="img" aria-label="Invariant verification chart"></canvas></div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SOLITON -->
+<section id="soliton">
+<h2><span class="sec-num">05</span>Lock-in soliton Ψ★(n) = φ · sech(n/ℓ_pen)</h2>
+<div class="controls">
+  <div class="control-group">
+    <div class="control-label">H (field amplitude)</div>
+    <div class="control-row">
+      <input type="range" min="0.2" max="3" step="0.1" value="1" id="sol-H"
+             oninput="updateSoliton()"/>
+      <span class="control-val" id="sol-H-val">1.0</span>
+    </div>
+  </div>
+</div>
+<div class="chart-wrap">
+  <div class="chart-title" id="sol-title">Ψ★(n) = φ · sech(n/ℓ_pen) &nbsp;|&nbsp; ℓ_pen = H/(π·α)</div>
+  <div style="position:relative; height:240px;"><canvas id="soliton-chart" role="img" aria-label="Soliton profile chart"></canvas></div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ HYDROGEN -->
+<section id="hydrogen">
+<h2><span class="sec-num">06</span>Hydrogen — radial density from a₀_QGT</h2>
+<p style="font-size:0.83rem; color:var(--text2); margin-bottom:1rem;">
+  Static radial densities P(r) = |R<sub>n0</sub>(r)|² · r² using a₀_QGT as the only length scale.
+  For the full imaginary-time propagation (ITP), run the Python package.
+</p>
+<div class="controls">
+  <div class="control-group">
+    <div class="control-label">quantum number n</div>
+    <div class="control-row">
+      <input type="range" min="1" max="4" step="1" value="1" id="h-n"
+             oninput="updateHydrogen()"/>
+      <span class="control-val" id="h-n-val">1</span>
+    </div>
+  </div>
+</div>
+<div class="chart-wrap">
+  <div class="chart-title" id="h-title">H atom 1s — a₀_QGT = 0.52918 Å (LEVEL_A, err +0.032 ppm)</div>
+  <div style="position:relative; height:240px;"><canvas id="hydrogen-chart" role="img" aria-label="Hydrogen radial density chart"></canvas></div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ CMB -->
+<section id="cmb">
+<h2><span class="sec-num">07</span>CMB structural spectrum — 6 sech² peaks</h2>
+<div class="chart-wrap">
+  <div class="chart-title">D_ℓ = 1 + Σ φ⁻²ᵏ · sech²((ℓ−ℓ_k)/σ_B) &nbsp;|&nbsp; ℓ_k from α⁻¹, φ, Γ_τ only [LEVEL_B]</div>
+  <div style="position:relative; height:280px;"><canvas id="cmb-chart" role="img" aria-label="CMB structural spectrum chart"></canvas></div>
+</div>
+<div id="cmb-table" style="margin-top:0.5rem;"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ GATES -->
+<section id="gates">
+<h2><span class="sec-num">08</span>Gate status — epistemic levels</h2>
+<ul class="gate-list" id="gate-list"></ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ DOWNLOAD -->
+<section id="download">
+<h2><span class="sec-num">09</span>Python package — full simulation</h2>
+<p style="font-size:0.85rem; color:var(--text2); margin-bottom:1rem;">
+  The Python package <code style="font-family:var(--mono);font-size:0.82rem;">qgt_companion</code>
+  runs the complete ITP Crank–Nicolson hydrogen simulation, all verifications,
+  and generates publication-quality figures. Requires Python 3.10+,
+  NumPy ≥ 1.24, SciPy ≥ 1.10, Matplotlib ≥ 3.7.
+</p>
+<div style="background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.2rem; font-family:var(--mono); font-size:0.82rem; color:var(--text2); margin-bottom:1rem;">
+  <div style="color:var(--text3); font-size:0.72rem; margin-bottom:0.5rem;"># install &amp; run</div>
+  pip install numpy scipy matplotlib<br/>
+  python -m qgt_companion verify<br/>
+  python -m qgt_companion hydrogen<br/>
+  python -m qgt_companion all --plot
+</div>
+<div class="dl-row">
+  <a class="dl-btn primary" href="qgt_companion.zip" download>
+    ↓ qgt_companion.zip (package)
+  </a>
+  <a class="dl-btn" href="qgt_simulator.py" download>
+    ↓ qgt_simulator.py (v1)
+  </a>
+  <a class="dl-btn" href="https://github.com/pasqualecamelia/pasqualecamelia.github.io" target="_blank">
+    ↗ GitHub repository
+  </a>
+</div>
+<div style="margin-top:1.5rem; padding:1rem; background:var(--gold2); border:1px solid var(--gold); border-radius:var(--radius); font-size:0.82rem;">
+  <strong style="color:var(--gold);">ORCID</strong>&nbsp;
+  <a href="https://orcid.org/0009-0006-4779-4647" target="_blank"
+     style="font-family:var(--mono); color:var(--blue); font-size:0.8rem;">
+    0009-0006-4779-4647
+  </a>
+  &nbsp;·&nbsp;
+  <a href="https://zenodo.org/search?q=metadata.creators.person_or_org.identifiers.identifier%3A0009-0006-4779-4647"
+     target="_blank" style="font-family:var(--mono); color:var(--blue); font-size:0.8rem;">
+    Zenodo preprints
+  </a>
+</div>
+</section>
+
+</main>
+</div>
+
+<script>
+const PHI       = (1 + Math.sqrt(5)) / 2;
+const GAMMA_TAU = PHI / Math.sqrt(5);
+const ALPHA_INV = Math.pow(5 + 3*Math.sqrt(5), 2);
+const ALPHA     = 1.0 / ALPHA_INV;
+const C_EW = 13, N_MIN = 2, N_SAT = 11, N_LOCK = 5, S = 10, R = 5, N_CONF = 7;
+const EPS7   = Math.sqrt(5)*Math.PI/7 - 1;
+const F_BREA = PHI / 5e6;
+const XI_STAR  = N_SAT  * Math.sqrt(ALPHA_INV / (N_SAT * N_LOCK));
+const ETA_STAR = N_LOCK * Math.sqrt(ALPHA_INV / (N_SAT * N_LOCK));
+const SIGMA1 = Math.sqrt((N_CONF - Math.sqrt(C_EW)) / (2*N_MIN*N_MIN));
+const SIGMA2 = Math.sqrt((N_CONF + Math.sqrt(C_EW)) / (2*N_MIN*N_MIN));
+const LAMBDA = ALPHA_INV * 3 / 8;
+const H_KER  = [19, 43, 67];
+const M_MU_ME = H_KER[1]*SIGMA2 / (H_KER[0]*SIGMA1) * LAMBDA;
+const DELTA_B  = 3*PHI*1e-3 + 3*PHI*PHI*1e-4 - 3*Math.sqrt(5)*1e-5 - N_MIN*1e-6;
+const A0_STATIC = PHI*PHI / 5;
+const A0_QGT_ANG = A0_STATIC * (1 + DELTA_B/A0_STATIC);
+const T_CMB = Math.PI/Math.log(Math.PI) * (1 - 1/(Math.sqrt(2)*100));
+const STEP1 = ALPHA_INV - C_EW * EPS7;
+const STEP2 = STEP1 / (1 - F_BREA);
+const CODATA_2022 = 137.035999177;
+const CODATA_A0   = 0.5291772109;
+const CODATA_RINF = 10973731.568;
+
+function eng(x) {
+  if (x === 0) return "0";
+  const exp3 = Math.floor(Math.log10(Math.abs(x)) / 3) * 3;
+  const m = x / Math.pow(10, exp3);
+  const sign = exp3 >= 0 ? "+" : "";
+  return m.toFixed(3) + " E" + sign + exp3;
+}
+function fmt(x, d) { return x.toFixed(d); }
+
+// ── Nav ────────────────────────────────────────────────────────
+function activate(el) {
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+}
+document.querySelectorAll('nav a').forEach(a => {
+  if (a.getAttribute('href') === '#verify') a.classList.add('active');
+});
+
+// ── Verify ─────────────────────────────────────────────────────
+const CHECKS = [
+  { name:"20φ⁴ = α⁻¹",        val: 20*Math.pow(PHI,4),      ref: ALPHA_INV,  unit:"",       level:"A", fmt_d:6 },
+  { name:"500Γ_τ⁴ = α⁻¹",     val: 500*Math.pow(GAMMA_TAU,4),ref: ALPHA_INV, unit:"",       level:"A", fmt_d:6 },
+  { name:"ξ*·η* = α⁻¹",       val: XI_STAR*ETA_STAR,          ref: ALPHA_INV, unit:"",       level:"A", fmt_d:6 },
+  { name:"B* = 8",             val: 2*Math.pow(8,2/3),         ref: 8,         unit:"",       level:"A", fmt_d:8 },
+  { name:"sech identity",      val:(PHI+1/PHI)/Math.cosh(Math.log(PHI)), ref:2, unit:"",     level:"A", fmt_d:10 },
+  { name:"α⁻¹ phys (3 steps)", val: STEP2, ref: CODATA_2022, unit:"", level:"A", fmt_d:7, err_unit:"E-9 abs" },
+  { name:"a₀_QGT [Å]",         val: A0_QGT_ANG, ref: CODATA_A0, unit:" Å",  level:"A", fmt_d:7, err_unit:"ppm" },
+  { name:"T_CMB [K]",          val: T_CMB,       ref: 2.72548,   unit:" K",  level:"A", fmt_d:5 },
+  { name:"mμ/mₑ",              val: M_MU_ME,     ref: 206.76828, unit:"",   level:"B", fmt_d:4 },
+  { name:"sin²θ_W = 3/13",     val: 3/13,        ref: 0.23122,   unit:"",   level:"A", fmt_d:6 },
+];
+
+const vrows = document.getElementById('verify-rows');
+CHECKS.forEach(c => {
+  const rel = Math.abs(c.val / c.ref - 1);
+  const ok  = rel < 1e-6;
+  const icon= c.level === 'A' ? (ok ? '✓' : '△') : (rel < 0.01 ? '~' : '⚠');
+  const cls = c.level === 'A' ? (ok ? 'ok' : 'warn') : (rel < 0.01 ? 'warn' : 'open');
+  let errStr;
+  if (c.err_unit === 'E-9 abs') {
+    errStr = eng(c.val - c.ref) + ' abs';
+  } else if (c.err_unit === 'ppm') {
+    errStr = ((c.val/c.ref-1)*1e6).toFixed(4) + ' ppm';
+  } else {
+    errStr = eng(rel);
+  }
+  vrows.innerHTML += `
+  <div class="verify-row">
+    <div class="verify-icon ${cls}">${icon}</div>
+    <div class="verify-name">${c.name}</div>
+    <div class="verify-val">${c.val.toFixed(c.fmt_d)}${c.unit}</div>
+    <div class="verify-err ${cls}">${errStr}</div>
+  </div>`;
+});
+
+// ── Cascade ────────────────────────────────────────────────────
+const cascadeRows = [
+  { step:"(5+3√5)²",       val:ALPHA_INV, ref:CODATA_2022, level:"A" },
+  { step:"− 13·ε₇",        val:STEP1,     ref:CODATA_2022, level:"A" },
+  { step:"÷ (1 − f_b)",    val:STEP2,     ref:CODATA_2022, level:"A", final:true },
+  { step:"CODATA 2022",    val:CODATA_2022,ref:CODATA_2022, level:"ref" },
+];
+const cb = document.getElementById('cascade-body');
+cascadeRows.forEach(r => {
+  const residual = Math.abs(r.val - r.ref);
+  const resStr = r.level === 'ref' ? '(reference)' : eng(residual);
+  const cls = r.final ? 'final' : (r.level === 'ref' ? 'highlight' : '');
+  cb.innerHTML += `<tr class="${cls}">
+    <td style="font-family:var(--mono)">${r.step}</td>
+    <td style="font-family:var(--mono)">${r.val.toFixed(9)}</td>
+    <td style="font-family:var(--mono)" class="${r.final?'ok':''}">${resStr}</td>
+    <td><span class="badge ${r.level==='A'?'badge-a':r.level==='ref'?'':'badge-b'}" style="font-size:0.65rem">${r.level==='ref'?'CODATA':'LEVEL_'+r.level}</span></td>
+  </tr>`;
+});
+
+// ── Constants ─────────────────────────────────────────────────
+const CONSTS = [
+  { label:"φ",            val:PHI.toFixed(10),           src:"Cap01", level:"A" },
+  { label:"Γ_τ = φ/√5",  val:GAMMA_TAU.toFixed(10),     src:"Cap01", level:"A" },
+  { label:"α⁻¹_QGT",     val:ALPHA_INV.toFixed(6),      src:"Cap09", level:"A" },
+  { label:"α⁻¹_phys",    val:STEP2.toFixed(7),          src:"P14",   level:"A" },
+  { label:"ξ*",           val:XI_STAR.toFixed(6),        src:"Cap14", level:"A" },
+  { label:"η*",           val:ETA_STAR.toFixed(6),        src:"Cap14", level:"A" },
+  { label:"a₀_QGT [Å]",  val:A0_QGT_ANG.toFixed(7),     src:"CapGate",level:"A" },
+  { label:"T_CMB [K]",   val:T_CMB.toFixed(5),           src:"Cap24", level:"A" },
+  { label:"mμ/mₑ",       val:M_MU_ME.toFixed(4),        src:"CapMateria",level:"B" },
+  { label:"sin²θ_W",     val:(3/13).toFixed(6),          src:"CapGauge",level:"A" },
+  { label:"Ω_b h²",      val:(Math.sqrt(5)/100).toFixed(5), src:"Cap24",level:"A" },
+  { label:"Ω_c h²",      val:(1/(5*PHI)).toFixed(5),     src:"Cap24", level:"A" },
+];
+const cg = document.getElementById('const-grid');
+CONSTS.forEach(c => {
+  cg.innerHTML += `<div class="const-card const-level-${c.level.toLowerCase()}">
+    <div class="const-label">${c.label}</div>
+    <div class="const-value">${c.val}</div>
+    <div class="const-src">${c.src} · LEVEL_${c.level}</div>
+  </div>`;
+});
+
+// ── Breathing charts ──────────────────────────────────────────
+let brChart = null, invChart = null;
+function makeBreathing(tmax, ratio) {
+  const N = 200;
+  const ts = Array.from({length:N}, (_,i) => i/N * tmax);
+  const xi0 = XI_STAR * ratio / 2.2;
+  const et0 = ETA_STAR * 2.2 / ratio;
+  const xi  = ts.map(t => xi0 * Math.exp(-GAMMA_TAU * t));
+  const eta = ts.map(t => et0 * Math.exp(+GAMMA_TAU * t));
+  const inv = ts.map((_,i) => xi[i]*eta[i]);
+  return {ts, xi, eta, inv};
+}
+function updateBreathing() {
+  const tmax  = parseFloat(document.getElementById('br-tmax').value);
+  const ratio = parseFloat(document.getElementById('br-ratio').value);
+  document.getElementById('br-tmax-val').textContent = tmax.toFixed(1);
+  document.getElementById('br-ratio-val').textContent = ratio.toFixed(2);
+  const {ts, xi, eta, inv} = makeBreathing(tmax, ratio);
+  if (brChart) { brChart.destroy(); }
+  if (invChart) { invChart.destroy(); }
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridC = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const txtC  = isDark ? '#a09890' : '#5a5852';
+  brChart = new Chart(document.getElementById('breathing-chart'), {
+    type:'line',
+    data:{ labels:ts.map(t=>t.toFixed(1)),
+      datasets:[
+        { label:'ξ(t) — gravity', data:xi, borderColor:'#1a3a6b', borderWidth:1.5, pointRadius:0, tension:0.4 },
+        { label:'η(t) — EM',      data:eta, borderColor:'#1a5a3a', borderWidth:1.5, pointRadius:0, tension:0.4 },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ ticks:{color:txtC,maxTicksLimit:8,font:{size:11}}, grid:{color:gridC} },
+        y:{ ticks:{color:txtC,font:{size:11}}, grid:{color:gridC} }
+      },
+      plugins:{ legend:{labels:{color:txtC,font:{size:11},boxWidth:12}} }
+    }
+  });
+  invChart = new Chart(document.getElementById('invariant-chart'), {
+    type:'line',
+    data:{ labels:ts.map(t=>t.toFixed(1)),
+      datasets:[
+        { label:'ξ·η', data:inv, borderColor:'#7a5a10', borderWidth:1.5, pointRadius:0, tension:0.1 }
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ ticks:{color:txtC,maxTicksLimit:6,font:{size:10}}, grid:{color:gridC} },
+        y:{ ticks:{color:txtC,font:{size:10},
+              callback: v => v.toFixed(1) },
+            grid:{color:gridC},
+            min: ALPHA_INV*0.995, max: ALPHA_INV*1.005
+          }
+      },
+      plugins:{ legend:{display:false} }
+    }
+  });
+}
+updateBreathing();
+
+// ── Soliton chart ─────────────────────────────────────────────
+let solChart = null;
+function updateSoliton() {
+  const H = parseFloat(document.getElementById('sol-H').value);
+  document.getElementById('sol-H-val').textContent = H.toFixed(1);
+  const ell_pen = H / (Math.PI * ALPHA);
+  document.getElementById('sol-title').textContent =
+    `Ψ★(n) = φ · sech(n/ℓ_pen)  |  ℓ_pen = ${ell_pen.toFixed(1)}, Ψ★(0) = φ = ${PHI.toFixed(6)}`;
+  const N = 300, span = 3*ell_pen;
+  const ns = Array.from({length:N}, (_,i) => -span + i*2*span/(N-1));
+  const psi_s = ns.map(n => PHI / Math.cosh(n/ell_pen));
+  const gauss = ns.map(n => PHI * Math.exp(-0.5*(n/ell_pen)**2));
+  if (solChart) solChart.destroy();
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridC = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const txtC  = isDark ? '#a09890' : '#5a5852';
+  solChart = new Chart(document.getElementById('soliton-chart'), {
+    type:'line',
+    data:{ labels: ns.map(n=>(n/ell_pen).toFixed(2)),
+      datasets:[
+        { label:'Ψ★ = φ·sech', data:psi_s, borderColor:'#1a3a6b', borderWidth:2, pointRadius:0, tension:0.4 },
+        { label:'Gaussian', data:gauss, borderColor:'#888', borderWidth:1, borderDash:[4,3], pointRadius:0, tension:0.4 },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ title:{display:true,text:'n / ℓ_pen',color:txtC,font:{size:11}},
+            ticks:{color:txtC,maxTicksLimit:9,font:{size:10}}, grid:{color:gridC} },
+        y:{ ticks:{color:txtC,font:{size:10}}, grid:{color:gridC} }
+      },
+      plugins:{ legend:{labels:{color:txtC,font:{size:11},boxWidth:12}} }
+    }
+  });
+}
+updateSoliton();
+
+// ── Hydrogen chart ────────────────────────────────────────────
+let hChart = null;
+function radial(r, n, a0) {
+  const rho = 2*r/(n*a0);
+  let Rnl;
+  if      (n===1) Rnl = 2 * Math.exp(-rho/2);
+  else if (n===2) Rnl = (1/(2*Math.sqrt(2))) * (2-rho) * Math.exp(-rho/2);
+  else if (n===3) Rnl = (2/(81*Math.sqrt(3))) * (27-18*rho+2*rho*rho) * Math.exp(-rho/2);
+  else            Rnl = (1/768) * (192-144*rho+24*rho*rho-rho*rho*rho) * Math.exp(-rho/2);
+  return Rnl*Rnl*r*r;
+}
+function updateHydrogen() {
+  const n = parseInt(document.getElementById('h-n').value);
+  document.getElementById('h-n-val').textContent = n;
+  const En = -13.6057 / (n*n);
+  document.getElementById('h-title').textContent =
+    `H atom ${['1s','2s','3s','4s'][n-1]} — E = ${En.toFixed(4)} eV  |  a₀_QGT = ${A0_QGT_ANG.toFixed(5)} Å  (LEVEL_A, +0.032 ppm)`;
+  const rmax = n*n*A0_QGT_ANG*4 + A0_QGT_ANG;
+  const N = 300;
+  const rs = Array.from({length:N}, (_,i) => 0.01 + i*rmax/(N-1));
+  const P  = rs.map(r => radial(r, n, A0_QGT_ANG));
+  const Pmax = Math.max(...P);
+  const Pn = P.map(v => v/Pmax);
+  if (hChart) hChart.destroy();
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridC = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const txtC  = isDark ? '#a09890' : '#5a5852';
+  hChart = new Chart(document.getElementById('hydrogen-chart'), {
+    type:'line',
+    data:{ labels: rs.map(r=>r.toFixed(2)),
+      datasets:[
+        { label:`P(r) n=${n}`, data:Pn, borderColor:'#1a5a3a', borderWidth:1.5, pointRadius:0,
+          fill:true, backgroundColor: isDark ? 'rgba(26,90,58,0.15)' : 'rgba(26,90,58,0.1)', tension:0.4 },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ title:{display:true,text:'r (Å)',color:txtC,font:{size:11}},
+            ticks:{color:txtC,maxTicksLimit:8,font:{size:10}}, grid:{color:gridC} },
+        y:{ title:{display:true,text:'P(r) normalised',color:txtC,font:{size:11}},
+            ticks:{color:txtC,font:{size:10}}, grid:{color:gridC} }
+      },
+      plugins:{ legend:{labels:{color:txtC,font:{size:11},boxWidth:12}} }
+    }
+  });
+}
+updateHydrogen();
+
+// ── CMB chart ─────────────────────────────────────────────────
+(function() {
+  const N = 400, lmin = 2, lmax = 2200;
+  const ells = Array.from({length:N}, (_,i) => lmin + i*(lmax-lmin)/(N-1));
+  const D = ells.map(ell => {
+    let d = 1;
+    for (let k=1; k<=6; k++) {
+      const lk = ALPHA_INV*(k*PHI + (k-1)/PHI);
+      const sB = ALPHA_INV*GAMMA_TAU/k;
+      d += Math.pow(PHI,-2*k) / Math.pow(Math.cosh((ell-lk)/sB), 2);
+    }
+    return d;
+  });
+  const planck = [220,540,810,1120,1400,1560];
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridC = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const txtC  = isDark ? '#a09890' : '#5a5852';
+  new Chart(document.getElementById('cmb-chart'), {
+    type:'line',
+    data:{ labels: ells.map(e=>Math.round(e)),
+      datasets:[
+        { label:'QGT structural', data:D, borderColor:'#1a3a6b', borderWidth:2, pointRadius:0, tension:0.3 },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ title:{display:true,text:'ℓ (multipole)',color:txtC,font:{size:11}},
+            ticks:{color:txtC,maxTicksLimit:10,font:{size:10}}, grid:{color:gridC} },
+        y:{ title:{display:true,text:'D_ℓ (normalised)',color:txtC,font:{size:11}},
+            ticks:{color:txtC,font:{size:10}}, grid:{color:gridC} }
+      },
+      plugins:{ legend:{labels:{color:txtC,font:{size:11},boxWidth:12}} }
+    }
+  });
+  // CMB table
+  const t = document.getElementById('cmb-table');
+  let html = '<table class="cascade-table"><thead><tr><th>k</th><th>ℓ_k QGT</th><th>Planck 2018</th><th>error</th></tr></thead><tbody>';
+  planck.forEach((p,i) => {
+    const lk = ALPHA_INV*((i+1)*PHI + i/PHI);
+    const err = ((lk/p-1)*100).toFixed(1);
+    html += `<tr><td style="font-family:var(--mono)">${i+1}</td>
+      <td style="font-family:var(--mono)">${lk.toFixed(1)}</td>
+      <td style="font-family:var(--mono)">${p}</td>
+      <td style="font-family:var(--mono)" class="${Math.abs(lk/p-1)<0.05?'ok':'warn'}">${err}%</td></tr>`;
+  });
+  t.innerHTML = html + '</tbody></table>';
+})();
+
+// ── Gates ─────────────────────────────────────────────────────
+const GATES = [
+  { level:'A', text:"α⁻¹ = (5+3√5)² = 20φ⁴ = 500Γ_τ⁴", src:"Cap09" },
+  { level:'A', text:"sin²θ_W = 3/13", src:"CapGauge" },
+  { level:'A', text:"ξ·η = α⁻¹  (breathing invariant)", src:"Cap02" },
+  { level:'A', text:"a₀_QGT = Γ_τ²·M_B²·S⁻²ʳ m  (+0.032 ppm)", src:"CapGate" },
+  { level:'A', text:"mμ/mₑ via H_ker = [19,43]  (~0.5% — interi strutturali)", src:"CapMateria" },
+  { level:'A', text:"T_CMB = π/ln(π)·(1 − 1/(√2·100))", src:"Cap24" },
+  { level:'A', text:"lock-in n=5: ξ·η = α⁻¹, B* = 8", src:"Cap14" },
+  { level:'B', text:"R_∞ = readout INTERNO di Π⁺  (non ancora esterna)", src:"CapGate" },
+  { level:'B', text:"BASE → v_EW → G_F  (Lemma 25, dim. formale in progress)", src:"Cap25" },
+  { level:'B', text:"mτ/mₑ: σ₃ candidata, non Level A", src:"CapMateria" },
+  { level:'B', text:"αs = √140/100  (accordo 0.3%, derivazione in progress)", src:"Cap09" },
+  { level:'O', text:"κ_QGT/G_N : normalizzazione gravitazionale assoluta" },
+  { level:'O', text:"Dirac 4D completa: loop self-consistenza λ|Ψ|^{2/3}" },
+  { level:'O', text:"G^{ηξ}_edge(k,ℓ): propagatore CMB multipolare" },
+  { level:'O', text:"σ₃: terza generazione leptonica (formula candidata)" },
+];
+const gl = document.getElementById('gate-list');
+GATES.forEach(g => {
+  const dc = g.level==='A' ? 'dot-a' : g.level==='B' ? 'dot-b' : 'dot-o';
+  const lbl = g.level==='A' ? 'LEVEL_A' : g.level==='B' ? 'LEVEL_B' : 'OPEN';
+  const bc  = g.level==='A' ? 'badge-a' : g.level==='B' ? 'badge-b' : 'badge-op';
+  gl.innerHTML += `<li>
+    <div class="gate-dot ${dc}"></div>
+    <div style="flex:1">
+      <span class="badge ${bc}" style="font-size:0.65rem;margin-right:8px;">${lbl}</span>
+      ${g.text}
+      ${g.src ? `<span style="font-family:var(--mono);font-size:0.72rem;color:var(--text3);margin-left:6px;">[${g.src}]</span>` : ''}
+    </div>
+  </li>`;
+});
+</script>
+</body>
+</html>
