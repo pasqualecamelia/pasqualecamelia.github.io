@@ -963,6 +963,15 @@ function fmt(x, d) { return x.toFixed(d); }
 function activate(el) {
   document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
   el.classList.add('active');
+  // Renderizza le sezioni showcase al click
+  var sc = ['spectrum','cascade_vis','filter_vis','density_vis'];
+  var href = el.getAttribute('href') || '';
+  var id = href.replace('#','');
+  if(sc.indexOf(id) >= 0) {
+    setTimeout(function(){
+      if(window._scInit) window._scInit();
+    }, 50);
+  }
 }
 document.querySelectorAll('nav a').forEach(a => {
   if (a.getAttribute('href') === '#verify') a.classList.add('active');
@@ -1641,6 +1650,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     renderFilter();
     renderDensity();
   }
+  window._scInit = initAll;  // esposta globalmente
 
   document.addEventListener('DOMContentLoaded', () => {
     const targets = ['spectrum','cascade_vis','filter_vis','density_vis'];
@@ -1651,8 +1661,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
       const el = document.getElementById(id);
       if(el) obs.observe(el);
     });
-    // Init immediato se già visibile
-    setTimeout(initAll, 200);
+    // Init multiplo per sicurezza
+    setTimeout(initAll, 300);
+    setTimeout(initAll, 800);
+    window.addEventListener('load', function(){ setTimeout(initAll,200); });
   });
 
 })();
