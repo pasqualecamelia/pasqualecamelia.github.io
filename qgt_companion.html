@@ -170,6 +170,23 @@ const H3D = (function() {
 })();
 
 // ── Render slices on canvas ──────────────────────────────────
+function renderSliceUint8(canvasId, data, N) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const pw = w/N, ph = h/N;
+  ctx.clearRect(0,0,w,h);
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++) {
+    const v = (data[i][j]||0)/255;
+    const r = Math.floor(255*Math.min(1,v*3));
+    const g = Math.floor(255*Math.min(1,v*1.5));
+    const b = Math.floor(255*Math.min(1,v*0.5));
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fillRect(i*pw, (N-1-j)*ph, pw+1, ph+1);
+  }
+}
+
 function renderSlice(canvasId, data, N, L) {
   const canvas = document.getElementById(canvasId);
   if(!canvas) return;
@@ -234,39 +251,69 @@ const H3D_TOTAL_FRAMES = 24;
 function initH3D() {
   if(h3d_computed) return;
   document.getElementById('h3d-info').innerHTML =
-    'Computing 3D simulation...<br/>(N=32³, 24 frames)';
-  setTimeout(() => {
-    H3D.compute_all_frames(H3D_TOTAL_FRAMES);
-    const d = H3D.get();
-    h3d_computed = true;
-    document.getElementById('h3d-frame').max = H3D_TOTAL_FRAMES;
-    updateH3D(0);
-  }, 50);
+    'Loading pre-computed frames...';
+  fetch('qgt_h3d_frames.json')
+    .then(r => r.json())
+    .then(data => {
+      window._h3d_data = data;
+      h3d_computed = true;
+      const nf = data.frames.length - 1;
+      document.getElementById('h3d-frame').max = nf;
+      updateH3D(0);
+    })
+    .catch(e => {
+      // Fallback: calcola in JS
+      document.getElementById('h3d-info').innerHTML =
+        'Computing (first load)...';
+      setTimeout(() => {
+        H3D.compute_all_frames(H3D_TOTAL_FRAMES);
+        const d = H3D.get();
+        // Converti formato
+        window._h3d_data = {
+          N: d.N, L: d.L, dx: 2*d.L/d.N,
+          a0_qgt: d.A0, f_t: d.FT,
+          frames: d.frames.map((f,i) => ({
+            t: d.times[i]||0,
+            xy: f.xy, xz: f.xz, yz: f.yz,
+            norm: d.norms[i]||1
+          }))
+        };
+        h3d_computed = true;
+        document.getElementById('h3d-frame').max = H3D_TOTAL_FRAMES;
+        updateH3D(0);
+      }, 50);
+    });
 }
 
 function updateH3D(fi) {
   if(!h3d_computed) { initH3D(); return; }
-  const d = H3D.get();
+  const d = window._h3d_data;
   fi = parseInt(fi);
-  h3d_frame = fi;
-  document.getElementById('h3d-frame').value = fi;
+  h3d_frame = Math.min(fi, d.frames.length-1);
+  const frame = d.frames[h3d_frame];
+  document.getElementById('h3d-frame').value = h3d_frame;
   document.getElementById('h3d-frame-val').textContent =
-    't = ' + (d.times[fi]||0).toFixed(2) + ' a.u.';
+    't = ' + (frame.t||0).toFixed(2) + ' a.u.';
 
-  renderSlice('h3d-xy', d.frames[fi].xy, d.N, d.L);
-  renderSlice('h3d-xz', d.frames[fi].xz, d.N, d.L);
-  renderSlice('h3d-yz', d.frames[fi].yz, d.N, d.L);
-  renderNormChart(d.norms, d.times, fi);
+  renderSliceUint8('h3d-xy', frame.xy, d.N);
+  renderSliceUint8('h3d-xz', frame.xz, d.N);
+  renderSliceUint8('h3d-yz', frame.yz, d.N);
 
-  const norm_drift = Math.abs(d.norms[fi] - d.norms[0]) / d.norms[0];
+  const allNorms = d.frames.map(f=>f.norm||1);
+  const allTimes = d.frames.map(f=>f.t||0);
+  renderNormChart(allNorms, allTimes, h3d_frame);
+
+  const norm0 = allNorms[0]||1;
+  const normfi = frame.norm||1;
+  const drift = Math.abs(normfi-norm0)/norm0;
   document.getElementById('h3d-info').innerHTML =
-    '<b>t</b> = ' + (d.times[fi]||0).toFixed(3) + ' a.u.<br/>' +
-    '<b>norm</b> = ' + (d.norms[fi]||1).toFixed(8) + '<br/>' +
-    '<b>Δnorm/norm₀</b> = ' + norm_drift.toExponential(2) + '<br/>' +
-    '<b>a₀_QGT</b> = Γ²τ = ' + d.A0.toFixed(6) + '<br/>' +
-    '<b>f_t</b> = ' + d.FT.toFixed(6) + '  [LEVEL_A]<br/>' +
+    '<b>t</b> = ' + (frame.t||0).toFixed(3) + ' a.u.<br/>' +
+    '<b>norm</b> = ' + normfi.toFixed(8) + '<br/>' +
+    '<b>Δnorm/norm₀</b> = ' + drift.toExponential(2) + '<br/>' +
+    '<b>a₀_QGT</b> = Γ²τ = ' + (d.a0_qgt||0).toFixed(6) + '<br/>' +
+    '<b>f_t</b> = ' + (d.f_t||0).toFixed(6) + '  [LEVEL_A]<br/>' +
     '<b>State</b>: |1s⟩ + |2p<sub>z</sub>⟩<br/>' +
-    '<b>Grid</b>: 32³ · dx = ' + (2*d.L/d.N).toFixed(3) + ' a₀';
+    '<b>Grid</b>: ' + d.N + '³ · dx = ' + (d.dx||0).toFixed(3) + ' a₀';
 }
 
 function toggleH3DPlay() {
@@ -279,7 +326,8 @@ function toggleH3DPlay() {
     h3d_playing = true;
     document.getElementById('h3d-play-btn').textContent = '⏸ Pause';
     h3d_interval = setInterval(() => {
-      h3d_frame = (h3d_frame + 1) % (H3D_TOTAL_FRAMES + 1);
+      const _nf = window._h3d_data ? window._h3d_data.frames.length : H3D_TOTAL_FRAMES+1;
+      h3d_frame = (h3d_frame + 1) % _nf;
       updateH3D(h3d_frame);
     }, 120);
   }
