@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pasquale Camelia | Finite-Rank Projection, Foundations of Physics, Boundary Observability, Structural Selection</title>
-  <meta name="description" content="Pasquale Camelia, independent researcher. A single research programme: finite-rank non-isometric projection as the primary generative constraint. Metric, time, gauge, and observable form are necessary residuals of irreversible information loss under projection — derived at the pre-physical level, identified at wave-bearing boundaries, and demonstrated in ancient Egyptian metrology." />
+  <meta name="description" content="Pasquale Camelia, independent researcher. A single structural result: finite-rank non-isometric projection necessarily generates observable structure. Metric, time, gauge, and physical fields are necessary residuals of irreversible information loss. QGT series, 25 preprints. Re-archiving on OSF Preprints." />
   <meta name="author" content="Pasquale Camelia" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://pasqualecamelia.github.io/" />
@@ -12,7 +12,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="profile" />
   <meta property="og:title" content="Pasquale Camelia – Independent Researcher" />
-  <meta property="og:description" content="Research on pre-physical foundations of projection, observability, time, boundary phase inference, and ancient Egyptian metrology. Preprints on Zenodo. ORCID: 0009-0006-4779-4647." />
+  <meta property="og:description" content="Independent researcher. QGT series: physics as the topology of a non-invertible projection. 25 preprints. Re-archiving on OSF Preprints. ORCID 0009-0006-4779-4647." />
   <meta property="og:url" content="https://pasqualecamelia.github.io/" />
   <meta property="og:locale" content="en_US" />
   <meta property="profile:first_name" content="Pasquale" />
@@ -363,6 +363,16 @@
     /* Footer */
     footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.88rem; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
+    /* Zenodo status notice */
+    .zenodo-notice{background:#fff8f0;border:1.5px solid #e0a020;border-radius:8px;padding:18px 24px;margin-bottom:48px;font-size:0.88rem;line-height:1.7;}
+    .zenodo-notice-title{font-family:'DM Mono',monospace;font-size:0.72rem;text-transform:uppercase;letter-spacing:.1em;color:#b06010;margin-bottom:8px;font-weight:700;}
+    .zenodo-notice p{color:#5a3a10;margin-bottom:6px;}
+    .zenodo-notice a{color:#1e3a6e;text-decoration:underline;text-underline-offset:2px;}
+    .zenodo-notice p:last-child{margin-bottom:0;}
+    .osf-badge{display:inline-flex;align-items:center;gap:6px;background:#1a6e3a;color:#fff;font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:3px;text-decoration:none;}
+    .osf-badge:hover{background:#155c30;}
+    .doi-note{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);font-style:italic;margin-left:6px;}
+
     /* Lang visibility */
     .en, .it { display: none; }
     body.lang-en .en { display: block; }
@@ -577,6 +587,36 @@
 
   </header>
 
+  <!-- Zenodo Status Notice -->
+  <div class="zenodo-notice">
+    <div class="zenodo-notice-title">
+      <span class="en">&#9888; Repository status notice — May 2026</span>
+      <span class="it">&#9888; Avviso stato repository — Maggio 2026</span>
+    </div>
+    <p class="en">
+      The Zenodo repository records associated with this research programme are currently inaccessible
+      following a scope decision by Zenodo (May 2026), which the author is formally contesting.
+      All DOI identifiers remain valid and are preserved as proof of priority.
+      The manuscripts are being re-archived on <strong>OSF Preprints</strong> and remain available directly from the author.
+    </p>
+    <p class="it">
+      I record Zenodo associati a questo programma di ricerca sono attualmente inaccessibili
+      a seguito di una decisione di ambito di Zenodo (maggio 2026), che l'autore sta formalmente contestando.
+      Tutti gli identificatori DOI rimangono validi e sono preservati come prova di priorità.
+      I manoscritti vengono ri-archiviati su <strong>OSF Preprints</strong> e rimangono disponibili direttamente dall'autore.
+    </p>
+    <p class="en">
+      For access to any manuscript: <a href="mailto:pasquale.camelia@gmail.com">pasquale.camelia@gmail.com</a> &#183;
+      OSF archive: <a href="https://osf.io" target="_blank" rel="noopener">osf.io</a> (in progress) &#183;
+      ORCID record: <a href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener">0009-0006-4779-4647</a>
+    </p>
+    <p class="it">
+      Per accedere ai manoscritti: <a href="mailto:pasquale.camelia@gmail.com">pasquale.camelia@gmail.com</a> &#183;
+      Archivio OSF: <a href="https://osf.io" target="_blank" rel="noopener">osf.io</a> (in corso) &#183;
+      Record ORCID: <a href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener">0009-0006-4779-4647</a>
+    </p>
+  </div>
+
   <!-- FEATURED PAPER -->
   <div class="featured">
     <div class="featured-label">
@@ -584,8 +624,8 @@
       <span class="it">Recente · Paper chiave</span>
     </div>
     <div class="featured-title">
-      <a href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener"><span class="en">Electromagnetism and Gravitation as Chiral Boundary Readouts of a Majorana Bulk</span></a>
-      <a href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener"><span class="it">Elettromagnetismo e gravitazione come letture chirali di bordo di un bulk di Majorana</span></a>
+      <span style="color:var(--accent);cursor:default;"><span class="en">Electromagnetism and Gravitation as Chiral Boundary Readouts of a Majorana Bulk</span></span>
+      <span style="color:var(--accent);cursor:default;"><span class="it">Elettromagnetismo e gravitazione come letture chirali di bordo di un bulk di Majorana</span></span>
     </div>
     <div class="featured-abstract">
       <span class="en">Electromagnetism and gravitation are not two fields to be unified — they are the two chiral boundary readouts of a single neutral Majorana spinor on a 5-dimensional temporal manifold. Maxwell's equations and Einstein's gravitational equation emerge simultaneously from one conservation law, with no free parameters.</span>
@@ -594,9 +634,9 @@
     <div class="featured-footer">
       <div class="featured-doi-group">
         <span class="featured-doi-label">EN</span>
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener">DOI 10.5281/zenodo.19337219</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.19337219</span>
         <span class="featured-doi-label">IT</span>
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener">DOI 10.5281/zenodo.19339600</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.19339600</span>
       </div>
       <span class="pub-date">Mar 2026</span>
       <span class="tag">Majorana</span><span class="tag">unification</span><span class="tag">QGT</span>
@@ -612,8 +652,8 @@
           <span class="it">Interattivo</span>
         </span>
         <span class="qgt-demo-title">
-          <span class="en">QGT — Temporal Fibre Projection</span>
-          <span class="it">QGT — Proiezione della Fibra Temporale</span>
+          <span class="en">QGT — Temporal Fibre Projection v4</span>
+          <span class="it">QGT — Proiezione della Fibra Temporale v4</span>
         </span>
       </div>
       <button class="qgt-toggle-btn" id="qgtToggleBtn" onclick="toggleQGT()" aria-expanded="true" aria-controls="qgtFrameWrap">
@@ -627,13 +667,44 @@
     </div>
     <div class="qgt-frame-wrap" id="qgtFrameWrap">
       <iframe
-        src="qgt_animation_v2.html"
+        src="qgt_animation_v4.html"
         title="QGT — Temporal Fibre Projection"
         loading="lazy"
         allowfullscreen>
       </iframe>
     </div>
-    <a class="qgt-open-link" href="qgt_animation_v2.html" target="_blank" rel="noopener">
+    <a class="qgt-open-link" href="qgt_animation_v4.html" target="_blank" rel="noopener">
+      <span class="en">Open in full window</span>
+      <span class="it">Apri in finestra intera</span>
+    </a>
+  </div>
+
+  <!-- QGT BREATHING 3D -->
+  <div class="qgt-demo">
+    <div class="qgt-demo-header">
+      <div class="qgt-demo-meta">
+        <span class="qgt-demo-label">
+          <span class="en">Interactive</span>
+          <span class="it">Interattivo</span>
+        </span>
+        <span class="qgt-demo-title">
+          <span class="en">QGT — Breathing 3D</span>
+          <span class="it">QGT — Breathing 3D</span>
+        </span>
+      </div>
+      <button class="qgt-toggle-btn" id="breathToggleBtn" onclick="toggleBreath()" aria-expanded="false" aria-controls="breathFrameWrap">
+        <span class="en">Show</span>
+        <span class="it">Mostra</span>
+      </button>
+    </div>
+    <div class="qgt-desc">
+      <span class="en">3D visualisation of the hyperbolic breathing flow ξ·η = α⁻¹ on the temporal boundary Σ.</span>
+      <span class="it">Visualizzazione 3D del flusso iperbolico di breathing ξ·η = α⁻¹ sul confine temporale Σ.</span>
+    </div>
+    <div class="qgt-frame-wrap collapsed" id="breathFrameWrap">
+      <iframe src="qgt_breathing_3d.html" title="QGT — Breathing 3D" loading="lazy" allowfullscreen></iframe>
+    </div>
+    <a class="qgt-open-link" href="qgt_breathing_3d.html" target="_blank" rel="noopener">
       <span class="en">Open in full window</span>
       <span class="it">Apri in finestra intera</span>
     </a>
@@ -747,52 +818,52 @@
     </p>
 
     <div class="pub">
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18088773" target="_blank" rel="noopener">Projection-Induced Singular Value Decomposition of Irrational Scale Invariants and the Origin of the Fine-Structure Constant</a></div>
+      <div class="pub-title"><span style="color:var(--accent);cursor:default;">Projection-Induced Singular Value Decomposition of Irrational Scale Invariants and the Origin of the Fine-Structure Constant</span></div>
       <div class="pub-abstract">
         <span class="en">Linear discretization of an irrational scale relation defines a non-isometric projection operator admitting a natural SVD. Finite spectral resolution enforces truncation to finite effective rank fixed by spectral curvature. Non-closure, dispersion, and discrete holonomy arise as unavoidable residuals. The analysis identifies α⁻¹ as a structural pole of the projection filter.</span>
         <span class="it">La discretizzazione lineare di una relazione di scala irrazionale definisce un operatore di proiezione non-isometrico che ammette una SVD naturale. La risoluzione spettrale finita impone la troncatura a rango effettivo finito. Identifica α⁻¹ come polo strutturale del filtro di proiezione.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18088773" target="_blank" rel="noopener">DOI 10.5281/zenodo.18088773</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.18088773</span>
         <span class="pub-date">Dec 2025</span>
         <span class="tag">SVD</span><span class="tag">operator theory</span><span class="tag">fine-structure constant</span>
       </div>
     </div>
 
     <div class="pub">
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18097405" target="_blank" rel="noopener">Boundary Metric from Projection-Induced Finite Rank: Distinguishability, Filter Structure, and the Pole at α⁻¹</a></div>
+      <div class="pub-title"><span style="color:var(--accent);cursor:default;">Boundary Metric from Projection-Induced Finite Rank: Distinguishability, Filter Structure, and the Pole at α⁻¹</span></div>
       <div class="pub-abstract">
         <span class="en">A notion of metric necessarily arises when observables are obtained through a finite-rank, non-isometric projection. The framework is pre-geometric and pre-dynamical: the metric describes limits of resolvable structure imposed by projection. The filter structure exhibits a structural pole at α⁻¹ — connecting metric emergence directly to the fine-structure constant.</span>
         <span class="it">Una nozione di metrica emerge necessariamente da una proiezione non-isometrica di rango finito. Il framework è pre-geometrico e pre-dinamico. La struttura del filtro esibisce un polo strutturale in α⁻¹ — connettendo direttamente l'emergenza della metrica alla costante di struttura fine.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18097405" target="_blank" rel="noopener">DOI 10.5281/zenodo.18097405</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.18097405</span>
         <span class="pub-date">Dec 2025</span>
         <span class="tag">metric structure</span><span class="tag">finite rank</span><span class="tag">α⁻¹ pole</span>
       </div>
     </div>
 
     <div class="pub">
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener">Structural Ordering from Projection to Time</a></div>
+      <div class="pub-title"><span style="color:var(--accent);cursor:default;">Structural Ordering from Projection to Time</span></div>
       <div class="pub-abstract">
         <span class="en">A finite-rank saturated observable domain cannot internally support a Noetherian conservation law. When conservation is imposed, a temporal ordering parameter becomes structurally unavoidable. Time emerges as the minimal extension required for coherence — without restoring suppressed information or introducing dynamics.</span>
         <span class="it">Un dominio osservabile saturato di rango finito non può supportare internamente una legge di conservazione Noetheriana. Quando la conservazione è imposta, un parametro di ordinamento temporale diventa strutturalmente inevitabile.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18108626" target="_blank" rel="noopener">DOI 10.5281/zenodo.18108626</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.18108626</span>
         <span class="pub-date">Dec 2025</span>
         <span class="tag">emergence of time</span><span class="tag">Noether</span>
       </div>
     </div>
 
     <div class="pub">
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener">A Quantum Gauge Theory of Time (QGT): Foundations from a Noetherian Balance</a></div>
+      <div class="pub-title"><span style="color:var(--accent);cursor:default;">A Quantum Gauge Theory of Time (QGT): Foundations from a Noetherian Balance</span></div>
       <div class="pub-abstract">
         <span class="en">What necessarily follows if conservation is assumed in the structural sense of Noether, prior to any notion of time or dynamics? An ordering relation necessarily emerges once conservation is imposed under restricted accessibility. The theory directly addresses the Wheeler–DeWitt problem of time in quantum gravity from a pre-dynamical standpoint. No spacetime geometry or equations of motion assumed.</span>
         <span class="it">Cosa segue necessariamente se la conservazione è assunta nel senso strutturale di Noether, prima di qualsiasi nozione di tempo o dinamica? Una relazione d'ordine emerge necessariamente. La teoria affronta direttamente il problema di Wheeler–DeWitt del tempo nella gravità quantistica.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18331744" target="_blank" rel="noopener">DOI 10.5281/zenodo.18331744</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.18331744</span>
         <span class="pub-date">Jan 2026</span>
         <span class="tag">QGT</span><span class="tag">gauge theory</span><span class="tag">problem of time</span>
       </div>
@@ -800,8 +871,8 @@
 
     <div class="pub" style="border-left: 3px solid var(--accent);">
       <div class="pub-title">
-        <a href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener"><span class="en">Electromagnetism and Gravitation as Chiral Boundary Readouts of a Majorana Bulk</span></a>
-        <a href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener"><span class="it">Elettromagnetismo e gravitazione come letture chirali di bordo di un bulk di Majorana</span></a>
+        <span style="color:var(--accent);cursor:default;"><span class="en">Electromagnetism and Gravitation as Chiral Boundary Readouts of a Majorana Bulk</span></span>
+        <span style="color:var(--accent);cursor:default;"><span class="it">Elettromagnetismo e gravitazione come letture chirali di bordo di un bulk di Majorana</span></span>
       </div>
       <div class="pub-abstract">
         <span class="en">The central result of the QGT programme. Electromagnetism and gravitation are the two chiral boundary readouts of a single neutral Majorana spinor on a 5-dimensional temporal manifold. Maxwell's equations and the Einstein-like gravitational equation emerge simultaneously from one conservation law, with no free parameters. The Born rule, the arrow of time, and the CMB temperature follow structurally.</span>
@@ -809,9 +880,9 @@
       </div>
       <div class="pub-footer">
         <span class="featured-doi-label" style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);">EN</span>
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19337219" target="_blank" rel="noopener">DOI 10.5281/zenodo.19337219</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.19337219</span>
         <span class="featured-doi-label" style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);">IT</span>
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19339600" target="_blank" rel="noopener">DOI 10.5281/zenodo.19339600</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.19339600</span>
         <span class="pub-date">Mar 2026</span>
         <span class="tag">unification</span><span class="tag">Majorana</span><span class="tag">α derived</span>
         <span class="tag-wip">⭑ key paper</span>
@@ -819,13 +890,13 @@
     </div>
 
     <div class="pub">
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19337549" target="_blank" rel="noopener">Projection-Induced Decoherence and the Emergence of 1/f Noise</a></div>
+      <div class="pub-title"><span style="color:var(--accent);cursor:default;">Projection-Induced Decoherence and the Emergence of 1/f Noise</span></div>
       <div class="pub-abstract">
         <span class="en">1/f noise is not a phenomenological fit: it is the universal structural residual of any projection that eliminates all coherent modes. Three regimes are identified. The result applies to any physical system where a finite-rank projection suppresses bulk coherence — from electronic devices to cosmological backgrounds.</span>
         <span class="it">Il rumore 1/f non è un fit fenomenologico: è il residuo strutturale universale di qualsiasi proiezione che elimina tutti i modi coerenti. Tre regimi sono identificati. Il risultato si applica a qualsiasi sistema fisico in cui una proiezione di rango finito sopprime la coerenza bulk.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19337549" target="_blank" rel="noopener">DOI 10.5281/zenodo.19337549</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.19337549</span>
         <span class="pub-date">Mar 2026</span>
         <span class="tag">1/f noise</span><span class="tag">decoherence</span><span class="tag">flicker noise</span>
       </div>
@@ -846,26 +917,26 @@
     </p>
 
     <div class="pub">
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18114856" target="_blank" rel="noopener">Dimensional Reduction as a Limit to Boundary Phase Inference</a></div>
+      <div class="pub-title"><span style="color:var(--accent);cursor:default;">Dimensional Reduction as a Limit to Boundary Phase Inference</span></div>
       <div class="pub-abstract">
         <span class="en">When admissibility and boundary compatibility suppress normal propagating transport, an exact boundary-induced dimensional reduction occurs. Distinct admissible bulk configurations generate identical boundary phase signatures even in the ideal noiseless limit. This non-invertibility is not a limitation of instrumentation — it follows directly from the physics of the interface.</span>
         <span class="it">Quando l'ammissibilità sopprime il trasporto propagante normale, si produce una riduzione dimensionale esatta. Configurazioni bulk ammissibili distinte generano firme di fase al confine identiche anche nel limite ideale senza rumore.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18114856" target="_blank" rel="noopener">DOI 10.5281/zenodo.18114856</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.18114856</span>
         <span class="pub-date">Jan 2026</span>
         <span class="tag">inverse problems</span><span class="tag">evanescent fields</span><span class="tag">dimensional reduction</span>
       </div>
     </div>
 
     <div class="pub">
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18157411" target="_blank" rel="noopener">Boundary-Induced Phase Locking and Guided Helical Modes in SAR Doppler Tomography of the Giza Plateau</a></div>
+      <div class="pub-title"><span style="color:var(--accent);cursor:default;">Boundary-Induced Phase Locking and Guided Helical Modes in SAR Doppler Tomography of the Giza Plateau</span></div>
       <div class="pub-abstract">
         <span class="en">Application of the boundary observability framework to public polarimetric SAR datasets from the Giza Plateau. Results demonstrate highly constrained global phase organization with sustained longitudinal coherence and symmetry-selective phase locking — incompatible with interpretations based on independent subsurface structures. Full reproducibility package included.</span>
         <span class="it">Applicazione del framework di osservabilità di confine a dataset SAR polarimetrici pubblici del Plateau di Giza. I risultati dimostrano un'organizzazione di fase globale altamente vincolata. Pacchetto completo di riproducibilità incluso.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18157411" target="_blank" rel="noopener">DOI 10.5281/zenodo.18157411</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.18157411</span>
         <span class="pub-date">Jan 2026</span>
         <span class="tag">SAR tomography</span><span class="tag">Giza Plateau</span><span class="tag">Python</span>
       </div>
@@ -887,39 +958,39 @@
     </p>
 
     <div class="pub">
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18077184" target="_blank" rel="noopener">The Short Cubit as a Structural Invariant: Dilatation, Discrete Generation, and Metrological Projection in Ancient Egypt</a></div>
+      <div class="pub-title"><span style="color:var(--accent);cursor:default;">The Short Cubit as a Structural Invariant: Dilatation, Discrete Generation, and Metrological Projection in Ancient Egypt</span></div>
       <div class="pub-abstract">
         <span class="en">The Short Cubit is reframed at two pre-metrical levels: as a dilatation normalization expressed by 1/√5, and as a discrete generative step represented by the non-tessellating angle π/7. The ratio Cᵣ/Cₛ = φ²/√5 is derived as a normalized golden curvature — a projection constant that survives metrological realization while the underlying scale dynamics is irreversibly discarded. Explains why no unique Short Cubit length should be expected across archaeological realizations.</span>
         <span class="it">Il Cubito Corto è reinterpretato a due livelli pre-metrici. Il rapporto Cᵣ/Cₛ = φ²/√5 è derivato come curvatura dorata normalizzata — una costante di proiezione che sopravvive alla realizzazione metrologica mentre la dinamica di scala sottostante viene irrevocabilmente scartata.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18077184" target="_blank" rel="noopener">DOI 10.5281/zenodo.18077184</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.18077184</span>
         <span class="pub-date">Dec 2025</span>
         <span class="tag">projection constants</span><span class="tag">Egyptian metrology</span><span class="tag">golden ratio</span>
       </div>
     </div>
 
     <div class="pub">
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.18226792" target="_blank" rel="noopener">Metrological Non-Invertibility and Projection Constants in Historical Scale-Based Construction</a></div>
+      <div class="pub-title"><span style="color:var(--accent);cursor:default;">Metrological Non-Invertibility and Projection Constants in Historical Scale-Based Construction</span></div>
       <div class="pub-abstract">
         <span class="en">The Short Cubit ratio and the seked are structural residues of a non-invertible projection from scale dynamics to observable construction. A projection constant is identified: a dimensionless scalar that survives realization while the underlying scale action is irreversibly discarded. Linear and angular measures organize into a coupled metric–angular lattice within a restricted observable domain — a direct instance of finite-rank projection in a historical constructive system.</span>
         <span class="it">Il rapporto del Cubito Corto e il seked sono residui strutturali di una proiezione non-invertibile dalla dinamica di scala alla costruzione osservabile. Una costante di proiezione è identificata: uno scalare adimensionale che sopravvive alla realizzazione mentre l'azione di scala sottostante viene irrevocabilmente scartata.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.18226792" target="_blank" rel="noopener">DOI 10.5281/zenodo.18226792</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.18226792</span>
         <span class="pub-date">Jan 2026</span>
         <span class="tag">seked</span><span class="tag">projection constants</span><span class="tag">non-invertibility</span>
       </div>
     </div>
 
     <div class="pub">
-      <div class="pub-title"><a href="https://doi.org/10.5281/zenodo.19208560" target="_blank" rel="noopener">Constrained Form: A Rank-One Constructive Regime at Giza</a></div>
+      <div class="pub-title"><span style="color:var(--accent);cursor:default;">Constrained Form: A Rank-One Constructive Regime at Giza</span></div>
       <div class="pub-abstract">
         <span class="en">A constructive process operating with a single slope rule and without global coordinates is not free to generate arbitrary forms: the process itself selects the admissible outcomes. The Egyptian seked constrains planimetric form to exactly three distinct solutions by arithmetic necessity. The three pyramids of Giza realise all three. Measured dimensions match Petrie's surveys within 1% without free parameters. The Giza configuration does not require a global plan; it follows from the persistence of a single constructive rule.</span>
         <span class="it">Un processo costruttivo che opera con una sola regola di pendenza e senza coordinate globali non è libero di generare forme arbitrarie: il processo stesso seleziona gli esiti ammissibili. Il seked egizio vincola la forma planimetrica a esattamente tre soluzioni distinte per necessità aritmetica. Le tre piramidi di Giza realizzano tutte e tre. Le dimensioni misurate corrispondono ai rilievi di Petrie entro l'1% senza parametri liberi.</span>
       </div>
       <div class="pub-footer">
-        <a class="pub-doi" href="https://doi.org/10.5281/zenodo.19208560" target="_blank" rel="noopener">DOI 10.5281/zenodo.19208560</a>
+        <span class="pub-doi" style="cursor:default;opacity:0.55;">DOI 10.5281/zenodo.19208560</span>
         <span class="pub-date">Mar 2026</span>
         <span class="tag">seked</span><span class="tag">Giza</span><span class="tag">configurational collapse</span><span class="tag">rank-one regime</span>
       </div>
@@ -968,12 +1039,12 @@
           </span>
           <span class="link-card-value">qgt_companion.html</span>
         </a>
-        <a class="link-card" href="https://pasqualecamelia.github.io/qgt_animation_v2.html" target="_blank" rel="noopener" style="min-width:220px;">
+        <a class="link-card" href="qgt_animation_v4.html" target="_blank" rel="noopener" style="min-width:220px;">
           <span class="link-card-label">
             <span class="en">Interactive demo</span>
             <span class="it">Demo interattiva</span>
           </span>
-          <span class="link-card-value">QGT &mdash; Temporal Fibre Projection</span>
+          <span class="link-card-value">QGT &mdash; Temporal Fibre Projection v4</span>
         </a>
       </div>
     </div>
@@ -992,9 +1063,13 @@
         <span class="link-card-label">ORCID</span>
         <span class="link-card-value">0009-0006-4779-4647</span>
       </a>
-      <a class="link-card" href="https://zenodo.org/search?q=metadata.creators.person_or_org.identifiers.identifier%3A0009-0006-4779-4647&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener">
-        <span class="link-card-label">Zenodo</span>
-        <span class="link-card-value"><span class="en">All records by ORCID</span><span class="it">Tutti i record per ORCID</span></span>
+      <a class="link-card" href="https://osf.io" target="_blank" rel="noopener">
+        <span class="link-card-label">OSF Preprints</span>
+        <span class="link-card-value"><span class="en">New canonical archive (in progress)</span><span class="it">Nuovo archivio canonico (in corso)</span></span>
+      </a>
+      <a class="link-card" href="https://zenodo.org/search?q=metadata.creators.person_or_org.identifiers.identifier%3A0009-0006-4779-4647&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener" style="opacity:0.6;">
+        <span class="link-card-label">Zenodo <span style="color:#b06010;font-size:0.65rem;">(records contested)</span></span>
+        <span class="link-card-value"><span class="en">DOI records — currently inaccessible</span><span class="it">Record DOI — attualmente inaccessibili</span></span>
       </a>
       <a class="link-card" href="https://explore.openaire.eu/search/find/research-outcomes?q=Camelia+Pasquale" target="_blank" rel="noopener">
         <span class="link-card-label">OpenAIRE</span>
@@ -1005,11 +1080,22 @@
 
   <footer>
     <span>Pasquale Camelia · Milan, Italy</span>
-    <span><span class="en">Last updated: March 2026 · 10 preprints on Zenodo</span><span class="it">Aggiornato: Marzo 2026 · 10 preprint su Zenodo</span></span>
+    <span><span class="en">Last updated: May 2026 · 25 preprints (re-archiving on OSF · Zenodo records contested)</span><span class="it">Aggiornato: Maggio 2026 · 25 preprint (ri-archiviazione su OSF · record Zenodo contestati)</span></span>
   </footer>
 
 </main>
 <script>
+  function toggleBreath() {
+    const wrap = document.getElementById('breathFrameWrap');
+    const btn  = document.getElementById('breathToggleBtn');
+    const isOpen = !wrap.classList.contains('collapsed');
+    wrap.classList.toggle('collapsed', isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    const en = btn.querySelector('.en'), it = btn.querySelector('.it');
+    if (isOpen) { if(en) en.textContent='Show'; if(it) it.textContent='Mostra'; }
+    else        { if(en) en.textContent='Hide'; if(it) it.textContent='Nascondi'; }
+  }
+
   function toggleQGT() {
     const wrap = document.getElementById('qgtFrameWrap');
     const btn  = document.getElementById('qgtToggleBtn');
