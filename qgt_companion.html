@@ -295,10 +295,10 @@ function toggleH3DPlay() {
   if(h3d_playing) {
     clearInterval(h3d_interval);
     h3d_playing = false;
-    document.getElementById('h3d-play-btn').textContent = '▶ Play';
+    const _pb=document.getElementById('h3d-playbtn'); if(_pb) _pb.textContent='▶ Play';
   } else {
     h3d_playing = true;
-    document.getElementById('h3d-play-btn').textContent = '⏸ Pause';
+    const _pb2=document.getElementById('h3d-playbtn'); if(_pb2) _pb2.textContent='⏸ Pause';
     h3d_interval = setInterval(() => {
       const _nf = window._h3d_data ? window._h3d_data.frames.length : H3D_TOTAL_FRAMES+1;
       h3d_frame = (h3d_frame + 1) % _nf;
@@ -660,7 +660,6 @@ document.addEventListener('DOMContentLoaded', () => {
   <a href="#breathing" onclick="activate(this)">Breathing</a>
   <a href="#soliton" onclick="activate(this)">Soliton</a>
   <a href="#hydrogen" onclick="activate(this)">Hydrogen ITP</a>
-  <a href="#hydrogen3d" onclick="activate(this)">Hydrogen 3D ✦</a>
   <a href="#hydrogen3d" onclick="activate(this)">Hydrogen 3D ✦</a>
   <div class="nav-section">Observables</div>
   <a href="#cmb" onclick="activate(this)">CMB peaks</a>
