@@ -1372,285 +1372,209 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const D = window._showcase;
   if(!D) return;
 
-  const ACC = '#e8c850';  // gold accent
-  const BLU = '#5b8dd9';  // blue
-  const GRN = '#4caf80';  // green
-  const RED = '#e05a5a';  // red
-  const TXT = '#c8c8d8';
-  const BG2 = '#151520';
+  const ACC='#e8c850', BLU='#5b8dd9', GRN='#4caf80', RED='#e05a5a', TXT='#c8c8d8', BG2='#0d0d1a';
 
-  // ── 1. SPECTRUM TABLE ──────────────────────────────────────
+  function resizeCanvas(id, h) {
+    var c = document.getElementById(id);
+    if(!c) return null;
+    var w = c.parentElement ? c.parentElement.offsetWidth : 600;
+    if(w < 10) w = 600;
+    c.width = w; c.height = h;
+    return c;
+  }
+
+  // ── 1. SPECTRUM ─────────────────────────────────────────
   function renderSpectrum() {
-    const s = D.spectrum;
-    const el = document.getElementById('spectrum-table');
-    const info = document.getElementById('spectrum-info');
+    var s = D.spectrum;
+    var el = document.getElementById('spectrum-table');
+    var info = document.getElementById('spectrum-info');
     if(!el) return;
-
-    let html = '<table style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:0.78rem;">';
-    html += '<tr style="color:var(--text3);border-bottom:1px solid var(--border);">' +
-            '<th style="text-align:left;padding:4px 8px;">Transition</th>' +
-            '<th style="text-align:right;padding:4px 8px;">λ_std (nm)</th>' +
-            '<th style="text-align:right;padding:4px 8px;">λ_QGT (nm)</th>' +
-            '<th style="text-align:right;padding:4px 8px;">δλ (fm)</th>' +
-            '<th style="text-align:right;padding:4px 8px;">δλ/λ (ppb)</th>' +
-            '</tr>';
-    
-    let lastSeries = '';
-    for(const t of s.transitions) {
+    var html = '<table style="width:100%;border-collapse:collapse;font-family:monospace;font-size:0.78rem;">';
+    html += '<tr style="color:#888;border-bottom:1px solid #333;"><th style="text-align:left;padding:4px 8px;">Transizione</th><th style="text-align:right;padding:4px 8px;">λ_std (nm)</th><th style="text-align:right;padding:4px 8px;">λ_QGT (nm)</th><th style="text-align:right;padding:4px 8px;">δλ (fm)</th><th style="text-align:right;padding:4px 8px;">δλ/λ (ppb)</th></tr>';
+    var lastSeries = '';
+    for(var i=0;i<s.transitions.length;i++) {
+      var t = s.transitions[i];
       if(t.series !== lastSeries) {
-        html += `<tr><td colspan="5" style="padding:6px 8px 2px;color:${ACC};font-size:0.72rem;">${t.series}</td></tr>`;
+        html += '<tr><td colspan="5" style="padding:6px 8px 2px;color:'+ACC+';font-size:0.72rem;">'+t.series+'</td></tr>';
         lastSeries = t.series;
       }
-      const col = Math.abs(t.dlam_ppb) < 0.01 ? TXT : BLU;
-      html += `<tr style="border-bottom:1px solid #1e1e2e;">
-        <td style="padding:3px 8px;color:${TXT};">${t.n_low}→${t.n_hi}</td>
-        <td style="text-align:right;padding:3px 8px;">${t.lam_std_nm.toFixed(4)}</td>
-        <td style="text-align:right;padding:3px 8px;color:${BLU};">${t.lam_qgt_nm.toFixed(4)}</td>
-        <td style="text-align:right;padding:3px 8px;color:${col};">${t.dlam_fm.toFixed(3)}</td>
-        <td style="text-align:right;padding:3px 8px;color:${col};">${t.dlam_ppb.toFixed(4)}</td>
-      </tr>`;
+      html += '<tr style="border-bottom:1px solid #1e1e2e;"><td style="padding:3px 8px;color:'+TXT+';">'+t.n_low+'→'+t.n_hi+'</td><td style="text-align:right;padding:3px 8px;">'+t.lam_std_nm.toFixed(4)+'</td><td style="text-align:right;padding:3px 8px;color:'+BLU+';">'+t.lam_qgt_nm.toFixed(4)+'</td><td style="text-align:right;padding:3px 8px;color:'+BLU+';">'+t.dlam_fm.toFixed(3)+'</td><td style="text-align:right;padding:3px 8px;color:'+BLU+';">'+t.dlam_ppb.toFixed(4)+'</td></tr>';
     }
     html += '</table>';
     el.innerHTML = html;
-
-    if(info) info.innerHTML =
-      `α_QGT⁻¹ = ${s.alpha_inv_qgt.toFixed(10)} &nbsp;|&nbsp; ` +
-      `α_CODATA⁻¹ = ${s.alpha_inv_codata.toFixed(10)} &nbsp;|&nbsp; ` +
-      `δα/α = ${s.ratio_ppm.toFixed(4)} ppm &nbsp;|&nbsp; ` +
-      `Correzione: derivata, zero parametri liberi`;
+    if(info) info.innerHTML = 'α_QGT⁻¹ = '+s.alpha_inv_qgt.toFixed(10)+' &nbsp;|&nbsp; α_CODATA⁻¹ = '+s.alpha_inv_codata.toFixed(10)+' &nbsp;|&nbsp; δα/α = '+s.ratio_ppm.toFixed(4)+' ppm';
   }
 
-  // ── 2. CASCADE CHART ──────────────────────────────────────
+  // ── 2. CASCADE ──────────────────────────────────────────
   function renderCascade() {
-    const c = D.cascade;
-    const canvas = document.getElementById('cascade-chart');
-    const tbl = document.getElementById('cascade-table');
+    var c = D.cascade;
+    var canvas = resizeCanvas('cascade-chart', 220);
+    var tbl = document.getElementById('cascade-table');
     if(!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+    ctx.fillStyle = BG2; ctx.fillRect(0,0,W,H);
 
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-    ctx.fillStyle = BG2;
-    ctx.fillRect(0,0,W,H);
+    var errs = c.steps.map(function(s){ return Math.abs(s.error_ppb!=null?s.error_ppb:s.error_ppm||0); });
+    var maxErr = Math.max.apply(null,errs);
+    var colors = [RED, ACC, GRN];
+    var nBars = c.steps.length;
+    var barW = Math.floor(W*0.15);
+    var spacing = Math.floor(W/(nBars+1));
 
-    // Barre di errore (log scale)
-    const vals = c.steps.map(s => s.value);
-    const errs = c.steps.map(s => Math.abs(s.error_ppb || s.error_ppm || 0));
-    const maxErr = Math.max(...errs);
-
-    const barW = 80, gap = 60, startX = 80;
-    const colors = [RED, ACC, GRN];
-    const labels = ['Step 0\n(5+3√5)²', 'Step 1\n−13ε₇', 'Step 2\n÷(1−f_b)'];
-
-    c.steps.forEach((s, i) => {
-      const x = startX + i*(barW+gap);
-      const err = Math.abs(s.error_ppb || s.error_ppm || 0);
-      const logErr = Math.log10(err+1e-12);
-      const logMax = Math.log10(maxErr+1e-12);
-      const barH = Math.max(4, (logErr/logMax) * (H-80));
-      const y = H - 40 - barH;
-
-      ctx.fillStyle = colors[i];
-      ctx.globalAlpha = 0.85;
+    c.steps.forEach(function(s,i){
+      var x = spacing*(i+1) - barW/2;
+      var err = errs[i];
+      var logErr = err>0 ? Math.log10(err) : -12;
+      var logMax = maxErr>0 ? Math.log10(maxErr) : 1;
+      var logMin = logMax - 8;
+      var barH = Math.max(6, (logErr-logMin)/(logMax-logMin)*(H-80));
+      var y = H-45-barH;
+      ctx.fillStyle = colors[i]; ctx.globalAlpha=0.85;
       ctx.fillRect(x, y, barW, barH);
-      ctx.globalAlpha = 1;
-
-      // Valore
-      const unit = s.error_ppb !== undefined ? 'ppb' : 'ppm';
-      const errVal = s.error_ppb !== undefined ? s.error_ppb : s.error_ppm;
-      ctx.fillStyle = colors[i];
-      ctx.font = '11px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(Math.abs(errVal).toFixed(2)+' '+unit, x+barW/2, y-6);
-      ctx.fillStyle = TXT;
-      ctx.fillText(s.label, x+barW/2, H-20);
+      ctx.globalAlpha=1;
+      var unit = s.error_ppb!=null?'ppb':'ppm';
+      var val = s.error_ppb!=null?s.error_ppb:s.error_ppm;
+      ctx.fillStyle=colors[i]; ctx.font='11px monospace'; ctx.textAlign='center';
+      ctx.fillText((val>0?'+':'')+Math.abs(val).toFixed(2)+' '+unit, x+barW/2, Math.max(y-6,14));
+      ctx.fillStyle=TXT; ctx.font='10px monospace';
+      ctx.fillText(s.label, x+barW/2, H-28);
+      ctx.fillText(s.value.toFixed(4), x+barW/2, H-14);
     });
 
-    // Target line
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4,3]);
-    ctx.beginPath();
-    ctx.moveTo(20, H-40-2);
-    ctx.lineTo(W-20, H-40-2);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = '#fff';
-    ctx.font = '10px monospace';
-    ctx.textAlign = 'left';
-    ctx.fillText('CODATA target', 20, H-44);
+    // CODATA line
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(10,H-45); ctx.lineTo(W-10,H-45); ctx.stroke();
+    ctx.setLineDash([]); ctx.fillStyle='#aaa'; ctx.font='9px monospace'; ctx.textAlign='left';
+    ctx.fillText('CODATA',12,H-47);
 
-    if(tbl) {
-      let h = '';
-      c.steps.forEach((s,i) => {
-        const unit = s.error_ppb !== undefined ? 'ppb' : 'ppm';
-        const err = s.error_ppb !== undefined ? s.error_ppb : s.error_ppm;
-        h += `<div style="margin:2px 0;color:${colors[i]};">` +
-             `${s.label}: <b>${s.value.toFixed(10)}</b>  ` +
-             `err=${err>0?'+':''}${err.toFixed(4)} ${unit} — ${s.desc}</div>`;
+    if(tbl){
+      var h='';
+      c.steps.forEach(function(s,i){
+        var unit=s.error_ppb!=null?'ppb':'ppm';
+        var val=s.error_ppb!=null?s.error_ppb:s.error_ppm;
+        h+='<div style="margin:2px 0;color:'+colors[i]+'">'+s.label+': <b>'+s.value.toFixed(10)+'</b> err='+(val>0?'+':'')+val.toFixed(4)+' '+unit+' — '+s.desc+'</div>';
       });
-      h += `<div style="color:#fff;margin-top:4px;">Target: ${c.target.toFixed(10)} (CODATA 2022)</div>`;
-      tbl.innerHTML = h;
+      h+='<div style="color:#fff;margin-top:4px">Target: '+c.target.toFixed(10)+' (CODATA 2022)</div>';
+      tbl.innerHTML=h;
     }
   }
 
-  // ── 3. FILTER CHART ──────────────────────────────────────
+  // ── 3. FILTER ───────────────────────────────────────────
   function renderFilter() {
-    const f = D.filter;
-    const canvas = document.getElementById('filter-chart');
-    const tbl = document.getElementById('filter-table');
+    var f = D.filter;
+    var canvas = resizeCanvas('filter-chart', 260);
+    var tbl = document.getElementById('filter-table');
     if(!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+    ctx.fillStyle=BG2; ctx.fillRect(0,0,W,H);
 
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-    ctx.fillStyle = BG2; ctx.fillRect(0,0,W,H);
+    var N=f.k.length, padL=55,padR=20,padT=25,padB=50;
+    var cW=W-padL-padR, cH=H-padT-padB;
 
-    const N = f.k.length;
-    const padL=60, padR=20, padT=20, padB=50;
-    const cW = W-padL-padR, cH = H-padT-padB;
+    var logW = f.w_k.map(function(v){return Math.log10(v);});
+    var logA = Math.log10(f.alpha);
+    var yMin = Math.log10(f.w_k[N-1])-0.5, yMax = Math.log10(f.w_k[0])+0.5;
+    function toY(v){ return padT+cH*(1-(v-yMin)/(yMax-yMin)); }
+    function toX(k){ return padL+k*cW/(N-1); }
 
-    // log scale y: w_k
-    const logVals = f.w_k.map(v => Math.log10(v));
-    const logAlpha = Math.log10(f.alpha);
-    const yMin = Math.log10(f.w_k[N-1])*1.1;
-    const yMax = Math.log10(f.w_k[0])*1.1;
-    const toY = v => padT + cH * (1-(v-yMin)/(yMax-yMin));
-    const toX = k => padL + k * cW/(N-1);
+    // Threshold
+    var yA = toY(logA);
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.setLineDash([5,3]);
+    ctx.beginPath(); ctx.moveTo(padL,yA); ctx.lineTo(W-padR,yA); ctx.stroke();
+    ctx.setLineDash([]); ctx.fillStyle='#aaa'; ctx.font='9px monospace'; ctx.textAlign='right';
+    ctx.fillText('α='+f.alpha.toExponential(2),padL-3,yA+4);
 
-    // Threshold line
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([5,3]);
-    const yAlpha = toY(logAlpha);
-    ctx.beginPath(); ctx.moveTo(padL,yAlpha); ctx.lineTo(W-padR,yAlpha); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = '#fff'; ctx.font='10px monospace'; ctx.textAlign='right';
-    ctx.fillText('α = '+f.alpha.toExponential(2), padL-4, yAlpha+4);
+    // r=5 separator
+    var xSplit=(toX(4)+toX(5))/2;
+    ctx.strokeStyle=ACC; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(xSplit,padT); ctx.lineTo(xSplit,H-padB); ctx.stroke();
+    ctx.fillStyle=ACC; ctx.font='bold 10px monospace'; ctx.textAlign='center';
+    ctx.fillText('r=5',xSplit,padT+12);
 
-    // w_k bars
-    f.k.forEach((k,i) => {
-      const x = toX(i);
-      const y = toY(logVals[i]);
-      const yBot = toY(yMin);
-      const col = f.above[i] ? GRN : RED;
-      const bw = Math.max(2, cW/(N+1));
-      ctx.fillStyle = col;
-      ctx.globalAlpha = 0.8;
-      ctx.fillRect(x-bw/2, y, bw, yBot-y);
-      ctx.globalAlpha = 1;
-
-      // k label
-      ctx.fillStyle = col;
-      ctx.font = '10px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('k='+k, x, H-padB+15);
-
-      // w value
-      ctx.fillText(f.w_k[i].toExponential(1), x, y-5);
+    // Bars
+    var bw=Math.max(4,cW/(N+2));
+    f.k.forEach(function(k,i){
+      var x=toX(i), y=toY(logW[i]), yBot=toY(yMin);
+      ctx.fillStyle=f.above[i]?GRN:RED; ctx.globalAlpha=0.85;
+      ctx.fillRect(x-bw/2,y,bw,yBot-y); ctx.globalAlpha=1;
+      ctx.fillStyle=f.above[i]?GRN:RED; ctx.font='9px monospace'; ctx.textAlign='center';
+      ctx.fillText('k='+k,x,H-padB+14);
+      ctx.fillText(f.w_k[i].toExponential(1),x,y-3);
     });
 
-    // Annotation r=5
-    const xSplit = (toX(4)+toX(5))/2;
-    ctx.strokeStyle = ACC;
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(xSplit,padT); ctx.lineTo(xSplit,H-padB); ctx.stroke();
-    ctx.fillStyle = ACC; ctx.font='bold 11px monospace'; ctx.textAlign='center';
-    ctx.fillText('r = 5', xSplit, padT+14);
-
-    if(tbl) {
-      tbl.innerHTML = `<span style="color:${GRN};">■ w_k &gt; α : retained (r=5 modes)</span> &nbsp; ` +
-        `<span style="color:${RED};">■ w_k &lt; α : discarded</span> &nbsp; ` +
-        `<span style="color:${ACC};">| threshold at k=5 → Standard Model gauge group</span>`;
-    }
+    if(tbl) tbl.innerHTML='<span style="color:'+GRN+'">■ w_k > α : ammissibile (r=5)</span> &nbsp; <span style="color:'+RED+'">■ w_k < α : escluso</span> &nbsp; <span style="color:'+ACC+'">| r=5 → U(1)×SU(2)×SU(3)</span>';
   }
 
-  // ── 4. DENSITY CHART ──────────────────────────────────────
+  // ── 4. DENSITY ──────────────────────────────────────────
   function renderDensity() {
-    const d = D.density;
-    const canvas = document.getElementById('density-chart');
-    const info = document.getElementById('density-info');
+    var d = D.density;
+    var canvas = resizeCanvas('density-chart', 260);
+    var info = document.getElementById('density-info');
     if(!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W=canvas.width, H=canvas.height;
+    ctx.fillStyle=BG2; ctx.fillRect(0,0,W,H);
 
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-    ctx.fillStyle = BG2; ctx.fillRect(0,0,W,H);
+    var N=d.r.length, padL=55,padR=20,padT=20,padB=45;
+    var cW=W-padL-padR, cH=H-padT-padB;
+    var maxP=Math.max.apply(null,d.P_std.concat(d.P_qgt));
+    function toX(i){return padL+i*cW/(N-1);}
+    function toY(v){return padT+cH*(1-v/maxP);}
 
-    const N = d.r.length;
-    const padL=55, padR=20, padT=20, padB=45;
-    const cW=W-padL-padR, cH=H-padT-padB;
-
-    const maxP = Math.max(...d.P_std, ...d.P_qgt);
-    const toX = i => padL + i*cW/(N-1);
-    const toY = v => padT + cH*(1 - v/maxP);
-
-    // Grid
-    ctx.strokeStyle='#1e1e2e'; ctx.lineWidth=0.5;
-    for(let g=0;g<=4;g++){
-      const y=padT+g*cH/4;
-      ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(W-padR,y); ctx.stroke();
-    }
+    // Difference fill
+    ctx.fillStyle='rgba(224,90,90,0.15)';
+    ctx.beginPath();
+    for(var i=0;i<N;i++){var x=toX(i),y=toY(d.P_std[i]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+    for(var i=N-1;i>=0;i--){ctx.lineTo(toX(i),toY(d.P_qgt[i]));}
+    ctx.closePath(); ctx.fill();
 
     // P_std
-    ctx.strokeStyle = BLU; ctx.lineWidth=2;
+    ctx.strokeStyle=BLU; ctx.lineWidth=2;
     ctx.beginPath();
-    for(let i=0;i<N;i++){
-      const x=toX(i), y=toY(d.P_std[i]);
-      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-    }
+    for(var i=0;i<N;i++){var x=toX(i),y=toY(d.P_std[i]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
     ctx.stroke();
 
     // P_qgt
-    ctx.strokeStyle = ACC; ctx.lineWidth=2; ctx.setLineDash([6,3]);
+    ctx.strokeStyle=ACC; ctx.lineWidth=2; ctx.setLineDash([6,3]);
     ctx.beginPath();
-    for(let i=0;i<N;i++){
-      const x=toX(i), y=toY(d.P_qgt[i]);
-      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-    }
+    for(var i=0;i<N;i++){var x=toX(i),y=toY(d.P_qgt[i]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
     ctx.stroke(); ctx.setLineDash([]);
 
-    // Difference area
-    ctx.fillStyle='rgba(255,100,100,0.15)';
-    ctx.beginPath();
-    for(let i=0;i<N;i++){ const x=toX(i),y=toY(d.P_std[i]); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }
-    for(let i=N-1;i>=0;i--){ ctx.lineTo(toX(i),toY(d.P_qgt[i])); }
-    ctx.closePath(); ctx.fill();
-
-    // Peak markers
-    const ip_std = d.P_std.indexOf(Math.max(...d.P_std));
-    const ip_qgt = d.P_qgt.indexOf(Math.max(...d.P_qgt));
-    [ip_std, ip_qgt].forEach((ip,j) => {
-      const col = j===0 ? BLU : ACC;
-      const x=toX(ip), y=toY(j===0?d.P_std[ip]:d.P_qgt[ip]);
+    // Peak lines
+    var ipS=d.P_std.indexOf(Math.max.apply(null,d.P_std));
+    var ipQ=d.P_qgt.indexOf(Math.max.apply(null,d.P_qgt));
+    [ipS,ipQ].forEach(function(ip,j){
+      var col=j===0?BLU:ACC;
       ctx.strokeStyle=col; ctx.lineWidth=1; ctx.setLineDash([3,2]);
-      ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,H-padB); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(toX(ip),padT); ctx.lineTo(toX(ip),H-padB); ctx.stroke();
       ctx.setLineDash([]);
     });
 
-    // Axes labels
-    ctx.fillStyle=TXT; ctx.font='11px monospace'; ctx.textAlign='center';
-    ctx.fillText('r (a₀)', padL+cW/2, H-5);
-    [0,5,10,15,20].forEach(rv => {
-      const i = d.r.findIndex(r=>r>=rv);
-      if(i<0) return;
-      ctx.fillText(rv, toX(i), H-padB+14);
+    // Axes
+    ctx.fillStyle=TXT; ctx.font='10px monospace'; ctx.textAlign='center';
+    ctx.fillText('r (a₀)',padL+cW/2,H-5);
+    [0,2,4,6,8].forEach(function(rv){
+      var i=d.r.findIndex(function(r){return r>=rv;});
+      if(i<0) return; ctx.fillText(rv,toX(i),H-padB+14);
     });
 
     // Legend
-    ctx.font='11px monospace'; ctx.textAlign='left';
-    ctx.fillStyle=BLU; ctx.fillText('─ Standard (a₀=0.5292 Å)', padL+8, padT+16);
-    ctx.fillStyle=ACC; ctx.fillText('-- QGT (a₀=Γ²τ=0.5236 Å)', padL+8, padT+30);
+    ctx.font='10px monospace'; ctx.textAlign='left';
+    ctx.fillStyle=BLU; ctx.fillText('— Standard (a₀=0.5292 Å)',padL+6,padT+14);
+    ctx.fillStyle=ACC; ctx.fillText('-- QGT (a₀=Γ²τ=0.5236 Å)',padL+6,padT+28);
 
-    if(info) info.innerHTML = d.note +
-      `&nbsp;|&nbsp; r_peak_std=${d.r_peak_std} a₀ &nbsp; r_peak_qgt=${d.r_peak_qgt} a₀`;
+    if(info) info.innerHTML=d.note+' &nbsp;|&nbsp; r_peak_std='+d.r_peak_std+' a₀ &nbsp; r_peak_qgt='+d.r_peak_qgt+' a₀';
   }
 
-  // ── Auto-init quando le sezioni diventano visibili ────────
   function initAll(){
     renderSpectrum();
     renderCascade();
     renderFilter();
     renderDensity();
   }
-  window._scInit = initAll;  // esposta globalmente
+  window._scInit = initAll;
 
   document.addEventListener('DOMContentLoaded', () => {
     const targets = ['spectrum','cascade_vis','filter_vis','density_vis'];
