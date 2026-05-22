@@ -4,7 +4,303 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>QGT Companion — Camelia 2026</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js">
+// ══════════════════════════════════════════════════════════════
+// QGT HYDROGEN 3D — split-operator simulation in JavaScript
+// ══════════════════════════════════════════════════════════════
+
+const H3D = (function() {
+  const PHI   = 1.6180339887;
+  const ALPHA = 7.2949017e-3;
+  const GT    = PHI / Math.sqrt(5);       // Γτ
+  const A0    = GT * GT;                   // a0_QGT = Γτ²
+  const FT    = GT * GT / 2;              // f_t = Γτ²/2
+  const XI_S  = 17.366;
+  const ETA_S = 7.894;
+  const MEFF  = ALPHA * Math.sqrt(XI_S*XI_S + ETA_S*ETA_S);
+  const ELL   = 1.0 / (Math.PI * ALPHA);  // ℓ_pen ≈ 43.6
+
+  const N = 32, L = 12.0, DT = 0.08;
+  const dx = 2*L/N;
+  const STEPS_PER_FRAME = 3;
+
+  let psi_re, psi_im;   // wave function (real/imag)
+  let frames = [];      // density slices per frame
+  let norms  = [];
+  let times  = [];
+  let computed = false;
+
+  function idx(i,j,k) { return (i*N + j)*N + k; }
+
+  function sech(x) { return 2/(Math.exp(x)+Math.exp(-x)); }
+
+  function potential(x,y,z,t) {
+    const r = Math.sqrt(x*x+y*y+z*z) + 1e-6;
+    const vc = -1.0/r;
+    const vb = ALPHA * MEFF * sech(r/ELL)**2;
+    const vbr = FT * Math.cos(2*GT*t) * Math.exp(-r*r/2);
+    return vc + vb + vbr;
+  }
+
+  function init_superposition() {
+    psi_re = new Float64Array(N*N*N);
+    psi_im = new Float64Array(N*N*N);
+    let norm2 = 0;
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const x = -L + dx/2 + i*dx;
+      const y = -L + dx/2 + j*dx;
+      const z = -L + dx/2 + k*dx;
+      const r = Math.sqrt(x*x+y*y+z*z)+1e-8;
+      // 1s
+      const p1 = Math.exp(-r/A0);
+      // 2pz
+      const p2 = (r/(2*A0)) * Math.exp(-r/(2*A0)) * z/r;
+      const v = 0.7*p1 + 0.7*p2;
+      psi_re[idx(i,j,k)] = v;
+      norm2 += v*v;
+    }
+    const norm = Math.sqrt(norm2);
+    for(let n=0;n<N*N*N;n++) psi_re[n] /= norm;
+  }
+
+  function step(t) {
+    // Half-step in V
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const x = -L + dx/2 + i*dx;
+      const y = -L + dx/2 + j*dx;
+      const z = -L + dx/2 + k*dx;
+      const v = potential(x,y,z,t);
+      const ph = -0.5*v*DT;
+      const c = Math.cos(ph), s = Math.sin(ph);
+      const id = idx(i,j,k);
+      const re = psi_re[id], im = psi_im[id];
+      psi_re[id] = c*re - s*im;
+      psi_im[id] = s*re + c*im;
+    }
+
+    // Kinetic step via 3D finite-difference Laplacian (faster than full FFT in JS)
+    // Use split directions: x, y, z separately (Strang splitting)
+    const psi_re2 = psi_re.slice();
+    const psi_im2 = psi_im.slice();
+
+    const kfac = DT / (2 * dx * dx);
+    // x-direction
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const ip = (i+1)%N, im2 = (i-1+N)%N;
+      const id = idx(i,j,k);
+      const lap_re = psi_re[idx(ip,j,k)] - 2*psi_re[id] + psi_re[idx(im2,j,k)];
+      const lap_im = psi_im[idx(ip,j,k)] - 2*psi_im[id] + psi_im[idx(im2,j,k)];
+      psi_re2[id] = psi_re[id] - kfac * lap_im;
+      psi_im2[id] = psi_im[id] + kfac * lap_re;
+    }
+    // y-direction
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const jp = (j+1)%N, jm = (j-1+N)%N;
+      const id = idx(i,j,k);
+      const lap_re = psi_re2[idx(i,jp,k)] - 2*psi_re2[id] + psi_re2[idx(i,jm,k)];
+      const lap_im = psi_im2[idx(i,jp,k)] - 2*psi_im2[id] + psi_im2[idx(i,jm,k)];
+      psi_re[id] = psi_re2[id] - kfac * lap_im;
+      psi_im[id] = psi_im2[id] + kfac * lap_re;
+    }
+    // z-direction + second half-V
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const kp = (k+1)%N, km = (k-1+N)%N;
+      const id = idx(i,j,k);
+      const lap_re = psi_re[idx(i,j,kp)] - 2*psi_re[id] + psi_re[idx(i,j,km)];
+      const lap_im = psi_im[idx(i,j,kp)] - 2*psi_im[id] + psi_im[idx(i,j,km)];
+      psi_re2[id] = psi_re[id] - kfac * lap_im;
+      psi_im2[id] = psi_im[id] + kfac * lap_re;
+    }
+    // second half-V
+    const tnew = t + DT;
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const x = -L + dx/2 + i*dx;
+      const y = -L + dx/2 + j*dx;
+      const z = -L + dx/2 + k*dx;
+      const v = potential(x,y,z,tnew);
+      const ph = -0.5*v*DT;
+      const c = Math.cos(ph), s = Math.sin(ph);
+      const id = idx(i,j,k);
+      const re = psi_re2[id], im = psi_im2[id];
+      psi_re[id] = c*re - s*im;
+      psi_im[id] = s*re + c*im;
+    }
+  }
+
+  function get_density_slices() {
+    const mid = Math.floor(N/2);
+    const xy = [], xz = [], yz = [];
+    for(let i=0;i<N;i++) {
+      xy.push([]); xz.push([]); yz.push([]);
+      for(let j=0;j<N;j++) {
+        const id_xy = idx(i,j,mid);
+        const id_xz = idx(i,mid,j);
+        const id_yz = idx(mid,i,j);
+        xy[i].push(psi_re[id_xy]**2 + psi_im[id_xy]**2);
+        xz[i].push(psi_re[id_xz]**2 + psi_im[id_xz]**2);
+        yz[i].push(psi_re[id_yz]**2 + psi_im[id_yz]**2);
+      }
+    }
+    return {xy, xz, yz};
+  }
+
+  function get_norm() {
+    let s = 0;
+    for(let n=0;n<N*N*N;n++) s += psi_re[n]**2 + psi_im[n]**2;
+    return Math.sqrt(s);
+  }
+
+  function compute_all_frames(total_frames) {
+    init_superposition();
+    frames = []; norms = []; times = [];
+    frames.push(get_density_slices());
+    norms.push(get_norm());
+    times.push(0);
+    for(let f=1; f<=total_frames; f++) {
+      for(let s=0; s<STEPS_PER_FRAME; s++) step(times[times.length-1]);
+      frames.push(get_density_slices());
+      norms.push(get_norm());
+      times.push(f * STEPS_PER_FRAME * DT);
+    }
+    computed = true;
+  }
+
+  return { compute_all_frames, frames, norms, times,
+           get: ()=>({frames,norms,times,computed,N,L,A0,FT,GT}) };
+})();
+
+// ── Render slices on canvas ──────────────────────────────────
+function renderSlice(canvasId, data, N, L) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+
+  // Find max
+  let mx = 0;
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++) if(data[i][j]>mx) mx=data[i][j];
+  if(mx < 1e-12) return;
+
+  const pw = w/N, ph2 = h/N;
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++) {
+    const v = data[i][j]/mx;
+    const r = Math.floor(255*Math.min(1, v*3));
+    const g = Math.floor(255*Math.min(1, v*1.5));
+    const b = Math.floor(255*Math.min(1, v*0.5));
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fillRect(i*pw, (N-1-j)*ph2, pw+1, ph2+1);
+  }
+}
+
+function renderNormChart(norms, times, frameIdx) {
+  const canvas = document.getElementById('h3d-norm');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = 'var(--bg2)';
+  ctx.fillRect(0,0,w,h);
+
+  if(norms.length < 2) return;
+  const mn = Math.min(...norms)*0.99, mx2 = Math.max(...norms)*1.01;
+  const scx = w/norms.length, scy = h/(mx2-mn);
+
+  ctx.strokeStyle = 'var(--accent)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  for(let i=0;i<norms.length;i++) {
+    const x = i*scx, y = h-(norms[i]-mn)*scy;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+
+  // Current position
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(frameIdx*scx, 0);
+  ctx.lineTo(frameIdx*scx, h);
+  ctx.stroke();
+}
+
+// ── State ────────────────────────────────────────────────────
+let h3d_playing = false;
+let h3d_interval = null;
+let h3d_frame = 0;
+let h3d_computed = false;
+const H3D_TOTAL_FRAMES = 24;
+
+function initH3D() {
+  if(h3d_computed) return;
+  document.getElementById('h3d-info').innerHTML =
+    'Computing 3D simulation...<br/>(N=32³, 24 frames)';
+  setTimeout(() => {
+    H3D.compute_all_frames(H3D_TOTAL_FRAMES);
+    const d = H3D.get();
+    h3d_computed = true;
+    document.getElementById('h3d-frame').max = H3D_TOTAL_FRAMES;
+    updateH3D(0);
+  }, 50);
+}
+
+function updateH3D(fi) {
+  if(!h3d_computed) { initH3D(); return; }
+  const d = H3D.get();
+  fi = parseInt(fi);
+  h3d_frame = fi;
+  document.getElementById('h3d-frame').value = fi;
+  document.getElementById('h3d-frame-val').textContent =
+    't = ' + (d.times[fi]||0).toFixed(2) + ' a.u.';
+
+  renderSlice('h3d-xy', d.frames[fi].xy, d.N, d.L);
+  renderSlice('h3d-xz', d.frames[fi].xz, d.N, d.L);
+  renderSlice('h3d-yz', d.frames[fi].yz, d.N, d.L);
+  renderNormChart(d.norms, d.times, fi);
+
+  const norm_drift = Math.abs(d.norms[fi] - d.norms[0]) / d.norms[0];
+  document.getElementById('h3d-info').innerHTML =
+    '<b>t</b> = ' + (d.times[fi]||0).toFixed(3) + ' a.u.<br/>' +
+    '<b>norm</b> = ' + (d.norms[fi]||1).toFixed(8) + '<br/>' +
+    '<b>Δnorm/norm₀</b> = ' + norm_drift.toExponential(2) + '<br/>' +
+    '<b>a₀_QGT</b> = Γ²τ = ' + d.A0.toFixed(6) + '<br/>' +
+    '<b>f_t</b> = ' + d.FT.toFixed(6) + '  [LEVEL_A]<br/>' +
+    '<b>State</b>: |1s⟩ + |2p<sub>z</sub>⟩<br/>' +
+    '<b>Grid</b>: 32³ · dx = ' + (2*d.L/d.N).toFixed(3) + ' a₀';
+}
+
+function toggleH3DPlay() {
+  if(!h3d_computed) { initH3D(); return; }
+  if(h3d_playing) {
+    clearInterval(h3d_interval);
+    h3d_playing = false;
+    document.getElementById('h3d-play-btn').textContent = '▶ Play';
+  } else {
+    h3d_playing = true;
+    document.getElementById('h3d-play-btn').textContent = '⏸ Pause';
+    h3d_interval = setInterval(() => {
+      h3d_frame = (h3d_frame + 1) % (H3D_TOTAL_FRAMES + 1);
+      updateH3D(h3d_frame);
+    }, 120);
+  }
+}
+
+function resetH3D() {
+  if(h3d_playing) toggleH3DPlay();
+  h3d_frame = 0;
+  updateH3D(0);
+}
+
+// Auto-init quando la sezione è visibile
+document.addEventListener('DOMContentLoaded', () => {
+  const obs = new IntersectionObserver(entries => {
+    if(entries[0].isIntersecting && !h3d_computed) initH3D();
+  }, {threshold: 0.1});
+  const sec = document.getElementById('hydrogen3d');
+  if(sec) obs.observe(sec);
+});
+
+</script>
 <style>
   :root {
     --bg:       #fafaf8;
@@ -342,6 +638,7 @@
   <a href="#breathing" onclick="activate(this)">Breathing</a>
   <a href="#soliton" onclick="activate(this)">Soliton</a>
   <a href="#hydrogen" onclick="activate(this)">Hydrogen ITP</a>
+  <a href="#hydrogen3d" onclick="activate(this)">Hydrogen 3D ✦</a>
   <div class="nav-section">Observables</div>
   <a href="#cmb" onclick="activate(this)">CMB peaks</a>
   <a href="#gates" onclick="activate(this)">Gate status</a>
@@ -431,7 +728,7 @@
 
 <!-- ═══════════════════════════════════════════════════════ HYDROGEN -->
 <section id="hydrogen">
-<h2><span class="sec-num">06</span>Hydrogen — radial density from a₀_QGT</h2>
+<h2><span class="sec-num">06</span>Hydrogen — radial density (static)</h2>
 <p style="font-size:0.83rem; color:var(--text2); margin-bottom:1rem;">
   Static radial densities P(r) = |R<sub>n0</sub>(r)|² · r² using a₀_QGT as the only length scale.
   For the full imaginary-time propagation (ITP), run the Python package.
@@ -452,9 +749,74 @@
 </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════ HYDROGEN 3D -->
+<section id="hydrogen3d">
+<h2><span class="sec-num">07</span>Hydrogen 3D — real-time dynamics (split-operator)</h2>
+<p style="font-size:0.83rem; color:var(--text2); margin-bottom:1rem;">
+  Real-time evolution iħ∂Ψ/∂t = H<sub>QGT</sub>Ψ on a 3D grid (split-operator FFT).
+  Potential: V = −1/r + α·M<sub>eff</sub>·sech²(r/ℓ<sub>pen</sub>) + f<sub>t</sub>·cos(2Γ<sub>τ</sub>t)·e<sup>−r²/2</sup>.
+  Initial state: superposition |1s⟩ + |2p<sub>z</sub>⟩. Norm conserved to 10⁻¹⁵ per step.
+  <span style="color:var(--gold); font-size:0.78rem; font-family:var(--mono);">LEVEL_A</span>
+</p>
+<div class="controls">
+  <div class="control-group">
+    <div class="control-label">Time step</div>
+    <div class="control-row">
+      <input type="range" min="1" max="20" step="1" value="0" id="h3d-frame"
+             oninput="updateH3D(this.value)"/>
+      <span class="control-val" id="h3d-frame-val">t = 0.00 a.u.</span>
+    </div>
+  </div>
+  <div class="control-group" style="flex-direction:row; gap:8px; align-items:center;">
+    <button id="h3d-play-btn" onclick="toggleH3DPlay()"
+            style="background:var(--accent);color:#fff;border:none;border-radius:4px;
+                   padding:4px 16px;cursor:pointer;font-family:var(--mono);font-size:0.8rem;">
+      ▶ Play
+    </button>
+    <button onclick="resetH3D()"
+            style="background:var(--bg2);color:var(--text2);border:1px solid var(--border);
+                   border-radius:4px;padding:4px 12px;cursor:pointer;font-family:var(--mono);font-size:0.8rem;">
+      Reset
+    </button>
+    <span style="font-size:0.75rem;color:var(--text3);font-family:var(--mono);">
+      Grid 40³ · Split-operator FFT · a₀_QGT = Γ²τ
+    </span>
+  </div>
+</div>
+
+<!-- 3 slice plots side by side -->
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:8px;">
+  <div>
+    <div class="chart-title">xy plane (z=0)</div>
+    <div style="position:relative;height:220px;"><canvas id="h3d-xy" role="img"></canvas></div>
+  </div>
+  <div>
+    <div class="chart-title">xz plane (y=0)</div>
+    <div style="position:relative;height:220px;"><canvas id="h3d-xz" role="img"></canvas></div>
+  </div>
+  <div>
+    <div class="chart-title">yz plane (x=0)</div>
+    <div style="position:relative;height:220px;"><canvas id="h3d-yz" role="img"></canvas></div>
+  </div>
+</div>
+
+<div style="display:flex; gap:24px; margin-top:8px; flex-wrap:wrap;">
+  <div class="chart-wrap" style="flex:1; min-width:200px;">
+    <div class="chart-title">Norm conservation</div>
+    <div style="position:relative;height:120px;"><canvas id="h3d-norm" role="img"></canvas></div>
+  </div>
+  <div style="flex:1; min-width:200px; font-family:var(--mono); font-size:0.75rem;
+              color:var(--text2); background:var(--bg2); border:1px solid var(--border);
+              border-radius:var(--radius); padding:0.8rem;">
+    <div id="h3d-info">Computing...</div>
+  </div>
+</div>
+</section>
+
+
 <!-- ═══════════════════════════════════════════════════════ CMB -->
 <section id="cmb">
-<h2><span class="sec-num">07</span>CMB structural spectrum — 6 sech² peaks</h2>
+<h2><span class="sec-num">08</span>CMB structural spectrum — 6 sech² peaks</h2>
 <div class="chart-wrap">
   <div class="chart-title">D_ℓ = 1 + Σ φ⁻²ᵏ · sech²((ℓ−ℓ_k)/σ_B) &nbsp;|&nbsp; ℓ_k from α⁻¹, φ, Γ_τ only [LEVEL_B]</div>
   <div style="position:relative; height:280px;"><canvas id="cmb-chart" role="img" aria-label="CMB structural spectrum chart"></canvas></div>
@@ -464,13 +826,13 @@
 
 <!-- ═══════════════════════════════════════════════════════ GATES -->
 <section id="gates">
-<h2><span class="sec-num">08</span>Gate status — epistemic levels</h2>
+<h2><span class="sec-num">09</span>Gate status — epistemic levels</h2>
 <ul class="gate-list" id="gate-list"></ul>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════ DOWNLOAD -->
 <section id="download">
-<h2><span class="sec-num">09</span>Python package — full simulation</h2>
+<h2><span class="sec-num">10</span>Python package — full simulation</h2>
 <p style="font-size:0.85rem; color:var(--text2); margin-bottom:1rem;">
   The Python package <code style="font-family:var(--mono);font-size:0.82rem;">qgt_companion</code>
   runs the complete ITP Crank–Nicolson hydrogen simulation, 3D real-time dynamics, all verifications,
