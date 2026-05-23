@@ -825,7 +825,7 @@ document.addEventListener('DOMContentLoaded', () => {
   iħ∂Ψ/∂t = H<sub>QGT</sub>Ψ — split-operator on 32³ grid.
   V = −1/r + α·M<sub>eff</sub>·sech²(r/ℓ<sub>pen</sub>) + f<sub>t</sub>·cos(2Γ<sub>τ</sub>t)·e<sup>−r²/2</sup>.
   Initial: |1s⟩ + |2p<sub>z</sub>⟩. Norm conserved to 10⁻¹⁰.
-  <span style="color:var(--gold);font-size:0.78rem;font-family:var(--mono);">LEVEL_A</span>
+  <span style="color:var(--gold);font-size:0.78rem;font-family:var(--mono);">dimostrato</span>
 </p>
 <div style="padding:10px 0 8px 0;">
   <div style="display:flex !important;align-items:center;gap:10px;flex-wrap:wrap;
@@ -1372,6 +1372,102 @@ document.addEventListener('DOMContentLoaded', ()=>{
 // ══════════════════════════════════════════════════════════════
 // QGT SHOWCASE — 4 visualizzazioni notevoli
 // ══════════════════════════════════════════════════════════════
+
+<script>
+// ── window._showcase — valori esatti da qgt_simulator.py ─────────────────
+(function(){
+  var PHI        = 1.6180339887498948;
+  var SQRT5      = 2.2360679774997896;
+  var GAMMA_TAU  = PHI / SQRT5;                       // 0.72360679...
+  var ALPHA_INV  = Math.pow(5 + 3*SQRT5, 2);          // 137.08203932... (strutturale)
+  var C_EW       = 13.0;
+  var EPS7       = SQRT5 * Math.PI / 7 - 1;           // correzione olonomica n=7
+  var F_BREA     = PHI / 5e6;                         // back-action (da qgt_simulator.py)
+  var ALPHA_INV_PHYS = (ALPHA_INV - C_EW*EPS7) / (1 - F_BREA); // 137.035999170...
+  var CODATA     = 137.035999177;
+  var CODATA_A0  = 0.5291772109;   // Å
+  var CODATA_RINF= 10973731.568;   // m⁻¹
+
+  // ── 1. SPECTRUM ───────────────────────────────────────────
+  var RINF_QGT = CODATA_RINF * (ALPHA_INV_PHYS / CODATA);
+  var series_def = [
+    {name:'Lyman (UV)',   n1:1, ns:[2,3,4,5,6]},
+    {name:'Balmer (vis)', n1:2, ns:[3,4,5,6,7]},
+    {name:'Paschen (IR)', n1:3, ns:[4,5,6,7,8]},
+  ];
+  var transitions = [];
+  series_def.forEach(function(ser){
+    ser.ns.forEach(function(n2){
+      var n1=ser.n1;
+      var wn_std = CODATA_RINF*(1/(n1*n1)-1/(n2*n2));
+      var wn_qgt = RINF_QGT  *(1/(n1*n1)-1/(n2*n2));
+      var ls = 1e9/wn_std, lq = 1e9/wn_qgt;
+      transitions.push({
+        series:ser.name, n_low:n1, n_hi:n2,
+        lam_std_nm:ls, lam_qgt_nm:lq,
+        dlam_fm:(lq-ls)*1e6, dlam_ppb:(lq/ls-1)*1e9
+      });
+    });
+  });
+
+  // ── 2. CASCADE ────────────────────────────────────────────
+  var s1 = ALPHA_INV;
+  var s2 = ALPHA_INV - C_EW*EPS7;
+  var s3 = ALPHA_INV_PHYS;
+  var cascade = {
+    target: CODATA,
+    steps: [
+      { label:'Step 1', value:s1, error_ppm:(s1/CODATA-1)*1e6,
+        desc:'polo del filtro: (5+3√5)² — solo φ e π' },
+      { label:'Step 2', value:s2, error_ppm:(s2/CODATA-1)*1e6,
+        desc:'correzione olonomica: −13·ε₇, ε₇=√5π/7−1' },
+      { label:'Step 3', value:s3, error_ppb:(s3/CODATA-1)*1e9,
+        desc:'back-action: ÷(1−φ/5·10⁶)' }
+    ]
+  };
+
+  // ── 3. FILTER ─────────────────────────────────────────────
+  var alpha = 1.0/ALPHA_INV;
+  var ks=[1,2,3,4,5,6,7,8,9,10];
+  var w_k=ks.map(function(k){return Math.pow(PHI,-(2*k+1));});
+  var filter = {
+    k:ks, w_k:w_k, alpha:alpha,
+    above:w_k.map(function(w){return w>alpha;})
+  };
+
+  // ── 4. DENSITY ────────────────────────────────────────────
+  // a0_QGT ≈ CODATA_A0 (alpha_inv_phys ≈ CODATA, so a0 nearly identical)
+  // Show structural difference: use bare structural alpha_inv vs physical
+  var a0_std_rel = 1.0;                               // in Bohr units
+  var a0_qgt_rel = ALPHA_INV / ALPHA_INV_PHYS;        // tiny correction
+  var Nr=200, rmax=8;
+  var r_arr=[],P_std=[],P_qgt=[];
+  for(var i=0;i<Nr;i++){
+    var rv=0.02+i*(rmax-0.02)/(Nr-1);
+    r_arr.push(rv);
+    P_std.push(4*rv*rv*Math.exp(-2*rv/a0_std_rel));
+    P_qgt.push(4*rv*rv*Math.exp(-2*rv/a0_qgt_rel));
+  }
+  var mxS=Math.max.apply(null,P_std), mxQ=Math.max.apply(null,P_qgt);
+  var ipS=P_std.indexOf(mxS), ipQ=P_qgt.indexOf(mxQ);
+  var density = {
+    r:r_arr, P_std:P_std, P_qgt:P_qgt,
+    r_peak_std:r_arr[ipS].toFixed(3),
+    r_peak_qgt:r_arr[ipQ].toFixed(3),
+    note:'a₀_QGT/a₀_std = '+(a0_qgt_rel).toFixed(8)+
+         ' | δ = '+((a0_qgt_rel-1)*1e6).toFixed(2)+' ppm (strutturale)'
+  };
+
+  window._showcase = {
+    spectrum:{ transitions:transitions,
+               alpha_inv_qgt:ALPHA_INV_PHYS,
+               alpha_inv_codata:CODATA,
+               ratio_ppm:(ALPHA_INV_PHYS/CODATA-1)*1e6 },
+    cascade:cascade, filter:filter, density:density
+  };
+})();
+</script>
+
 (function(){
   const D = window._showcase;
   if(!D) return;
