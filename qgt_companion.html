@@ -633,9 +633,9 @@ document.addEventListener('DOMContentLoaded', () => {
     All computations run in-browser. Zero installation required.
   </div>
   <div class="badge-row">
-    <span class="badge badge-a">✓ LEVEL_A — closed derivations</span>
-    <span class="badge badge-b">~ LEVEL_B — additional assumptions</span>
-    <span class="badge badge-op">⚠ OPEN — residual gates</span>
+    <span class="badge badge-a">✓ dimostrato — derivazione chiusa</span>
+    <span class="badge badge-b">~ stima strutturale — derivato, non chiuso</span>
+    <span class="badge badge-op">⚠ aperto — gate residuo</span>
   </div>
 </header>
 
@@ -1257,26 +1257,38 @@ updateHydrogen();
 
 // ── Gates ─────────────────────────────────────────────────────
 const GATES = [
+  // ── dimostrato ───────────────────────────────────────────────────
   { level:'A', text:"α⁻¹ = (5+3√5)² = 20φ⁴ = 500Γ_τ⁴", src:"Cap09" },
-  { level:'A', text:"sin²θ_W = 3/13", src:"CapGauge" },
-  { level:'A', text:"ξ·η = α⁻¹  (breathing invariant)", src:"Cap02" },
-  { level:'A', text:"a₀_QGT = Γ_τ²·M_B²·S⁻²ʳ m  (+0.032 ppm)", src:"CapGate" },
+  { level:'A', text:"sin²θ_W = 3/13  (da matrice Clifford)", src:"CapGauge" },
+  { level:'A', text:"ξ·η = α⁻¹  (invariante di breathing)", src:"Cap02" },
+  { level:'A', text:"αs(Mz) = √140/100 = 0.11832  (−0.15% da PDG)", src:"Cap09" },
+  { level:'A', text:"v_EW = 246.20 GeV  (−0.008% da PDG)", src:"Cap25" },
   { level:'A', text:"mμ/mₑ via H_ker = [19,43]  (~0.5% — interi strutturali)", src:"CapMateria" },
-  { level:'A', text:"T_CMB = π/ln(π)·(1 − 1/(√2·100))", src:"Cap24" },
+  { level:'A', text:"T_CMB = π/ln(π)·(1 − 1/(√2·100))  (2.72499 K)", src:"Cap37" },
   { level:'A', text:"lock-in n=5: ξ·η = α⁻¹, B* = 8", src:"Cap14" },
-  { level:'B', text:"R_∞ = readout INTERNO di Π⁺  (non ancora esterna)", src:"CapGate" },
-  { level:'B', text:"BASE → v_EW → G_F  (Lemma 25, dim. formale in progress)", src:"Cap25" },
-  { level:'B', text:"mτ/mₑ: σ₃ candidata, non Level A", src:"CapMateria" },
-  { level:'B', text:"αs = √140/100  (accordo 0.3%, derivazione in progress)", src:"Cap09" },
-  { level:'O', text:"κ_QGT/G_N : normalizzazione gravitazionale assoluta" },
-  { level:'O', text:"Dirac 4D completa: loop self-consistenza λ|Ψ|^{2/3}" },
-  { level:'O', text:"G^{ηξ}_edge(k,ℓ): propagatore CMB multipolare" },
-  { level:'O', text:"σ₃: terza generazione leptonica (formula candidata)" },
+  { level:'A', text:"gravità perturbativa: □h_ij^TT = 0  (limite GR)", src:"Cap34" },
+  { level:'A', text:"A_s^QGT = (√5/2)·A_s^SW = 2.101×10⁻⁹  (Gate Transfer)", src:"Cap37" },
+  { level:'A', text:"quantizzazione h_μν: dissolta — ξ è già discreto", src:"Cap34" },
+  // ── stima strutturale ────────────────────────────────────────────
+  { level:'B', text:"α⁻¹(Mz) = 129.036  (0.072% — running EW B forte)", src:"Cap25" },
+  { level:'B', text:"mZ = 91.19 GeV  (<0.01%) — da Level A + B forte", src:"Cap25" },
+  { level:'B', text:"mW = 79.97 GeV  (0.5% — correzioni radiative mancanti)", src:"Cap25" },
+  { level:'B', text:"a₀_QGT = Γ_τ²·M_B²·S⁻²ʳ m  (+3.8 ppm, lemma b_atom aperto)", src:"CapGate" },
+  { level:'B', text:"Gate 0b mock-modulare: congettura ben formulata, riducibile", src:"Cap27" },
+  { level:'B', text:"Gate Transfer fisico: g^DW2(τ_163) = π√163  (lemma fisico)", src:"Cap27" },
+  { level:'B', text:"mτ/mₑ: σ₃ candidata strutturale", src:"CapMateria" },
+  // ── aperto ───────────────────────────────────────────────────────
+  { level:'O', text:"CMB multipolare: G^{ηξ}_edge(k,ℓ) propagatore completo" },
+  { level:'O', text:"fermioni completi: quarks, CKM, PMNS, CP violation" },
+  { level:'O', text:"QCD dinamica: αs(Q) running, Λ_QCD, spettro adronico" },
+  { level:'O', text:"Λ_QGT valore assoluto (costante cosmologica)" },
+  { level:'O', text:"κ_QGT/G_N normalizzazione gravitazionale" },
+  { level:'O', text:"gravità forte / non lineare / buchi neri" },
 ];
 const gl = document.getElementById('gate-list');
 GATES.forEach(g => {
   const dc = g.level==='A' ? 'dot-a' : g.level==='B' ? 'dot-b' : 'dot-o';
-  const lbl = g.level==='A' ? 'LEVEL_A' : g.level==='B' ? 'LEVEL_B' : 'OPEN';
+  const lbl = g.level==='A' ? 'dimostrato' : g.level==='B' ? 'stima strutturale' : 'aperto';
   const bc  = g.level==='A' ? 'badge-a' : g.level==='B' ? 'badge-b' : 'badge-op';
   gl.innerHTML += `<li>
     <div class="gate-dot ${dc}"></div>
