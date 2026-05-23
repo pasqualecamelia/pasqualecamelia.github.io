@@ -6,8 +6,8 @@
 <title>QGT Companion — Camelia 2026</title>
 <meta name="author" content="Pasquale Camelia"/>
 <meta name="description" content="QGT Companion Simulator — The Quantum Gauge Theory of Time, First Edition 2026"/>
-<meta name="license" content="CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/"/>
-<meta name="rights" content="© 2026 Pasquale Camelia. Licensed under CC BY 4.0."/>
+<meta name="license" content="MIT License (code) — © 2026 Pasquale Camelia"/>
+<meta name="rights" content="© 2026 Pasquale Camelia. Code: MIT License. Scientific content: All rights reserved."/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js">
 // ══════════════════════════════════════════════════════════════
 // QGT HYDROGEN 3D — split-operator simulation in JavaScript
@@ -773,7 +773,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <p style="font-size:0.83rem;color:var(--text2);margin-bottom:0.8rem;">
   α_QGT⁻¹ è derivato dalla struttura del filtro H(z) — non misurato.
   La correzione alle lunghezze d'onda segue automaticamente: δλ/λ = −2δα/α.
-  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">LEVEL_A</span>
+  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">dimostrato</span>
 </p>
 <div id="spectrum-table" style="overflow-x:auto;"></div>
 <div style="margin-top:8px;font-family:var(--mono);font-size:0.75rem;color:var(--text3);" id="spectrum-info"></div>
@@ -785,7 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <p style="font-size:0.83rem;color:var(--text2);margin-bottom:0.8rem;">
   Tre passi in ℤ[√5]: polo del filtro → correzione olonomica n=7 → back-action breathing.
   Ogni passo è forzato dalla struttura. Nessun parametro libero.
-  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">LEVEL_A</span>
+  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">dimostrato</span>
 </p>
 <div id="cascade-vis-wrap" style="position:relative;height:200px;"></div>
 <canvas id="cascade-chart" width="600" height="200" style="width:100%;border:1px solid var(--border);border-radius:4px;"></canvas>
@@ -798,7 +798,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <p style="font-size:0.83rem;color:var(--text2);margin-bottom:0.8rem;">
   I pesi spettrali w_k = φ^{-(2k+1)} attraversano la soglia α esattamente a k=5.
   Questo è il meccanismo che seleziona r=5 e quindi U(1)×SU(2)×SU(3).
-  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">LEVEL_A</span>
+  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">dimostrato</span>
 </p>
 <canvas id="filter-chart" width="600" height="240" style="width:100%;border:1px solid var(--border);border-radius:4px;"></canvas>
 <div id="filter-table" style="margin-top:8px;font-family:var(--mono);font-size:0.75rem;"></div>
@@ -811,7 +811,7 @@ document.addEventListener('DOMContentLoaded', () => {
   a₀_QGT = Γ²τ = 0.5236 Å  (derivato dalla connessione temporale aurea).
   a₀_std  = 0.5292 Å  (CODATA, usa α come input esterno).
   Differenza: −1053 ppm — piccola ma derivata senza misure.
-  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">LEVEL_A</span>
+  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">dimostrato</span>
 </p>
 <canvas id="density-chart" width="600" height="240" style="width:100%;border:1px solid var(--border);border-radius:4px;"></canvas>
 <div id="density-info" style="margin-top:6px;font-family:var(--mono);font-size:0.75rem;color:var(--text2);"></div>
@@ -1381,9 +1381,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function resizeCanvas(id, h) {
     var c = document.getElementById(id);
     if(!c) return null;
-    var w = c.parentElement ? c.parentElement.offsetWidth : 600;
-    if(w < 10) w = 600;
-    c.width = w; c.height = h;
+    var w = 0;
+    // Try multiple methods to get a real width
+    if(c.parentElement) {
+      w = c.parentElement.getBoundingClientRect().width;
+      if(w < 10) w = c.parentElement.offsetWidth;
+    }
+    if(w < 10) w = window.innerWidth > 40 ? window.innerWidth - 40 : 600;
+    c.width = Math.floor(w); c.height = h;
     return c;
   }
 
@@ -1579,27 +1584,39 @@ document.addEventListener('DOMContentLoaded', ()=>{
     renderDensity();
   }
   window._scInit = initAll;
+  // Re-render on resize so charts fill their containers
+  var _scResizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(_scResizeTimer);
+    _scResizeTimer = setTimeout(initAll, 150);
+  });
 
   document.addEventListener('DOMContentLoaded', () => {
     const targets = ['spectrum','cascade_vis','filter_vis','density_vis'];
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if(e.isIntersecting) { initAll(); obs.disconnect(); }});
-    }, {threshold: 0.05});
+    // Observe each section independently — re-render when any enters viewport
     targets.forEach(id => {
       const el = document.getElementById(id);
-      if(el) obs.observe(el);
+      if(!el) return;
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if(e.isIntersecting) {
+            setTimeout(initAll, 50);  // slight delay for layout
+          }
+        });
+      }, {threshold: 0.01, rootMargin: '0px 0px 100px 0px'});
+      obs.observe(el);
     });
-    // Init multiplo per sicurezza
-    setTimeout(initAll, 300);
-    setTimeout(initAll, 800);
-    window.addEventListener('load', function(){ setTimeout(initAll,200); });
+    // Also init on nav click (already done via activate())
+    setTimeout(initAll, 400);
+    setTimeout(initAll, 900);
+    window.addEventListener('load', function(){ setTimeout(initAll, 200); setTimeout(initAll, 600); });
   });
 
 })();
 </script>
 
 
-<!-- ── CC-BY 4.0 Footer ── -->
+<!-- ── License Footer ── -->
 <div style="
   margin-top:3rem;
   padding:1.2rem 1.5rem;
@@ -1609,15 +1626,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
   font-family:sans-serif;
   line-height:1.6;
 ">
-  <img src="https://licensebuttons.net/l/by/4.0/80x15.png"
-       alt="CC BY 4.0" style="vertical-align:middle;margin-right:8px;"/>
   <strong>© 2026 Pasquale Camelia</strong>
   — ORCID: <a href="https://orcid.org/0009-0006-4779-4647" target="_blank">0009-0006-4779-4647</a><br/>
   <em>The Quantum Gauge Theory of Time</em>, First Edition 2026.<br/>
-  Questo codice è distribuito sotto licenza
-  <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">
-    Creative Commons Attribution 4.0 International (CC BY 4.0)</a>.<br/>
-  Attribution: Camelia, P. <em>The Quantum Gauge Theory of Time</em>, 2026 —
+  Il codice di questo strumento interattivo è distribuito sotto licenza MIT.<br/>
+  Il contenuto scientifico e teorico è opera dell'autore — tutti i diritti riservati.<br/>
   <a href="https://pasqualecamelia.github.io" target="_blank">pasqualecamelia.github.io</a>
 </div>
 </body>

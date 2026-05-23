@@ -156,16 +156,20 @@ Per N=600 il costo computazionale è < 5 s su qualsiasi laptop moderno.
 
 © 2026 Pasquale Camelia — ORCID: [0009-0006-4779-4647](https://orcid.org/0009-0006-4779-4647)
 
-Questo codice e la monografia associata sono distribuiti sotto licenza
-**[Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)**.
+**Codice** (file `.py`, strumenti interattivi `.html`): distribuito sotto licenza **MIT**.  
+Uso, modifica e redistribuzione sono consentiti a condizione di mantenere questa nota di copyright.
 
-This code and the associated monograph are licensed under the
-**[Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)**.
+**Contenuto scientifico e testo** (teoria QGT, monografia, figure): **tutti i diritti riservati**.  
+La monografia *The Quantum Gauge Theory of Time* (Prima edizione, 2026) è pubblicata tramite Amazon KDP.  
+La riproduzione o ridistribuzione del contenuto testuale richiede il consenso scritto dell'autore.
 
-È consentita la riproduzione, distribuzione, adattamento e uso commerciale,
-a condizione di citare:
+---
 
-> Camelia, P. *The Quantum Gauge Theory of Time*, First Edition, 2026.  
-> ORCID: 0009-0006-4779-4647 — https://pasqualecamelia.github.io
+**Code** (`.py` files, interactive `.html` tools): released under the **MIT License**.  
+Use, modification and redistribution are permitted provided this copyright notice is retained.
 
-[![CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/)
+**Scientific content and text** (QGT theory, monograph, figures): **all rights reserved**.  
+The monograph *The Quantum Gauge Theory of Time* (First Edition, 2026) is published via Amazon KDP.  
+Reproduction or redistribution of the textual content requires the written permission of the author.
+
+Per contatti / For permissions: pasquale.camelia@gmail.com
