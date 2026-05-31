@@ -13,6 +13,8 @@ STATO EPISTEMICO (allineato alla monografia, Cap. 40):
   ✓ dimostrato: breathing, solitone, ricorrenza di scala, cascata adimensionale
   ✓ dimostrato: alpha^{-1} phys (3 passi, -0.049 ppb), sin²θ_W=3/13, alpha_s=√140/100
   ✓ dimostrato: T_CMB, Omega_b/c h², spettro CMB 6 picchi strutturali
+  ✓ CMB REALE: spettro TT/EE/TE via CAMB (o CSV pre-calcolati CamCMB v176),
+               chi^2/nu e RMS contro i dati Planck PR3 (2018) e PR4 (2021)
   ✓ dimostrato: Clifford Cl(4,1), proiettori chirali, butterfly M_eta/M_xi
   ✓ dimostrato: Gate Bohr-Rydberg — a0, R_infty readout canonico di Pi+, 0.033 ppm
   ✓ dimostrato: tau_pi+ = 2.60330e-8 s (Gate 2A+2B, Cap. 36)
@@ -21,9 +23,18 @@ STATO EPISTEMICO (allineato alla monografia, Cap. 40):
   ⚠ aperti: kappa_QGT/G_N, sigma_3, G_edge(k,ell) CMB multipolare, QCD dinamica
 
 USO RAPIDO:
-  python qgt_simulator.py          # verifica e output testo
+  python qgt_simulator.py          # verifica e output testo (usa CAMB se presente)
+  python qgt_simulator.py --csv    # forza spettri CMB dai CSV pre-calcolati
   python qgt_simulator.py --plot   # tutti i grafici matplotlib
   python qgt_simulator.py --plot breathing soliton atom dna cmb
+
+MODULO CMB:
+  Per il confronto CMB con i dati Planck reali, tenere la cartella
+  'camcmb/' (pacchetto CamCMB v176: file Planck COM_PowerSpect_*.txt +
+  CSV camb_*_ref.csv) accanto a questo script, oppure nella working dir.
+  Se 'camb' e' installato gli spettri sono ricalcolati al volo; altrimenti
+  si leggono i CSV pre-calcolati. Senza la cartella, la sezione CMB
+  stampa solo le posizioni strutturali dei picchi.
 """
 
 import numpy as np
@@ -81,6 +92,10 @@ eps7   = np.sqrt(5)*np.pi/7 - 1
 f_brea = phi / 5e6
 alpha_inv_phys = (alpha_inv - c_EW*eps7) / (1 - f_brea)
 
+# Scala dei picchi acustici CMB: la monografia (c13_cmb: ell_k = sigma(k phi+(k-1)/phi))
+# fissa sigma = alpha_phys^{-1} = 137.036, NON la alpha_Pi^{-1}=137.082 strutturale.
+sigma_CMB = alpha_inv_phys
+
 H_ker   = [19, 43, 67]
 m_mu_me = H_ker[1]*sigma2 / (H_ker[0]*sigma1) * Lambda
 
@@ -89,8 +104,136 @@ Omega_b_h2 = np.sqrt(5) / 100
 Omega_c_h2 = 1 / (5*phi)
 # tau_pi+ fisica corretta (Cap. 36): grezza f_tau=phi^2/10, corretta dal residuo olonomico
 f_tau      = phi**2/10
-_delta_F   = 1 - 1/((2*np.sqrt(5))**1.5/(3*np.pi))
-tau_pi     = f_tau * 1e-7 / (1 + phi*(_delta_F + eps7)/2)  # = 2.60330e-8 s
+# usa il delta_F gia' definito sopra (1 - 1/f_gain); erano la stessa quantita'
+tau_pi     = f_tau * 1e-7 / (1 + phi*(delta_F + eps7)/2)  # = 2.60330e-8 s
+
+# ── Set strutturale completo CMB (CamCMB / Monograph v176) ─────────────────
+# Questi sono i SEI input strutturali che alimentano CAMB nel modulo CMB reale.
+eps163       = np.pi*np.sqrt(163) - np.log(phi**2 * 1e17)   # Ker(163)
+n_s_QGT      = 1 - 4*np.pi*eps163                            # tilt spettrale [Level A]
+tau_reion    = 7.0/130.0                                     # profondita' ottica [Prop. 7]
+H0_QGT       = 67.9                                          # [Prop. 8 / Level B forte]
+A_s_QGT      = 2.101e-9                                      # Gate Transfer, F_A=sqrt5/2
+
+assert abs(Omega_c_h2 - 1/(5*phi)) < 1e-12
+assert abs(Omega_b_h2 - np.sqrt(5)/100) < 1e-12
+
+
+# ================================================================
+# 1b. MODULO CMB REALE (CamCMB v176 — CAMB o CSV pre-calcolati)
+#     Sostituisce la D_ell illustrativa con lo spettro vero e il
+#     confronto chi^2 / RMS contro i dati Planck PR3 e PR4.
+# ================================================================
+
+import os
+
+def _cmb_data_dir():
+    """Trova la cartella con i dati Planck + CSV CamCMB.
+    Cerca: ./camcmb, ./, e accanto allo script."""
+    here = os.path.dirname(os.path.abspath(__file__)) if '__file__' in globals() else os.getcwd()
+    for cand in [os.path.join(here, 'camcmb'), here, os.getcwd(),
+                 os.path.join(os.getcwd(), 'camcmb')]:
+        if os.path.isfile(os.path.join(cand, 'COM_PowerSpect_CMB-TT-full_R3_01.txt')):
+            return cand
+    return None
+
+CMB_DIR = _cmb_data_dir()
+
+# parametri di riferimento LCDM (Planck best-fit) per le curve CAMB
+_LCDM18 = dict(H0=67.36, ombh2=0.02237, omch2=0.12011, tau=0.0544, ns=0.9649, As=2.1e-9, TCMB=2.725)
+_LCDM21 = dict(H0=67.92, ombh2=0.02242, omch2=0.11933, tau=0.0561, ns=0.9665, As=2.105e-9, TCMB=2.7255)
+
+# 6 picchi Planck 2018 Table 5 (posizione ell, ampiezza D_ell in muK^2)
+PLANCK_T5_ELL = np.array([220.6, 538.1, 809.8, 1147.8, 1446.8, 1779.0])
+PLANCK_T5_AMP = np.array([5733., 2586., 2518., 1227.,   799.,   378.])
+
+
+def _run_camb(p):
+    """Esegue CAMB e ritorna (Dl_TT, Dl_EE, Dl_TE) indicizzati per ell."""
+    import camb
+    pars = camb.CAMBparams()
+    pars.set_cosmology(H0=p['H0'], ombh2=p['ombh2'], omch2=p['omch2'],
+                       tau=p['tau'], mnu=0.06, omk=0, TCMB=p['TCMB'])
+    pars.InitPower.set_params(ns=p['ns'], As=p['As'])
+    pars.set_for_lmax(2500, lens_potential_accuracy=0)
+    res = camb.get_results(pars)
+    pw  = res.get_cmb_power_spectra(pars, CMB_unit='muK')['total']
+    return pw[:, 0], pw[:, 1], pw[:, 3]   # TT, EE, TE
+
+
+def get_cmb_spectra(force_csv=False):
+    """Ritorna dict con spettri TT (e EE/TE) per QGT, LCDM18, LCDM21.
+    Strategia: prova CAMB con i parametri strutturali QGT; se CAMB manca
+    o force_csv, legge i CSV pre-calcolati del pacchetto CamCMB.
+    """
+    qgt_pars = dict(H0=H0_QGT, ombh2=Omega_b_h2, omch2=Omega_c_h2,
+                    tau=tau_reion, ns=n_s_QGT, As=A_s_QGT, TCMB=2.725)
+    out = {'source': None, 'pars_qgt': qgt_pars}
+    if not force_csv:
+        try:
+            import camb
+            tt_q, ee_q, te_q = _run_camb(qgt_pars)
+            tt_18, _, _      = _run_camb(_LCDM18)
+            tt_21, _, _      = _run_camb(_LCDM21)
+            out.update(source=f'CAMB {camb.__version__}',
+                       ell=np.arange(len(tt_q)),
+                       tt_qgt=tt_q, ee_qgt=ee_q, te_qgt=te_q,
+                       tt_lcdm18=tt_18, tt_lcdm21=tt_21)
+            return out
+        except Exception as e:
+            out['camb_error'] = str(e)
+    # fallback: CSV pre-calcolati
+    if CMB_DIR is None:
+        out['source'] = 'NONE (ne CAMB ne CSV trovati)'
+        return out
+    q  = np.loadtxt(os.path.join(CMB_DIR, 'camb_qgt_gate3.csv'), delimiter=',', comments='#')
+    l18= np.loadtxt(os.path.join(CMB_DIR, 'camb_lcdm_ref.csv'),  delimiter=',', comments='#')
+    try:
+        l21 = np.loadtxt(os.path.join(CMB_DIR, 'camb_lcdm21_ref.csv'), delimiter=',', comments='#')
+        tt_21 = l21[:, 1]
+    except Exception:
+        tt_21 = l18[:, 1]
+    out.update(source='CSV pre-calcolati (CamCMB v176)',
+               ell=q[:, 0].astype(int),
+               tt_qgt=q[:, 1], ee_qgt=q[:, 2], te_qgt=q[:, 3],
+               tt_lcdm18=l18[:, 1], tt_lcdm21=tt_21)
+    return out
+
+
+def _load_planck(tag):
+    """tag in {'R3_01','R4_PR4'}; ritorna (ell, Dl, sigma)."""
+    if CMB_DIR is None:
+        return None
+    f = os.path.join(CMB_DIR, f'COM_PowerSpect_CMB-TT-full_{tag}.txt')
+    if not os.path.isfile(f):
+        return None
+    d = np.loadtxt(f, comments='#')
+    return d[:, 0], d[:, 1], d[:, 2]
+
+
+def cmb_chi2(tt_model, tag, lmin=100, lmax=1800):
+    """chi^2_nu diagnostico (errori diagonali) vs un dataset Planck."""
+    pl = _load_planck(tag)
+    if pl is None:
+        return None
+    ell, Dl, sig = pl
+    m = (ell >= lmin) & (ell <= lmax)
+    elli = ell[m].astype(int); Dm = Dl[m]; em = sig[m]
+    mod = np.array([tt_model[l] if l < len(tt_model) else 0.0 for l in elli])
+    chi2 = np.sum(((Dm - mod)/em)**2)
+    return chi2, len(Dm), chi2/len(Dm)
+
+
+def cmb_rms_peaks(tt_model):
+    """RMS percentuale sulle 6 ampiezze dei picchi Planck Table 5."""
+    pk = np.array([tt_model[int(round(l))] for l in PLANCK_T5_ELL])
+    return np.sqrt(np.mean(((pk - PLANCK_T5_AMP)/PLANCK_T5_AMP)**2)) * 100
+
+
+def peak_positions():
+    """Posizioni strutturali dei 6 picchi: ell_k = sigma_CMB(k phi+(k-1)/phi)."""
+    return np.array([sigma_CMB*(k*phi+(k-1)/phi) for k in range(1, 7)])
+
 
 # ================================================================
 # 2. BREATHING ODE (Cap02, eq:breathing_hyp)
@@ -172,8 +315,8 @@ def D_ell(ell_arr):
     """D_ell = 1 + sum_{k=1}^6 phi^{-2k} * sech^2((ell-ell_k)/sigma_B(k))."""
     D = np.ones_like(ell_arr, dtype=float)
     for k in range(1, 7):
-        lk = alpha_inv * (k*phi + (k-1)/phi)
-        sB = alpha_inv * Gamma_tau / k
+        lk = sigma_CMB * (k*phi + (k-1)/phi)            # c13: ell_k = sigma(k phi+(k-1)/phi)
+        sB = sigma_CMB * Gamma_tau * (c_EW - k) / 12     # c13: sigma_B(k)=sigma*Gamma*(13-k)/12
         D += phi**(-2*k) * (1/np.cosh((ell_arr-lk)/sB))**2
     return D
 
@@ -323,11 +466,47 @@ def run_all():
     print(f"  tau_pi+  = {tau_pi:.5e} s  PDG 2.6033e-8 s  err {(tau_pi/2.6033e-8-1)*1e6:+.2f} ppb  (dimostrato)")
     print(f"  m_tau/m_e: GATE APERTO (sigma3 non esplicitata)")
 
-    print("\n▸ CMB PICCHI STRUTTURALI")
-    planck_obs = [220, 540, 810, 1120, 1400, 1560]
+    print("\n▸ CMB — POSIZIONI PICCHI STRUTTURALI (c13: ell_k=sigma(k phi+(k-1)/phi), sigma=alpha_phys^-1)")
+    planck_obs = [220.6, 538.1, 809.8, 1147.8, 1446.8, 1779.0]
+    lk_arr = peak_positions()
     for k in range(1,7):
-        lk = alpha_inv*(k*phi+(k-1)/phi)
-        print(f"  ell_{k} = {lk:.1f}  (Planck: {planck_obs[k-1]}  err {(lk/planck_obs[k-1]-1)*100:+.1f}%)")
+        lk = lk_arr[k-1]
+        print(f"  ell_{k} = {lk:6.1f}  (Planck: {planck_obs[k-1]:6.1f}  err {(lk/planck_obs[k-1]-1)*100:+.1f}%)")
+    rms_pos = np.sqrt(np.mean([(lk_arr[k]/planck_obs[k]-1)**2 for k in range(6)]))*100
+    print(f"  RMS posizioni 6 picchi = {rms_pos:.2f}%  (~phi%)")
+
+    print("\n▸ CMB — SPETTRO REALE & VALIDAZIONE (CamCMB v176 vs Planck)")
+    spec = get_cmb_spectra()
+    print(f"  sorgente spettri      : {spec['source']}")
+    if 'camb_error' in spec:
+        print(f"  (CAMB non usato: {spec['camb_error'][:50]}... -> fallback CSV)")
+    if 'tt_qgt' in spec:
+        tt_q = spec['tt_qgt']; tt_18 = spec['tt_lcdm18']; tt_21 = spec['tt_lcdm21']
+        # chi^2 vs PR3 e PR4
+        for tag, name in [('R3_01','Planck 2018 PR3'), ('R4_PR4','Planck 2021 PR4')]:
+            cq = cmb_chi2(tt_q,  tag)
+            cl = cmb_chi2(tt_18 if tag=='R3_01' else tt_21, tag)
+            if cq and cl:
+                print(f"  chi2/nu vs {name:<16}: QGT {cq[2]:.3f}   LCDM {cl[2]:.3f}   (ndof {cq[1]}, ell 100-1800)")
+            elif cq is None:
+                print(f"  chi2/nu vs {name:<16}: dati Planck non trovati (CMB_DIR mancante)")
+        rq = cmb_rms_peaks(tt_q); rl = cmb_rms_peaks(tt_18)
+        print(f"  RMS ampiezze 6 picchi  : QGT {rq:.2f}%   LCDM {rl:.2f}%")
+        print(f"  NOTA: chi2 diagnostico (errori diagonali Planck), non la likelihood ufficiale.")
+    else:
+        print("  Spettri non disponibili: installa 'camb' o tieni la cartella camcmb/ accanto al file.")
+
+    print("\n▸ CMB — CONFRONTO PARAMETRICO (QGT strutturale vs Planck)")
+    cmp = [('n_s', n_s_QGT, 0.9649, 0.0042, 0.9665, 0.0038),
+           ('Omega_bh2', Omega_b_h2, 0.02237, 0.00015, 0.02242, 0.00014),
+           ('Omega_ch2', Omega_c_h2, 0.1200, 0.0012, 0.11933, 0.0011),
+           ('tau', tau_reion, 0.054, 0.007, 0.0561, 0.0073),
+           ('A_s/1e9', A_s_QGT*1e9, 2.101, 0.034, 2.105, 0.032),
+           ('H0', H0_QGT, 67.4, 0.5, 67.92, 0.70)]
+    print(f"  {'param':<11}{'QGT':>11}{'P2018':>10}{'s18':>7}{'P2021':>10}{'s21':>7}")
+    for nm,q,p18,e18,p21,e21 in cmp:
+        print(f"  {nm:<11}{q:>11.5g}{p18:>10.5g}{abs(q-p18)/e18:>6.2f}σ{p21:>10.5g}{abs(q-p21)/e21:>6.2f}σ")
+
 
     print("\n▸ CLIFFORD Cl(4,1)")
     g, Pp, Pm, C = build_clifford_qgt()
@@ -484,20 +663,38 @@ def plot_dna(ax):
             fontsize=7, va='top', color='#666')
 
 def plot_cmb(ax):
-    ell = np.linspace(2, 2200, 1200)
-    ax.plot(ell, D_ell(ell), color='#534AB7', lw=2, label='QGT strutturale')
-    planck_obs = [220, 540, 810, 1120, 1400, 1560]
-    planck_amp = [5.5, 2.5, 1.4, 0.8, 0.5, 0.35]
-    for i,(lo,la) in enumerate(zip(planck_obs, planck_amp)):
-        ax.axvline(lo, color='#993556', lw=0.6, ls='--', alpha=0.6,
-                   label='Planck 2018' if i==0 else None)
+    spec = get_cmb_spectra()
+    # dati Planck reali
+    pl = _load_planck('R3_01')
+    if pl is not None:
+        ell_pl, Dl_pl, sig_pl = pl
+        m = ell_pl <= 2200
+        ax.errorbar(ell_pl[m], Dl_pl[m], yerr=sig_pl[m], fmt='.', ms=2,
+                    color='#993556', alpha=0.35, lw=0.5, label='Planck 2018 PR3', zorder=1)
+    if 'tt_qgt' in spec:
+        ell = spec['ell']; m = ell <= 2200
+        ax.plot(ell[m], spec['tt_qgt'][m], color='#534AB7', lw=1.8,
+                label='QGT Gate-3', zorder=3)
+        ax.plot(ell[m], spec['tt_lcdm18'][m], color='#0F6E56', lw=1.0, ls='--',
+                label='ΛCDM 2018', zorder=2)
+        rq = cmb_rms_peaks(spec['tt_qgt'])
+        cq = cmb_chi2(spec['tt_qgt'], 'R3_01')
+        txt = f'RMS picchi = {rq:.2f}%'
+        if cq: txt += f'\nχ²/ν = {cq[2]:.3f} (PR3)'
+        txt += f'\n[{spec["source"]}]'
+        ax.text(0.97, 0.95, txt, transform=ax.transAxes, fontsize=7,
+                ha='right', va='top', color='#333')
+    # posizioni strutturali dei picchi
+    for k, lk in enumerate(peak_positions(), 1):
+        ax.axvline(lk, color='#534AB7', lw=0.5, ls=':', alpha=0.5)
+        ax.text(lk, 0.02, f'ℓ_{k}', transform=ax.get_xaxis_transform(),
+                fontsize=6, ha='center', color='#534AB7')
     ax.set_xlabel('ℓ (multipolo)', fontsize=10)
-    ax.set_ylabel('D_ℓ (normalizzato)', fontsize=10)
-    ax.set_title('Spettro CMB: 6 picchi sech² strutturali\nposizioni da α⁻¹, φ, Γ_τ — zero parametri liberi', fontsize=9)
-    ax.legend(fontsize=8)
-    for k in range(1,7):
-        lk = alpha_inv*(k*phi+(k-1)/phi)
-        ax.text(lk, 0.85, f'ℓ_{k}', fontsize=7, ha='center', color='#534AB7')
+    ax.set_ylabel('D_ℓ  [µK²]', fontsize=10)
+    ax.set_title('Spettro CMB TT — QGT Gate-3 vs Planck (dati reali)\n'
+                 'parametri strutturali, zero fit cosmologici', fontsize=9)
+    ax.legend(fontsize=7, loc='upper left')
+    ax.set_xlim(0, 2200)
 
 def plot_clifford(ax):
     g, Pp, Pm, C = build_clifford_qgt()
@@ -629,7 +826,12 @@ def make_plots(which=None):
 if __name__ == '__main__':
     args = sys.argv[1:]
     do_plot = '--plot' in args
-    args = [a for a in args if a != '--plot']
+    force_csv = '--csv' in args
+    args = [a for a in args if a not in ('--plot', '--csv')]
+
+    if force_csv:
+        _orig_get = get_cmb_spectra
+        get_cmb_spectra = lambda force_csv=True, _o=_orig_get: _o(force_csv=True)
 
     run_all()
 

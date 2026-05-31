@@ -1,0 +1,47 @@
+{
+  "description": "CamH \u2014 QGT phase-locking gluing validated on hydrogen",
+  "monograph_version": "QGT Monograph v176 (KDP 2026)",
+  "formulation": "Gluing of two boundary cells = stable phase-locking of FMT-read shell amplitudes under Noether-current cancellation.",
+  "canonical_inputs": {
+    "Gamma_tau": 0.7236067977499789,
+    "delta_F": 0.0034510619974498224,
+    "delta_omega_formula": "Gamma_tau * delta_F  (physical-time normalisation)",
+    "delta_omega": 0.002497211920811312,
+    "mu_Pi_overlap": "dim(T8)/dim(B13) = 8/13",
+    "mu_Pi_value": 0.6153846153846154,
+    "kappa_0": "Gamma_tau (FMT frequency scale)",
+    "K": 0.445296490923064,
+    "ratio_dw_over_K": 0.005607975745855961,
+    "note": "sine = boundary current from FMT overlap; nothing tuned."
+  },
+  "checks": {
+    "breathing_fixed_point_B8": true,
+    "shell_phase_S1_residual": 4.440892098500626e-16,
+    "gluing_condition_met": true,
+    "a_converges_to_Delta_star": true,
+    "Delta_star_rad": 0.005608005140843195,
+    "b_drift_above_threshold": true,
+    "drift_phase_advance_rad": 1991.2324600589498,
+    "c_margin_nonzero": true,
+    "sin_Delta_star": 0.005607975745855961,
+    "sin_Delta_star_over_delta_F": 1.6249999999999998,
+    "sin_Delta_star_EXACT": "sin(Delta*) = (13/8) delta_F  [exact, = dim(B13)/dim(T8) * delta_F]",
+    "Delta_star_over_delta_F": 1.6250085176642017,
+    "Delta_star_over_delta_F_note": "= 13/8 + O(delta_F^2); the 13/8 ratio is exact for sin(Delta*), first-order for the angle"
+  },
+  "hydrogen_metrology_vs_CODATA": {
+    "a0_Angstrom": 0.5291772278735287,
+    "a0_err_ppm": 0.03206965160096331,
+    "R_inf_m": 10973731.20877413,
+    "R_inf_err_ppm": -0.032735069876999034,
+    "lockin_invariant_alpha_inv": 137.0820393249937
+  },
+  "epistemic_status": {
+    "internal_derivation": "closed (functional form)",
+    "gluing_threshold": "derived",
+    "phase_sine": "derived from quantum FMT, not imported",
+    "minimal_detuning": "identified with delta_F (after time normalisation)",
+    "coupling_K": "fixed by kernel-ribbon measure 8/13 (non-tunable)",
+    "kuramoto": "NOT named in monograph; reduced eq. belongs to the known phase-locking class \u2014 bibliographic note only, downstream."
+  }
+}
