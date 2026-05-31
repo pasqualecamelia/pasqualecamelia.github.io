@@ -289,7 +289,7 @@ function updateH3D(fi) {
     '<b>norm</b> = ' + normfi.toFixed(8) + '<br/>' +
     '<b>Δnorm/norm₀</b> = ' + drift.toExponential(2) + '<br/>' +
     '<b>a₀_QGT</b> = Γ²τ = ' + (d.a0_qgt||0).toFixed(6) + '<br/>' +
-    '<b>f_t</b> = ' + (d.f_t||0).toFixed(6) + '  [LEVEL_A]<br/>' +
+    '<b>f_t</b> = ' + (d.f_t||0).toFixed(6) + '  [P]<br/>' +
     '<b>State</b>: |1s⟩ + |2p<sub>z</sub>⟩<br/>' +
     '<b>Grid</b>: ' + d.N + '³ · dx = ' + (d.dx||0).toFixed(3) + ' a₀';
 }
@@ -758,7 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 <div class="chart-wrap">
-  <div class="chart-title" id="h-title">H atom 1s — a₀_QGT = 0.52918 Å (LEVEL_A, err +0.032 ppm)</div>
+  <div class="chart-title" id="h-title">H atom 1s — a₀_QGT = 0.52918 Å (P, err +0.032 ppm)</div>
   <div style="position:relative; height:240px;"><canvas id="hydrogen-chart" role="img" aria-label="Hydrogen radial density chart"></canvas></div>
 </div>
 </section>
@@ -809,7 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <h2>Radial density — a₀_QGT vs a₀_standard</h2>
 <p style="font-size:0.83rem;color:var(--text2);margin-bottom:0.8rem;">
   a₀_bare = Γ²τ = φ²/5 = 0.5236 Å — scala temporale dorata pura (livello strutturale).
-  a₀_phys = 0.529177228 Å — readout fisico Bohr–Rydberg dopo correzione QGT ΔB (LEVEL_A, +0.033 ppm vs CODATA).
+  a₀_phys = 0.529177228 Å — readout fisico Bohr–Rydberg dopo correzione QGT ΔB (P, +0.033 ppm vs CODATA).
   Le due quantità non coincidono: a₀_bare è la scala di base del breathing; a₀_phys è il raggio atomico misurato, derivato da Π⁺ al canale (n=5, k=2).
 </p>
 <canvas id="density-chart" width="600" height="240" style="width:100%;border:1px solid var(--border);border-radius:4px;"></canvas>
@@ -871,7 +871,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <section id="cmb">
 <h2><span class="sec-num">08</span>CMB structural spectrum — 6 sech² peaks</h2>
 <div class="chart-wrap">
-  <div class="chart-title">D_ℓ = 1 + Σ φ⁻²ᵏ · sech²((ℓ−ℓ_k)/σ_B) &nbsp;|&nbsp; ℓ_k from α⁻¹, φ, Γ_τ only [LEVEL_B]</div>
+  <div class="chart-title">D_ℓ = 1 + Σ φ⁻²ᵏ · sech²((ℓ−ℓ_k)/σ_B) &nbsp;|&nbsp; ℓ_k from α⁻¹, φ, Γ_τ only [B⁺]</div>
   <div style="position:relative; height:280px;"><canvas id="cmb-chart" role="img" aria-label="CMB structural spectrum chart"></canvas></div>
 </div>
 <div id="cmb-table" style="margin-top:0.5rem;"></div>
@@ -1159,7 +1159,7 @@ function updateHydrogen() {
   document.getElementById('h-n-val').textContent = n;
   const En = -13.6057 / (n*n);
   document.getElementById('h-title').textContent =
-    `H atom ${['1s','2s','3s','4s'][n-1]} — E = ${En.toFixed(4)} eV  |  a₀_QGT = ${A0_QGT_ANG.toFixed(5)} Å  (LEVEL_A, +0.032 ppm)`;
+    `H atom ${['1s','2s','3s','4s'][n-1]} — E = ${En.toFixed(4)} eV  |  a₀_QGT = ${A0_QGT_ANG.toFixed(5)} Å  (P, +0.032 ppm)`;
   const rmax = n*n*A0_QGT_ANG*4 + A0_QGT_ANG;
   const N = 300;
   const rs = Array.from({length:N}, (_,i) => 0.01 + i*rmax/(N-1));
@@ -1319,7 +1319,7 @@ function h3dDraw(fi) {
     '<b>norm</b> = '+fr.norm.toFixed(8)+' &nbsp;|&nbsp; '+
     '<b>Δnorm</b> = '+drift.toExponential(1)+' &nbsp;|&nbsp; '+
     '<b>a₀_QGT</b> = '+d.a0_qgt.toFixed(6)+' &nbsp;|&nbsp; '+
-    '<b>f_t</b> = '+d.f_t.toFixed(6)+' [LEVEL_A] &nbsp;|&nbsp; '+
+    '<b>f_t</b> = '+d.f_t.toFixed(6)+' [P] &nbsp;|&nbsp; '+
     'frame '+fi+'/'+( d.frames.length-1);
 }
 

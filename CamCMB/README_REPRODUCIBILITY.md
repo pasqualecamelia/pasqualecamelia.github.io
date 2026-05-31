@@ -47,12 +47,12 @@ Running `run_qgt_gate3_camb.py` should produce:
 
 ```
 QGT Gate-3 -- Structural parameters
-  n_s       = 0.96482  [1 - 4*pi*eps163, Ker(163), Level A]
-  Omega_ch2 = 0.12361  [1/(5*phi), Propositions 5-6, Level A]
-  tau       = 0.05385  [7/130, Proposition 7, Level A]
+  n_s       = 0.96482  [1 - 4*pi*eps163, Ker(163), P]
+  Omega_ch2 = 0.12361  [1/(5*phi), Propositions 5-6, P]
+  tau       = 0.05385  [7/130, Proposition 7, P]
   H0        = 67.90 km/s/Mpc  [Proposition 8, structural effective CMB readout, Monograph v176]
-  Omega_bh2 = 0.02236  [(phi+1/phi)/S^2 = sqrt(5)/100, Proposition 4, Level A]
-  A_s       = 2.101e-09  [Gate Transfer Gauss-163, Level A, May 2026]
+  Omega_bh2 = 0.02236  [(phi+1/phi)/S^2 = sqrt(5)/100, Proposition 4, P]
+  A_s       = 2.101e-09  [Gate Transfer Gauss-163, P, May 2026]
 
 DIAGNOSTIC chi^2_nu (ell=100..1800, diagonal errors)
   LCDM        chi2/dof = 1.041
@@ -73,12 +73,12 @@ RMS structural sech^2 branch:
 
 | Parameter | Value | Formula | Proposition | Status |
 |-----------|-------|---------|-------------|--------|
-| n_s | 0.96482 | 1 - 4*pi*eps_163 | 1 (Ker(163)) | derived, Level A |
-| Omega_bh2 | 0.02236 | (phi+1/phi)/S^2 = sqrt(5)/100 | 4 | derived, Level A |
-| Omega_ch2 | 0.12361 | 1/(5*phi) | 5-6 | structural theorem, Level A |
-| tau | 0.05385 | 7/130 | 7 | derived, Level A |
+| n_s | 0.96482 | 1 - 4*pi*eps_163 | 1 (Ker(163)) | derived, P |
+| Omega_bh2 | 0.02236 | (phi+1/phi)/S^2 = sqrt(5)/100 | 4 | derived, P |
+| Omega_ch2 | 0.12361 | 1/(5*phi) | 5-6 | structural theorem, P |
+| tau | 0.05385 | 7/130 | 7 | derived, P |
 | H0 | 67.9 km/s/Mpc | f_tau^phys / (pi * 10^32) | 8 | Proposition P (CMB readout); H(z) full history: external test |
-| A_s | 2.101e-9 | (sqrt(5)/2) * A_s^SW | Gate Transfer | derived, Level A |
+| A_s | 2.101e-9 | (sqrt(5)/2) * A_s^SW | Gate Transfer | derived, P |
 
 No free cosmological parameter. All six entries in
 Theta_Pi = (n_s, Omega_bh2, Omega_ch2, tau, H0, A_s)
@@ -109,7 +109,7 @@ Agreement with Planck 2018: 0.02237 +/- 0.00015 -> discrepancy 0.04% (0.06 sigma
 
   A_s^QGT = F_A * A_s^SW = (sqrt(5)/2) * A_s^SW = 2.101e-9
 
-Level A algebraic. Agreement with Planck: 0.005%.
+P algebraic. Agreement with Planck: 0.005%.
 
 ---
 
