@@ -808,10 +808,9 @@ document.addEventListener('DOMContentLoaded', () => {
 <section id="density_vis">
 <h2>Radial density — a₀_QGT vs a₀_standard</h2>
 <p style="font-size:0.83rem;color:var(--text2);margin-bottom:0.8rem;">
-  a₀_QGT = Γ²τ = 0.5236 Å  (derivato dalla connessione temporale aurea).
-  a₀_std  = 0.5292 Å  (CODATA, usa α come input esterno).
-  Differenza: −1053 ppm — piccola ma derivata senza misure.
-  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">dimostrato</span>
+  a₀_bare = Γ²τ = φ²/5 = 0.5236 Å — scala temporale dorata pura (livello strutturale).
+  a₀_phys = 0.529177228 Å — readout fisico Bohr–Rydberg dopo correzione QGT ΔB (LEVEL_A, +0.033 ppm vs CODATA).
+  Le due quantità non coincidono: a₀_bare è la scala di base del breathing; a₀_phys è il raggio atomico misurato, derivato da Π⁺ al canale (n=5, k=2).
 </p>
 <canvas id="density-chart" width="600" height="240" style="width:100%;border:1px solid var(--border);border-radius:4px;"></canvas>
 <div id="density-info" style="margin-top:6px;font-family:var(--mono);font-size:0.75rem;color:var(--text2);"></div>
@@ -895,11 +894,11 @@ document.addEventListener('DOMContentLoaded', () => {
 </p>
 <div style="background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.2rem; font-family:var(--mono); font-size:0.82rem; color:var(--text2); margin-bottom:1rem;">
   <div style="color:var(--text3); font-size:0.72rem; margin-bottom:0.5rem;"># install &amp; run</div>
-  pip install numpy scipy matplotlib<br/>
-  python -m qgt_companion verify<br/>
-  python -m qgt_companion hydrogen<br/>
-  python -m qgt_companion hydrogen3d<br/>
-  python -m qgt_companion all --plot
+  pip install -r requirements.txt<br/>
+  python qgt_simulator.py<br/>
+  python qgt_simulator.py --plot<br/>
+  python CamH/run_camH_validation.py<br/>
+  python CamCMB/run_qgt_gate3_camb.py
 </div>
 <div class="dl-row">
   <a class="dl-btn" href="qgt_simulator.py" download>
