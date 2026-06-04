@@ -1,8 +1,0 @@
-f31eab3c0aed0e7a906dca463e2c4633  camH_core.py
-e2cab471ae26ba73088595ea2111fa08  make_fig_camH.py
-5026baaeaf1094c76c72efc203998240  run_camH_validation.py
-5dcfc7377f0c1631d2a2b94961038cf4  camH_lock_curve.csv
-c8a02b60d90093cd705993b70e83183d  camH_threshold.csv
-87c8091f2f5b859f1d17274712c9cb7e  metrics_camH.json
-6f87c01f159f510bdec62ef6007a9eb8  DATA_PROVENANCE_camH.md
-49bb7ff5e6aa1d0286d506b6e8a5ef73  README_camH.md
