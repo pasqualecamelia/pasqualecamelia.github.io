@@ -4,4 +4,52 @@
     <loc>https://pasqualecamelia.github.io/</loc>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/papers.html</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/qgt_companion.html</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/qgt_animation_v4.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/qgt_breathing_3d.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/papers/Camelia_QGT_Foundations_of_Physics.pdf</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/papers/Camelia_2026_QGT_ProjectionPhysics.pdf</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/papers/Camelia_2026_QGT_BohrRydberg.pdf</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/papers/Camelia_2026_QGT_KernelSpinor163.pdf</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/papers/Camelia_2026_ProjectionSVD_BoundaryMetric.pdf</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/papers/Camelia_2026_QGT_FoundationalNote1_UniquenessRank5.pdf</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/papers/Camelia_2026_QGT_GaugeAlgebra_MajoranaProjection.pdf</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/papers/Camelia_2026_StructuralConstraints.pdf</loc>
+    <priority>0.8</priority>
+  </url>
 </urlset>
