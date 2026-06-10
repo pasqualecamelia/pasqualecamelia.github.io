@@ -16,6 +16,12 @@
 <meta name="author" content="Pasquale Camelia"/>
 <meta name="google-site-verification" content="22bceb53bd55a8a5"/>
 <meta name="robots" content="index, follow"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="The Quantum Gauge Theory of Time — Pasquale Camelia"/>
+<meta property="og:description" content="Official companion site and book page for The Quantum Gauge Theory of Time, First Edition 2026."/>
+<meta property="og:image" content="https://pasqualecamelia.github.io/copertina_quibit2.png"/>
+<meta property="og:url" content="https://pasqualecamelia.github.io/"/>
+<meta name="twitter:card" content="summary_large_image"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -92,6 +98,25 @@ p{margin:.7rem 0;max-width:72ch}
 .ctrl{display:flex;align-items:center;gap:.7rem;margin:.6rem 0;flex-wrap:wrap;font-family:var(--mono);font-size:.76rem;color:var(--text2)}
 .ctrl input[type=range]{flex:1;min-width:120px;accent-color:var(--blue2)}
 .ctrl .val{color:var(--blue2);min-width:3.5rem;text-align:right}
+
+.hero-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.25rem}
+.btn-main{display:inline-block;font-family:var(--mono);font-size:.78rem;
+  padding:.55rem .95rem;border:1px solid var(--border);border-radius:6px;color:var(--blue2);
+  background:var(--bg2);text-decoration:none}
+.btn-main:hover{background:var(--blue3);text-decoration:none}
+.btn-main.amazon{background:#ff9900;border-color:#e68a00;color:#17120a;font-weight:600}
+.btn-main.amazon:hover{background:#ffb02e;color:#17120a}
+.book-spotlight{display:grid;grid-template-columns:minmax(170px,230px) 1fr;gap:1.4rem;
+  align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem;margin:1.2rem 0}
+.book-cover{width:100%;border-radius:8px;display:block;box-shadow:0 18px 40px rgba(0,0,0,.22);
+  background:#000}
+.book-kicker{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.25rem}
+.book-title{font-size:1.45rem;line-height:1.18;margin:.15rem 0 .6rem;font-weight:600}
+.book-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
+.book-small{font-family:var(--mono);font-size:.74rem;color:var(--text3);margin-top:.75rem}
+@media(max-width:700px){.book-spotlight{grid-template-columns:1fr}.book-cover{max-width:230px;margin:0 auto}}
 footer{padding:2.4rem 0 3rem;font-family:var(--mono);font-size:.78rem;color:var(--text3)}
 footer p{max-width:none;margin:.3rem 0}
 .note{font-size:.85rem;color:var(--text3);font-style:italic}
@@ -110,12 +135,17 @@ footer p{max-width:none;margin:.3rem 0}
       and how the gluing of those qubits &mdash; by phase synchronisation &mdash; builds
       matter and spacetime.</p>
     <div class="byline">Pasquale Camelia &middot; 2026 &middot; companion to the First Edition &nbsp;&middot;&nbsp; <a href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:.35rem;font-family:var(--mono);font-size:.76rem;color:var(--text3);text-decoration:none;" title="ORCID profile"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID" width="16" height="16" style="vertical-align:middle"/>&nbsp;0009-0006-4779-4647</a></div>
+    <div class="hero-actions">
+      <a class="btn-main amazon" href="https://www.amazon.it/dp/B0H4NWW5J4" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'B0H4NWW5J4'});">Buy the book on Amazon.it &rarr;</a>
+      <a class="btn-main" href="#book">Read the book description</a>
+    </div>
   </div>
 </header>
 
 <nav class="toc">
   <div class="wrap">
     <a href="#start">Start here</a>
+    <a href="#book">Book</a>
     <a href="#thread">The thread</a>
     <a href="#qubit">Six-layer qubit</a>
     <a href="#breathing">Breathing</a>
@@ -150,6 +180,28 @@ footer p{max-width:none;margin:.3rem 0}
   <p class="note">No pre-existing spacetime. Holography is micro-local (each cell),
     not global &mdash; the distinction from LQG and AdS/CFT is drawn in the
     monograph's related-work appendix.</p>
+</section>
+
+<section id="book">
+  <h2><span class="num">00B</span>The book</h2>
+  <p class="lead">The monograph is the complete printed entry point to the QGT programme; the website remains the companion, the validator hub, and the public archive of papers and tools.</p>
+  <div class="book-spotlight">
+    <div>
+      <img class="book-cover" src="copertina_quibit2.png" alt="Visual cover artwork for The Quantum Gauge Theory of Time" loading="lazy"/>
+    </div>
+    <div>
+      <div class="book-kicker">First Edition &middot; KDP 2026</div>
+      <h3 class="book-title">The Quantum Gauge Theory of Time</h3>
+      <p><strong>The Standard Model describes the boundary. QGT asks why the boundary has that structure.</strong></p>
+      <p>The book develops the programme from one Noetherian balance and one non-invertible projection: the bulk conserves, the projection loses, the kernel remembers, and the boundary measures.</p>
+      <p>Use this site as the companion layer: read the papers, inspect the structural chain, and run the validators for hydrogen, CMB, breathing flow, and projective gluing.</p>
+      <div class="book-actions">
+        <a class="btn-main amazon" href="https://www.amazon.it/dp/B0H4NWW5J4" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'B0H4NWW5J4'});">Buy on Amazon.it &rarr;</a>
+        <a class="btn-main" href="papers.html">Read the research papers</a>
+      </div>
+      <p class="book-small">Direct Amazon ASIN link: B0H4NWW5J4.</p>
+    </div>
+  </div>
 </section>
 
 <section id="thread">
