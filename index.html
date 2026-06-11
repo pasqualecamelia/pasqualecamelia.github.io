@@ -152,6 +152,7 @@ footer p{max-width:none;margin:.3rem 0}
     <a href="#gluing">Gluing</a>
     <a href="#hydrogen">Hydrogen</a>
     <a href="#cmb">CMB</a>
+    <a href="#alpha">Alpha</a>
     <a href="#tools">Tools</a>
     <a href="papers.html">Papers</a>
   </div>
@@ -456,8 +457,37 @@ footer p{max-width:none;margin:.3rem 0}
   </div>
 </section>
 
+
+<section id="alpha">
+  <h2><span class="num">08</span>Alpha module</h2>
+  <p class="lead">The latest self-consistent fine-structure constant validator is now part of the companion site. It implements the forward-only chain from P14 and exposes the Python source used for independent verification.</p>
+  <div class="metrics">
+    <div class="metric"><div class="v">137.082039</div><div class="l">static pole (5+3√5)²</div></div>
+    <div class="metric"><div class="v">137.035999170</div><div class="l">self-consistent α⁻¹</div></div>
+    <div class="metric"><div class="v">0.32σ</div><div class="l">residual vs CODATA 2022</div></div>
+    <div class="metric"><div class="v">47×</div><div class="l">best alternative worse</div></div>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h4>Interactive alpha verifier</h4>
+      <p>Forward chain, exact identities, counterfactuals and hardening checks integrated in the browser companion.</p>
+      <a class="go" href="qgt_companion.html#alpha-module">Open alpha module →</a>
+    </div>
+    <div class="card">
+      <h4>Python source</h4>
+      <p>The standalone script used to verify the α-chain independently with mpmath precision.</p>
+      <a class="go" href="alpha_check.py">View alpha_check.py →</a>
+    </div>
+    <div class="card">
+      <h4>P14 paper</h4>
+      <p>The Self-Consistent Fine-Structure Constant: breathing correction, tensorial structure, fixed point.</p>
+      <a class="go" href="papers/Camelia_2026_QGT_P14_SelfConsistentAlpha.pdf">Read PDF →</a>
+    </div>
+  </div>
+</section>
+
 <section id="tools">
-  <h2><span class="num">08</span>Run it yourself</h2>
+  <h2><span class="num">09</span>Run it yourself</h2>
   <p class="lead">Everything here is reproducible. The Python companion verifies all
     structural identities and runs the dynamic hydrogen simulation.</p>
   <div class="cards">
@@ -466,6 +496,11 @@ footer p{max-width:none;margin:.3rem 0}
       <p>Interactive verifier: constants, breathing, soliton, hydrogen, spectrum,
         the &alpha;<sup>&minus;1</sup> cascade, the filter.</p>
       <a class="go" href="qgt_companion.html">Open &rarr;</a>
+    </div>
+    <div class="card">
+      <h4>Alpha validator</h4>
+      <p>Standalone verification of the self-consistent α-chain and sensitivity table.</p>
+      <a class="go" href="alpha_check.py">View source →</a>
     </div>
     <div class="card">
       <h4>qgt_simulator.py</h4>

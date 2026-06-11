@@ -525,6 +525,59 @@ document.addEventListener('DOMContentLoaded', () => {
   .const-level-a { border-left: 3px solid var(--green); }
   .const-level-b { border-left: 3px solid var(--gold); }
 
+
+
+  /* ── Alpha module ── */
+  .alpha-module {
+    background: linear-gradient(135deg, var(--bg2), var(--bg));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+    margin-bottom: 1.1rem;
+  }
+  .alpha-formula {
+    font-family: var(--mono);
+    font-size: 0.92rem;
+    line-height: 1.8;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    margin: 0.9rem 0 1rem;
+  }
+  .alpha-note {
+    font-size: 0.82rem;
+    color: var(--text2);
+    margin: 0.4rem 0 0.9rem;
+  }
+  .alpha-status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: var(--green2);
+    border: 1px solid var(--green);
+    border-radius: 20px;
+    padding: 0.1rem 0.6rem;
+    margin-left: 0.35rem;
+  }
+  details.alpha-details {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 0.9rem;
+    margin-top: 0.8rem;
+  }
+  details.alpha-details summary {
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--blue);
+  }
+
   /* ── Slider controls ── */
   .controls {
     display: flex;
@@ -651,6 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <nav id="sidebar">
   <div class="nav-section">Structural</div>
   <a href="#verify" onclick="activate(this)">Verify all</a>
+  <a href="#alpha-module" onclick="activate(this)">α module ✓</a>
   <a href="#spectrum" onclick="activate(this)">H spectrum ✦</a>
   <a href="#cascade_vis" onclick="activate(this)">α⁻¹ cascade ✦</a>
   <a href="#filter_vis" onclick="activate(this)">H(z) filter ✦</a>
@@ -670,6 +724,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <main>
 
+
+<!-- ═══════════════════════════════════════════════════════ ALPHA MODULE -->
+<section id="alpha-module">
+<h2><span class="sec-num">00</span>α module — self-consistent fixed point (P14)<span class="alpha-status">forward-only</span></h2>
+<div class="alpha-module">
+  <p class="alpha-note">
+    This is the companion-site implementation of <code>alpha_check.py</code>. The chain is evaluated forward;
+    the CODATA 2022 value is used only at the final residual check, not as an input.
+  </p>
+  <div class="alpha-formula">
+    α<sub>phys</sub><sup>−1</sup> = [(5 + 3√5)<sup>2</sup> − 13(√5π/7 − 1)] / [1 − φ/(5·10<sup>6</sup>)]<br/>
+    φ = (1+√5)/2, &nbsp; ε<sub>7</sub> = √5π/7 − 1, &nbsp; f<sub>breath</sub> = φ/(5·10<sup>6</sup>) = 2φ·10<sup>−7</sup>
+  </div>
+  <div class="const-grid" id="alpha-kpis"></div>
+  <table class="cascade-table">
+    <thead>
+      <tr><th>Forward step</th><th>Value</th><th>Residual</th><th>Status</th></tr>
+    </thead>
+    <tbody id="alpha-chain-body"></tbody>
+  </table>
+  <details class="alpha-details">
+    <summary>Discrete counterfactuals and hardening checks</summary>
+    <p class="alpha-note">Changing the electroweak multiplicity c or the holonomy denominator n destroys the lock-in. These rows reproduce the sensitivity block of the Python module.</p>
+    <table class="cascade-table">
+      <thead><tr><th>Case</th><th>α⁻¹</th><th>|err| vs CODATA</th></tr></thead>
+      <tbody id="alpha-counter-body"></tbody>
+    </table>
+    <div id="alpha-hardening" class="alpha-note" style="font-family:var(--mono);"></div>
+  </details>
+  <div class="dl-row">
+    <a class="dl-btn primary" href="alpha_check.py" download>↓ alpha_check.py</a>
+    <a class="dl-btn" href="papers/Camelia_2026_QGT_P14_SelfConsistentAlpha.pdf" target="_blank" rel="noopener">Read P14 PDF ↗</a>
+  </div>
+</div>
+</section>
+
 <!-- ═══════════════════════════════════════════════════════ VERIFY -->
 <section id="verify">
 <h2><span class="sec-num">01</span>Verify all — structural identities</h2>
@@ -687,7 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </table>
 <p style="font-size:0.78rem; color:var(--text3); font-family:var(--mono);">
   ε₇ = √5·π/7 − 1 ∈ ℤ[√5][π] &nbsp;|&nbsp;
-  f_breath = 2φ×10⁻⁷ = (5−√5)/10·α_QGT ∈ ℤ[√5] &nbsp;|&nbsp;
+  f_breath = φ/(5·10⁶) = 2φ×10⁻⁷ ∈ ℤ[√5] &nbsp;|&nbsp;
   No free parameters.
 </p>
 </section>
@@ -954,6 +1044,74 @@ function eng(x) {
   return m.toFixed(3) + " E" + sign + exp3;
 }
 function fmt(x, d) { return x.toFixed(d); }
+
+function fmtAlpha(x, d) { return Number(x).toFixed(d); }
+function alphaAbs(x) { return Math.abs(x); }
+function alphaSci(x) {
+  if (x === 0) return '0';
+  return x.toExponential(3).replace('e', '×10^');
+}
+function renderAlphaModule() {
+  var kpi = document.getElementById('alpha-kpis');
+  var body = document.getElementById('alpha-chain-body');
+  var counter = document.getElementById('alpha-counter-body');
+  if (!kpi || !body || !counter) return;
+  var sigma = 21e-9;
+  var bare = ALPHA_INV;
+  var eps7 = EPS7;
+  var step1 = bare - C_EW * eps7;
+  var fb = F_BREA;
+  var final = step1 / (1 - fb);
+  var resid = final - CODATA_2022;
+  var gain = Math.pow(2*Math.sqrt(5), 1.5)/(3*Math.PI);
+  var deltaF = 1 - 3*Math.PI/Math.pow(2*Math.sqrt(5), 1.5);
+  var exactChecks = [
+    {name:'20φ⁴', val:20*Math.pow(PHI,4), ref:bare},
+    {name:'f_breath − 2φ·10⁻⁷', val:fb, ref:2*PHI*1e-7},
+    {name:'f_gain identity', val:1/(1-deltaF), ref:gain},
+    {name:'κΓτ = φ', val:Math.sqrt(5)*GAMMA_TAU, ref:PHI}
+  ];
+  var maxDiff = Math.max.apply(null, exactChecks.map(function(c){return Math.abs(c.val-c.ref);}));
+  kpi.innerHTML = [
+    ['α⁻¹ static pole', bare.toFixed(9), 'P14 · Level A'],
+    ['ε₇', eps7.toFixed(12), '√5π/7 − 1'],
+    ['α⁻¹ final', final.toFixed(10), 'self-consistent fixed point'],
+    ['residual', resid.toExponential(3)+' = '+(Math.abs(resid)/sigma).toFixed(2)+'σ', 'CODATA used only here'],
+    ['f_gain', gain.toFixed(9), '1/(1−δF)'],
+    ['max exact-check diff', maxDiff.toExponential(1), 'machine precision']
+  ].map(function(c){
+    return '<div class="const-card const-level-a"><div class="const-label">'+c[0]+'</div><div class="const-value">'+c[1]+'</div><div class="const-src">'+c[2]+'</div></div>';
+  }).join('');
+  var rows = [
+    ['1. static pole', '(5+3√5)²', bare, bare-CODATA_2022, 'Level A'],
+    ['2. confined-mode correction', '−13ε₇', step1, step1-CODATA_2022, 'Level A'],
+    ['3. breathing fixed point', '÷(1−f_breath)', final, resid, 'Level A'],
+    ['reference', 'CODATA 2022', CODATA_2022, 0, 'reference']
+  ];
+  body.innerHTML = rows.map(function(r){
+    var cls = r[0].indexOf('3.')===0 ? ' class="final"' : (r[0]==='reference' ? ' class="highlight"' : '');
+    var res = r[4]==='reference' ? '(reference only)' : ((r[3]>=0?'+':'')+r[3].toExponential(3)+' · '+(Math.abs(r[3])/sigma).toFixed(2)+'σ');
+    var badge = r[4]==='Level A' ? 'badge-a' : '';
+    return '<tr'+cls+'><td>'+r[0]+'<br/><span class="err-note">'+r[1]+'</span></td><td>'+r[2].toFixed(12)+'</td><td class="'+(r[0].indexOf('3.')===0?'ok':'')+'">'+res+'</td><td><span class="badge '+badge+'" style="font-size:0.65rem">'+r[4]+'</span></td></tr>';
+  }).join('');
+  function chain(n,c){ return (bare - c*(Math.sqrt(5)*Math.PI/n - 1))/(1-fb); }
+  var counterRows = [
+    ['c=5', chain(7,5)], ['c=8', chain(7,8)], ['c=13', chain(7,13)], ['c=21', chain(7,21)],
+    ['n=3, c=13', chain(3,13)], ['n=5, c=13', chain(5,13)], ['n=11, c=13', chain(11,13)],
+    ['best additive alternative', CODATA_2022 + 3.3e-7]
+  ];
+  counter.innerHTML = counterRows.map(function(r){
+    var err = Math.abs(r[1]-CODATA_2022);
+    var mark = err < 1e-8 ? 'ok' : (err < 1e-4 ? 'warn' : 'open');
+    return '<tr><td>'+r[0]+'</td><td>'+r[1].toFixed(9)+'</td><td class="'+mark+'">'+err.toExponential(3)+'</td></tr>';
+  }).join('');
+  var ratio = 3.3e-7 / Math.abs(resid);
+  var hard = 'Hardening: best additive alternative ≈ '+ratio.toFixed(1)+'× worse; det M = 5·5 − 15·3 = −20; f_gain = 1/(1−δF); φ = κΓτ.';
+  document.getElementById('alpha-hardening').textContent = hard;
+}
+
+
+renderAlphaModule();
 
 // ── Nav ────────────────────────────────────────────────────────
 function activate(el) {

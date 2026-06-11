@@ -52,4 +52,10 @@
     <loc>https://pasqualecamelia.github.io/papers/Camelia_2026_StructuralConstraints.pdf</loc>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/alpha_check.py</loc>
+  </url>
+  <url>
+    <loc>https://pasqualecamelia.github.io/papers/Camelia_2026_QGT_P14_SelfConsistentAlpha.pdf</loc>
+  </url>
 </urlset>
