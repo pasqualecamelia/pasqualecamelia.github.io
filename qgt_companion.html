@@ -919,7 +919,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <section id="hydrogen3d">
 <h2><span class="sec-num" id="h3d-secnum">07</span>Hydrogen 3D — real-time dynamics</h2>
 <p style="font-size:0.83rem;color:var(--text2);margin-bottom:1rem;">
-  iħ∂Ψ/∂t = H<sub>QGT</sub>Ψ — split-operator on 32³ grid.
+  iħ∂Ψ/∂t = H<sub>QGT</sub>Ψ — split-operator on 64³ grid.
   V = −1/r + α·M<sub>eff</sub>·sech²(r/ℓ<sub>pen</sub>) + f<sub>t</sub>·cos(2Γ<sub>τ</sub>t)·e<sup>−r²/2</sup>.
   Initial: |1s⟩ + |2p<sub>z</sub>⟩. Norm conserved to ~10⁻¹³ per step (measured live, displayed below).
   <span style="color:var(--gold);font-size:0.78rem;font-family:var(--mono);">dimostrato</span>
@@ -944,7 +944,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  min-width:110px;display:inline-block;">t = 0.00 a.u.</span>
   </div>
   <div style="font-family:monospace;font-size:0.72rem;color:#666688;margin-top:2px;">
-    N=32³ · a₀_QGT=Γ²τ · Split-operator FFT · LIVE in your browser · dt=0.24 a.u. · loop 0–6 a.u.
+    N=64³ · a₀_QGT=Γ²τ · Split-operator FFT · LIVE in your browser · dt=0.24 a.u. · loop 0–6 a.u.
   </div>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;">
@@ -1458,7 +1458,7 @@ GATES.forEach(g => {
 </script>
 
 <script>
-// ── QGT Hydrogen 3D — LIVE split-operator engine (32³, plain JS) ──────────
+// ── QGT Hydrogen 3D — LIVE split-operator engine (64³, plain JS) ──────────
 // iħ∂Ψ/∂t = [-∇²/2 - 1/√(r²+ε²) + α·M_eff·sech²(r/ℓ_pen)
 //            + f_t·cos(2Γτ t)·e^(−r²/2)] Ψ      (a.u., ħ=m=1)
 // Parameters printed in the section header; all constants structural:
@@ -1477,14 +1477,14 @@ GATES.forEach(g => {
   var ALPHA = 1 / ALPHA_INV_PHYS;
 
   var CFG = {
-    N: 32,
-    dx: 0.75,                                   // grid step (a.u.) → box 24 a.u.
+    N: 64,
+    dx: 0.375,                                  // grid step (a.u.) → box 24 a.u.
     dt: 0.24,                                   // a.u. per step (as published)
     a0: GAMMA_TAU * GAMMA_TAU,                  // 0.5236068 — a0_QGT
     f_t: PHI * PHI / 10,                        // 0.2618034 — breathing amplitude
     M_eff: 1.0,
     ell_pen: ALPHA_INV_PHYS / Math.PI,          // 1/(π α) ≈ 43.62 (a.u.)
-    eps: 0.75 / 2                               // Coulomb softening = dx/2
+    eps: 0.375 / 2                              // Coulomb softening = dx/2
   };
 
   // ---- tiny iterative radix-2 complex FFT, length N (power of 2) ----------
@@ -1738,12 +1738,14 @@ function h3dDraw(fi) {
     '<b>f_t</b> = ' + h3d_eng.cfg.f_t.toFixed(6) + ' [P] &nbsp;|&nbsp; ' +
     'frame ' + fi + '/' + (H3D_TOT - 1) + ' (loop)';
 }
+var _h3dOff = null;
 function h3dPaint(id, mat, N) {
   var c = document.getElementById(id);
   if (!c) return;
-  c.width = N; c.height = N;
-  var ctx = c.getContext('2d');
-  var img = ctx.createImageData(N, N);
+  if (!_h3dOff) { _h3dOff = document.createElement('canvas'); }
+  _h3dOff.width = N; _h3dOff.height = N;
+  var octx = _h3dOff.getContext('2d');
+  var img = octx.createImageData(N, N);
   for (var i = 0; i < N; i++) for (var j = 0; j < N; j++) {
     var v = mat[i][N - 1 - j];
     var r = Math.min(255, v * 3 | 0);
@@ -1752,7 +1754,13 @@ function h3dPaint(id, mat, N) {
     var p = (j * N + i) * 4;
     img.data[p] = r; img.data[p + 1] = g; img.data[p + 2] = b; img.data[p + 3] = 255;
   }
-  ctx.putImageData(img, 0, 0);
+  octx.putImageData(img, 0, 0);
+  var R = 256;                       // display resolution, bilinear upscale
+  c.width = R; c.height = R;
+  var ctx = c.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(_h3dOff, 0, 0, R, R);
 }
 function h3dGoto(fi) { h3dDraw(+fi); }
 function h3dTogglePlay() {
@@ -1767,7 +1775,7 @@ function h3dTogglePlay() {
       var next = h3d_fi + 1;
       if (next >= H3D_TOT) { h3dInit(); h3dDraw(0); }   // seamless loop, recomputed live
       else h3dDraw(next);
-    }, 150);
+    }, 160);
   }
 }
 document.addEventListener('DOMContentLoaded', function () {
