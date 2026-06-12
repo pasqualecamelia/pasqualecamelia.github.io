@@ -1364,8 +1364,9 @@ updateHydrogen();
   const D = ells.map(ell => {
     let d = 1;
     for (let k=1; k<=6; k++) {
-      const lk = ALPHA_INV*(k*PHI + (k-1)/PHI);
-      const sB = ALPHA_INV*GAMMA_TAU/k;
+      // canonical (c13 / qgt_simulator.py): sigma = alpha_phys^{-1}, NOT the structural 137.082
+      const lk = STEP2*(k*PHI + (k-1)/PHI);
+      const sB = STEP2*GAMMA_TAU*(C_EW - k)/12;   // sigma_B(k) = sigma*Gamma_tau*(13-k)/12
       d += Math.pow(PHI,-2*k) / Math.pow(Math.cosh((ell-lk)/sB), 2);
     }
     return d;
@@ -1395,7 +1396,7 @@ updateHydrogen();
   const t = document.getElementById('cmb-table');
   let html = '<table class="cascade-table"><thead><tr><th>k</th><th>ℓ_k QGT</th><th>Planck 2018</th><th>error</th></tr></thead><tbody>';
   planck.forEach((p,i) => {
-    const lk = ALPHA_INV*((i+1)*PHI + i/PHI);
+    const lk = STEP2*((i+1)*PHI + i/PHI);   // canonical sigma = alpha_phys^{-1}
     const err = ((lk/p-1)*100).toFixed(1);
     html += `<tr><td style="font-family:var(--mono)">${i+1}</td>
       <td style="font-family:var(--mono)">${lk.toFixed(1)}</td>
@@ -1797,7 +1798,11 @@ document.addEventListener('DOMContentLoaded', function () {
   var CODATA_RINF= 10973731.568;   // m⁻¹
 
   // ── 1. SPECTRUM ───────────────────────────────────────────
-  var RINF_QGT = CODATA_RINF * (ALPHA_INV_PHYS / CODATA);
+  // Canonical (qgt_simulator.py): R_inf_QGT = alpha_phys / (4*pi*a0_QGT),
+  // a0_QGT from the Bohr-Rydberg gate chain — NOT a rescaling by the alpha ratio.
+  var DELTA_B  = 3*PHI*1e-3 + 3*PHI*PHI*1e-4 - 3*SQRT5*1e-5 - 2e-6;   // Angstrom
+  var A0_QGT_M = (PHI*PHI/5 + DELTA_B) * 1e-10;                        // metri
+  var RINF_QGT = (1.0/CODATA) / (4*Math.PI*A0_QGT_M);                  // 10973731.21 m^-1, -0.033 ppm
   var series_def = [
     {name:'Lyman (UV)',   n1:1, ns:[2,3,4,5,6]},
     {name:'Balmer (vis)', n1:2, ns:[3,4,5,6,7]},
