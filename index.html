@@ -18,10 +18,15 @@
 <meta name="robots" content="index, follow"/>
 <meta property="og:type" content="website"/>
 <meta property="og:title" content="The Quantum Gauge Theory of Time — Pasquale Camelia"/>
-<meta property="og:description" content="Official companion site and book page for The Quantum Gauge Theory of Time, First Edition 2026."/>
-<meta property="og:image" content="https://pasqualecamelia.github.io/copertina_quibit2.png"/>
+<meta property="og:description" content="Time as the residual of a non-invertible projection. English and Italian editions on Amazon — and a real-time 3D hydrogen simulator in your browser."/>
+<meta property="og:image" content="https://pasqualecamelia.github.io/assets/og_image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
 <meta property="og:url" content="https://pasqualecamelia.github.io/"/>
 <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://pasqualecamelia.github.io/assets/og_image.png"/>
+<link rel="icon" type="image/png" sizes="48x48" href="favicon.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -121,6 +126,27 @@ footer{padding:2.4rem 0 3rem;font-family:var(--mono);font-size:.78rem;color:var(
 footer p{max-width:none;margin:.3rem 0}
 .note{font-size:.85rem;color:var(--text3);font-style:italic}
 .inlinecard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem 1.1rem;display:inline-block;margin-top:.6rem}
+/* ── launch additions ───────────────────────────────────── */
+section,#validators{scroll-margin-top:3.4rem}
+.tagline{font-family:var(--serif);font-style:italic;font-size:1.12rem;color:var(--gold);margin:.9rem 0 .2rem}
+.btn-main.watch{background:var(--blue3);border-color:var(--blue2);color:var(--blue2);font-weight:600}
+.btn-main.watch:hover{background:var(--blue2);color:var(--bg)}
+.watch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:1.2rem}
+.watch-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+.watch-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#000}
+.watch-card .wc-body{padding:.85rem 1rem 1rem}
+.watch-card h4{font-size:1.02rem;margin:0 0 .3rem}
+.watch-card p{font-size:.85rem;color:var(--text2);margin:0 0 .6rem}
+.watch-card .go{font-family:var(--mono);font-size:.76rem}
+.watch-card .wc-badge{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem}
+@media(max-width:760px){.watch-grid{grid-template-columns:1fr}}
+.editions{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1.2rem 0}
+.edition{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;display:grid;grid-template-columns:minmax(110px,150px) 1fr;gap:1rem;align-items:start}
+.edition img{width:100%;border-radius:6px;display:block;box-shadow:0 12px 28px rgba(0,0,0,.22);background:#000}
+.edition .ed-meta{font-family:var(--mono);font-size:.72rem;color:var(--text3);margin:.4rem 0 .7rem;line-height:1.6}
+.edition h4{font-size:1.05rem;line-height:1.25;margin:0}
+@media(max-width:860px){.editions{grid-template-columns:1fr}}
+@media(max-width:480px){.edition{grid-template-columns:1fr}.edition img{max-width:180px;margin:0 auto}}
 </style>
 </head>
 <body>
@@ -135,26 +161,23 @@ footer p{max-width:none;margin:.3rem 0}
       and how the gluing of those qubits &mdash; by phase synchronisation &mdash; builds
       matter and spacetime.</p>
     <div class="byline">Pasquale Camelia &middot; 2026 &middot; companion to the First Edition &nbsp;&middot;&nbsp; <a href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:.35rem;font-family:var(--mono);font-size:.76rem;color:var(--text3);text-decoration:none;" title="ORCID profile"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID" width="16" height="16" style="vertical-align:middle"/>&nbsp;0009-0006-4779-4647</a></div>
+    <p class="tagline">Time is what the boundary reads when the kernel remembers.</p>
     <div class="hero-actions">
-      <a class="btn-main amazon" href="https://www.amazon.it/dp/B0H4NWW5J4" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'B0H4NWW5J4'});">Buy the book on Amazon.it &rarr;</a>
-      <a class="btn-main" href="#book">Read the book description</a>
+      <a class="btn-main amazon" href="https://www.amazon.com/dp/B0H4NWW5J4" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'EN_B0H4NWW5J4'});">Buy the English edition &rarr;</a>
+      <a class="btn-main amazon" href="{{AMAZON_IT_URL}}" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'IT_edition'});">Edizione italiana &rarr;</a>
+      <a class="btn-main watch" href="qgt_companion.html#hydrogen3d" onclick="gtag('event','watch_hydrogen_click',{'event_category':'engagement','event_label':'hero'});">Watch the hydrogen atom &mdash; 3D, real time &rarr;</a>
     </div>
   </div>
 </header>
 
 <nav class="toc">
   <div class="wrap">
-    <a href="#start">Start here</a>
     <a href="#book">Book</a>
-    <a href="#thread">The thread</a>
-    <a href="#qubit">Six-layer qubit</a>
-    <a href="#breathing">Breathing</a>
-    <a href="#gluing">Gluing</a>
-    <a href="#hydrogen">Hydrogen</a>
-    <a href="#cmb">CMB</a>
-    <a href="#alpha">Alpha</a>
-    <a href="#tools">Tools</a>
+    <a href="#watch">Watch</a>
+    <a href="#thread">Thread</a>
+    <a href="#validators">Validators</a>
     <a href="papers.html">Papers</a>
+    <a href="#tools">Tools</a>
   </div>
 </nav>
 
@@ -184,23 +207,72 @@ footer p{max-width:none;margin:.3rem 0}
 </section>
 
 <section id="book">
-  <h2><span class="num">00B</span>The book</h2>
+  <h2><span class="num">00B</span>The book &mdash; two editions</h2>
   <p class="lead">The monograph is the complete printed entry point to the QGT programme; the website remains the companion, the validator hub, and the public archive of papers and tools.</p>
-  <div class="book-spotlight">
-    <div>
-      <img class="book-cover" src="copertina_quibit2.png" alt="Visual cover artwork for The Quantum Gauge Theory of Time" loading="lazy"/>
-    </div>
-    <div>
-      <div class="book-kicker">First Edition &middot; KDP 2026</div>
-      <h3 class="book-title">The Quantum Gauge Theory of Time</h3>
-      <p><strong>The Standard Model describes the boundary. QGT asks why the boundary has that structure.</strong></p>
-      <p>The book develops the programme from one Noetherian balance and one non-invertible projection: the bulk conserves, the projection loses, the kernel remembers, and the boundary measures.</p>
-      <p>Use this site as the companion layer: read the papers, inspect the structural chain, and run the validators for hydrogen, CMB, breathing flow, and projective gluing.</p>
-      <div class="book-actions">
-        <a class="btn-main amazon" href="https://www.amazon.it/dp/B0H4NWW5J4" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'B0H4NWW5J4'});">Buy on Amazon.it &rarr;</a>
-        <a class="btn-main" href="papers.html">Read the research papers</a>
+  <p><strong>The Standard Model describes the boundary. QGT asks why the boundary has that structure.</strong>
+    The book develops the programme from one Noetherian balance and one non-invertible projection:
+    the bulk conserves, the projection loses, the kernel remembers, and the boundary measures.</p>
+  <div class="editions">
+    <div class="edition">
+      <img src="assets/cover_en_front.jpg" alt="The Quantum Gauge Theory of Time — English edition cover" loading="lazy"/>
+      <div>
+        <div class="book-kicker">First Edition &middot; 2026 &middot; original</div>
+        <h4>The Quantum Gauge Theory of Time</h4>
+        <div class="ed-meta">The Majorana Qubit and the Structure of Physical Time<br>
+          648 pp &middot; print + Kindle<br>ISBN 9798198195011 &middot; ASIN B0H4NWW5J4</div>
+        <a class="btn-main amazon" href="https://www.amazon.com/dp/B0H4NWW5J4" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'EN_B0H4NWW5J4'});">Buy on Amazon &rarr;</a>
       </div>
-      <p class="book-small">Direct Amazon ASIN link: B0H4NWW5J4.</p>
+    </div>
+    <div class="edition">
+      <img src="assets/cover_it_front.jpg" alt="La Teoria Quantistica di Gauge del Tempo — copertina edizione italiana" loading="lazy"/>
+      <div>
+        <div class="book-kicker">Prima edizione &middot; 2026 &middot; italiano</div>
+        <h4>La Teoria Quantistica di Gauge del Tempo</h4>
+        <div class="ed-meta">Il qubit di Majorana e la struttura del tempo fisico<br>
+          432 pp &middot; cartaceo + Kindle Print Replica a colori<br>ISBN 9798181307070</div>
+        <a class="btn-main amazon" href="{{AMAZON_IT_URL}}" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'IT_edition'});">Compra su Amazon.it &rarr;</a>
+      </div>
+    </div>
+  </div>
+  <p class="note">Twin editions: the English text is the original; the Italian edition is an
+    autonomous voice of the same monograph &mdash; same structural chain, independently typeset,
+    with its own plates and synoptic table.</p>
+  <div class="book-actions">
+    <a class="btn-main" href="papers.html">Read the research papers</a>
+  </div>
+</section>
+
+<section id="watch">
+  <h2><span class="num">00C</span>Watch</h2>
+  <p class="lead">Three animations, straight from the structural chain. No installation:
+    they run in this browser.</p>
+  <div class="watch-grid">
+    <div class="watch-card">
+      <a href="qgt_companion.html#hydrogen3d" onclick="gtag('event','watch_hydrogen_click',{'event_category':'engagement','event_label':'watch_section'});"><img src="assets/thumb_hydrogen3d.jpg" alt="Hydrogen 3D — real-time dynamics" loading="lazy"/></a>
+      <div class="wc-body">
+        <div class="wc-badge">demonstrated &middot; real time</div>
+        <h4>Hydrogen 3D</h4>
+        <p>Split-operator Schr&ouml;dinger evolution on a 32&sup3; grid: |1s&#10217;+|2p<sub>z</sub>&#10217; under the QGT potential with sech&sup2; back-action and breathing modulation.</p>
+        <a class="go" href="qgt_companion.html#hydrogen3d">Open Hydrogen 3D &rarr;</a>
+      </div>
+    </div>
+    <div class="watch-card">
+      <a href="qgt_breathing_3d.html"><img src="assets/thumb_breathing3d.jpg" alt="Breathing flow in 3D on the Majorana sphere" loading="lazy"/></a>
+      <div class="wc-body">
+        <div class="wc-badge">layer 3</div>
+        <h4>Breathing 3D</h4>
+        <p>The shell oscillating between the two domain walls on S&sup2;<sub>&chi;</sub> &mdash; the phase &theta;=gd(&Gamma;<sub>&tau;</sub>t) that every cell carries.</p>
+        <a class="go" href="qgt_breathing_3d.html">Open Breathing 3D &rarr;</a>
+      </div>
+    </div>
+    <div class="watch-card">
+      <a href="qgt_animation_v4.html"><img src="assets/thumb_lissajous.jpg" alt="Lissajous classes of the temporal fibre" loading="lazy"/></a>
+      <div class="wc-body">
+        <div class="wc-badge">layers 1&ndash;4</div>
+        <h4>Temporal fibre &amp; Lissajous</h4>
+        <p>The chiral doublet winding on the lock-in surface; the four admissible anyon classes of TL&#8324;(&phi;).</p>
+        <a class="go" href="qgt_animation_v4.html">Open animation &rarr;</a>
+      </div>
     </div>
   </div>
 </section>
@@ -318,6 +390,7 @@ footer p{max-width:none;margin:.3rem 0}
     projection</em>, not postulated.</p>
 </section>
 
+<div id="validators" aria-hidden="true"></div>
 <section id="hydrogen">
   <h2><span class="num">05</span>Hydrogen &mdash; the first lock</h2>
   <p class="lead">Hydrogen is the first place the whole chain closes into a stable,

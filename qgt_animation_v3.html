@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QGT — Temporal Fibre S¹(τ) · Lissajous Solitons</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070d;--bg2:#0a0a14;--bdr:#14142a;
+  --txt:#8898b8;--txt2:#c0d0e8;--txt3:#e4ecf8;
+  --xi:#2ec898;--eta:#ff8030;--amb:#f0a828;
+  --c1:#9f8fe8;--c2:#2ec898;--c3:#f07070;--c4:#6ab0f0;
+  --mono:'JetBrains Mono','Fira Code','Consolas',monospace;
+}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--txt);font-family:var(--mono);font-size:11px;
+  display:grid;grid-template-rows:auto 1fr auto auto;height:100vh;}
+
+header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:6px 14px;border-bottom:.5px solid var(--bdr);background:var(--bg2);}
+.h-title{font-size:12px;font-weight:600;color:var(--txt3);white-space:nowrap;}
+.h-eq{font-size:9px;color:var(--amb);padding:2px 8px;border:.5px solid #3a2e08;
+  border-radius:3px;background:#0e0a02;white-space:nowrap;}
+.h-doi{font-size:9px;color:#485870;text-decoration:none;padding:2px 7px;
+  border:.5px solid var(--bdr);border-radius:3px;}
+.h-doi:hover{color:var(--amb);}
+.h-doi::before{content:'↗ ';}
+.lt{display:flex;border:.5px solid var(--bdr);border-radius:4px;overflow:hidden;margin-left:auto;}
+.lt button{background:transparent;border:none;cursor:pointer;padding:3px 9px;
+  font-size:10px;font-family:var(--mono);color:#485870;}
+.lt button.on{background:#181830;color:var(--txt3);}
+
+/* 3 canvases side by side, equal width */
+.canvases{display:grid;grid-template-columns:1fr 1fr 1fr;
+  padding:6px 8px 4px 8px;gap:6px;align-items:center;justify-items:center;overflow:hidden;}
+canvas{display:block;border-radius:6px;}
+
+/* Horizontal panel below canvases */
+.panel{
+  background:var(--bg2);border-top:.5px solid var(--bdr);
+  display:grid;
+  grid-template-columns:auto auto auto auto auto auto;
+  gap:0;overflow:hidden;
+}
+.pb{padding:8px 14px;border-right:.5px solid var(--bdr);}
+.pb:last-child{border-right:none;flex:1;}
+.pt{font-size:9px;color:#404e68;letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:6px;font-weight:600;white-space:nowrap;}
+.row{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.rl{font-size:10px;color:#6a7a98;flex:0 0 58px;white-space:nowrap;}
+.rv{font-size:10px;color:var(--txt2);flex:0 0 36px;text-align:right;font-weight:600;white-space:nowrap;}
+input[type=range]{width:90px;-webkit-appearance:none;height:3px;background:#141428;border-radius:2px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--amb);border-radius:50%;cursor:pointer;}
+.sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 10px;}
+.sl{font-size:9px;color:#404e68;margin-bottom:1px;}
+.sv{font-size:13px;color:#9ab0d0;font-weight:600;}
+.lrow{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.ldot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.lname{font-size:10px;min-width:60px;}
+.lval{font-size:9px;color:#384858;min-width:48px;}
+.lbar-w{width:60px;height:4px;background:#0e0e20;border-radius:2px;overflow:hidden;position:relative;}
+.lbar{height:100%;border-radius:2px;}
+.lcur{position:absolute;top:-2px;height:8px;width:2px;border-radius:1px;}
+.bg-row{display:flex;align-items:center;gap:4px;margin-bottom:3px;}
+.bg-lbl{font-size:10px;font-weight:600;min-width:28px;}
+.bg-w{width:55px;height:4px;background:#0e0e20;border-radius:2px;overflow:hidden;}
+.bg-bar{height:100%;border-radius:2px;transition:width .08s;}
+.bg-pct{font-size:9px;color:#506070;min-width:24px;text-align:right;}
+.fn{font-size:9px;color:#304050;line-height:1.55;margin-top:4px;padding-top:4px;border-top:.5px solid var(--bdr);}
+.cls-btn{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px;}
+.cb{font-size:9px;padding:2px 6px;border-radius:3px;border:.5px solid;cursor:pointer;
+  background:transparent;font-family:var(--mono);opacity:.45;transition:opacity .15s;}
+.cb.on{opacity:1;}
+
+footer{border-top:.5px solid var(--bdr);padding:4px 14px;background:var(--bg2);
+  font-size:9px;color:#2e3e58;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+footer a{color:var(--amb);text-decoration:none;opacity:.7;}
+.fleg{display:flex;gap:8px;flex-wrap:wrap;}
+.fli{display:flex;align-items:center;gap:3px;font-size:9px;color:#3a4a62;}
+.fli span{width:7px;height:7px;border-radius:50%;display:inline-block;}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="h-title">QGT — Temporal Fibre S¹(τ) · Holonomy &amp; Lissajous Solitons</span>
+  <span class="h-eq">∂<sub>I</sub>J<sup>I</sup>=0 &nbsp;·&nbsp; ξη=α⁻¹ &nbsp;·&nbsp; Γ<sub>τ</sub>=φ/√5 &nbsp;·&nbsp; t(θ)=ln[tan(θ/2)] &nbsp;·&nbsp; 𝒩<sub>adm</sub>={2,3,5,7,11}</span>
+  <a class="h-doi" href="https://doi.org/10.5281/zenodo.19384549" target="_blank">P00</a>
+  <a class="h-doi" href="https://doi.org/10.5281/zenodo.19337219" target="_blank">P11</a>
+  <a class="h-doi" href="https://doi.org/10.5281/zenodo.19369068" target="_blank">P09</a>
+  <div class="lt">
+    <button id="ben" class="on" onclick="setLang('en')">EN</button>
+    <button id="bit" onclick="setLang('it')">IT</button>
+  </div>
+</header>
+
+<div class="canvases">
+    <canvas id="c3d"></canvas>
+    <canvas id="cpoly"></canvas>
+    <canvas id="c2d"></canvas>
+  </div>
+
+  <div class="panel">
+    <div class="pb">
+      <div class="pt">Parameters</div>
+      <div class="row"><span class="rl">Speed</span>
+        <input type="range" id="r-sp" min="0.25" max="6" step="0.25" value="1">
+        <span class="rv" id="v-sp">1×</span></div>
+      <div class="row"><span class="rl">Breathing</span>
+        <input type="range" id="r-br" min="0" max="0.9" step="0.02" value="0.36">
+        <span class="rv" id="v-br">0.36</span></div>
+      <div class="row"><span class="rl">Lock-in σ</span>
+        <input type="range" id="r-sg" min="0.02" max="0.22" step="0.01" value="0.06">
+        <span class="rv" id="v-sg">0.06</span></div>
+      <div class="row"><span class="rl">Rotation</span>
+        <input type="range" id="r-ro" min="0" max="1" step="0.05" value="0.2">
+        <span class="rv" id="v-ro">0.20</span></div>
+    </div>
+
+    <div class="pb">
+      <div class="pt">State</div>
+      <div class="sg">
+        <div><div class="sl">τ/2π</div><div class="sv" id="p-tau">0.000</div></div>
+        <div><div class="sl">n★</div><div class="sv" id="p-ns">11</div></div>
+        <div><div class="sl">ξ</div><div class="sv" id="p-xi" style="color:var(--xi)">18.6</div></div>
+        <div><div class="sl">η</div><div class="sv" id="p-eta" style="color:var(--eta)">8.44</div></div>
+        <div><div class="sl">ξη</div><div class="sv" id="p-prod">137.0</div></div>
+        <div><div class="sl">θ</div><div class="sv" id="p-th">90°</div></div>
+      </div>
+    </div>
+
+    <div class="pb">
+      <div class="pt">α layers</div>
+      <div id="layers"></div>
+    </div>
+
+    <div class="pb">
+      <div class="pt">Holonomy π/n</div>
+      <div id="badges"></div>
+    </div>
+
+    <div class="pb">
+      <div class="pt">Lissajous</div>
+      <div class="cls-btn">
+        <button class="cb on" id="cb-c1" style="color:var(--c1);border-color:var(--c1)" onclick="setClass(1)">C1 11:5</button>
+        <button class="cb on" id="cb-c2" style="color:var(--c2);border-color:var(--c2)" onclick="setClass(2)">C2 2:5</button>
+        <button class="cb on" id="cb-c3" style="color:var(--c3);border-color:var(--c3)" onclick="setClass(3)">C3 3:5</button>
+        <button class="cb"    id="cb-c4" style="color:var(--c4);border-color:var(--c4)" onclick="setClass(4)">C4 7:11</button>
+      </div>
+      <div class="fn" style="margin-bottom:5px;">
+        C1(11:5) parent · C2(2:5) fermionic·DNA<br>
+        C3(3:5) EW W±Z⁰ · C4(7:11) confined·kerΠ
+      </div>
+      <canvas id="cbreath" style="display:block;border-radius:3px;"></canvas>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:#2e3e58;margin-top:2px;">
+        <span style="color:var(--xi)">ξ</span>
+        <span style="color:var(--eta)">η</span>
+        <span style="color:var(--amb)">ξη=α⁻¹</span>
+      </div>
+    </div>
+
+  </div>
+
+<footer>
+  <div class="fleg">
+    <div class="fli"><span style="background:var(--xi)"></span>Ψ₊ ξ long.</div>
+    <div class="fli"><span style="background:var(--eta)"></span>Ψ₋ η transv.</div>
+    <div class="fli"><span style="background:var(--amb)"></span>boundary R⁴ equator</div>
+    <div class="fli"><span style="background:#4488ff"></span>N bulk θ→0</div>
+    <div class="fli"><span style="background:#aa44ff"></span>S entropy θ→π</div>
+  </div>
+  <span>N bulk θ→0 t→−∞ · E equator θ=π/2 t=0 · S entropy θ→π t→+∞</span>
+  <a href="https://pasqualecamelia.github.io/" target="_blank">pasqualecamelia.github.io</a>
+</footer>
+
+<script>
+// ── Language ──────────────────────────────────────────────────────
+function setLang(l){
+  document.getElementById('ben').className=l==='en'?'on':'';
+  document.getElementById('bit').className=l==='it'?'on':'';
+  document.querySelectorAll('.t').forEach(function(el){var t=el.getAttribute('data-'+l);if(t)el.innerHTML=t;});
+}
+
+// ── QGT Constants ──────────────────────────────────────────────────
+var phi=(1+Math.sqrt(5))/2;
+var f_par=phi*phi/10, f_vis=Math.pow(phi,4)*1e-3;
+var inv_a=137.036, sq_a=Math.sqrt(inv_a);
+var XI_STAR=11*Math.sqrt(inv_a/55), ETA_STAR=5*Math.sqrt(inv_a/55);
+var A_breath=1.8, Gamma=phi/Math.sqrt(5);
+
+// α layers
+var ALPHA_P=1/137.036, ALPHA_B=Math.pow(Math.exp(Math.PI)/100,2);
+var ALPHA_G=1/Math.pow(4*phi*phi*(phi-0.5),2);
+var ALPHA_S=(5/Math.pow(phi,4))*1e-2, ALPHA_S2=2*Math.PI*(1+phi/10)*1e-3;
+var AMP_L=0.30;
+function aR(a){return 1+AMP_L*Math.log(ALPHA_P/a)/Math.log(ALPHA_P/ALPHA_B);}
+var R_P=1.0,R_B=aR(ALPHA_B),R_G=aR(ALPHA_G),R_S=aR(ALPHA_S),R_S2=aR(ALPHA_S2);
+var ALPHA_RS=[
+  {a:ALPHA_B, R:R_B,  col:'#F0997B',key:'B',name:'B entropic',  val:'1/18.7'},
+  {a:ALPHA_S2,R:R_S2, col:'#85B7EB',key:'S2',name:"S' spectral",val:'1/136.99'},
+  {a:ALPHA_P, R:R_P,  col:'#f0a828',key:'P', name:'P physical', val:'1/137.036'},
+  {a:ALPHA_G, R:R_G,  col:'#2ec898',key:'G', name:'G geometric',val:'1/137.082'},
+  {a:ALPHA_S, R:R_S,  col:'#7F77DD',key:'S', name:'S spectral', val:'≈1/137.1'},
+];
+
+// Holonomy classes
+var NL=[11,7,5,3,2];
+var COL_N={11:'#2ec898',7:'#7F77DD',5:'#f0a828',3:'#F0997B',2:'#ED93B1'};
+
+// Lissajous classes (P09): p:q ratios, SVD weights, physical role
+var LISS_CLASSES=[
+  {id:1,p:11,q:5, col:'#9f8fe8',name:'C1',role:'parent soliton',svd:'9.69%',show:true},
+  {id:2,p:2, q:5, col:'#2ec898',name:'C2',role:'fermionic·B-DNA',svd:'0.87%',show:true},
+  {id:3,p:3, q:5, col:'#f07070',name:'C3',role:'EW W±Z⁰',svd:'0.95%',show:true},
+  {id:4,p:7, q:11,col:'#6ab0f0',name:'C4',role:'confined·kerΠ',svd:'0%',show:false},
+];
+
+// ── Controls ──────────────────────────────────────────────────────
+var ba=0.36,sm=1.0,ls=0.06,rot_amp=0.2;
+function g(id){return document.getElementById(id);}
+g('r-sp').oninput=function(){sm=+this.value;g('v-sp').textContent=(sm%1===0?sm:sm.toFixed(2))+'×';};
+g('r-br').oninput=function(){ba=+this.value;g('v-br').textContent=ba.toFixed(2);};
+g('r-sg').oninput=function(){ls=+this.value;g('v-sg').textContent=ls.toFixed(2);};
+g('r-ro').oninput=function(){rot_amp=+this.value;g('v-ro').textContent=(+this.value).toFixed(2);};
+
+function setClass(id){
+  LISS_CLASSES.forEach(function(c){
+    c.show=(c.id===id)?!c.show:c.show;
+    g('cb-c'+c.id).className='cb'+(c.show?' on':'');
+  });
+}
+
+// ── Canvases ──────────────────────────────────────────────────────
+var c3=g('c3d'),x3=c3.getContext('2d');
+var cp=g('cpoly'),xp2=cp.getContext('2d');
+var c2=g('c2d'),x2=c2.getContext('2d');
+var cb=g('cbreath'),xb=cb.getContext('2d');
+
+function sizeCanvases(){
+  var wrap=document.querySelector('.canvases');
+  var W=wrap.clientWidth, H=wrap.clientHeight;
+  var s=Math.max(100,Math.min((W-24)/3, H-8))|0;
+  c3.width=s;c3.height=s;
+  cp.width=s;cp.height=s;
+  // Lissajous slightly smaller
+  var s2=Math.round(s*0.82)|0;
+  c2.width=s2;c2.height=s2;
+  // cbreath sized to fit lissajous panel column
+  var lissPanel=document.querySelector('.pb:last-child');
+  var pw=lissPanel?lissPanel.clientWidth-28:120;
+  cb.width=Math.max(80,pw)|0;cb.height=40;
+}
+window.addEventListener('resize',sizeCanvases);
+
+// ── Geometry (identical to v3) ────────────────────────────────────
+function norm(v){var l=Math.hypot(v[0],v[1],v[2]);return l<1e-12?[0,0,1]:[v[0]/l,v[1]/l,v[2]/l];}
+function xp(a,b){return[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+function proj3d(x,y,z,el,az,cx,cy,sc){
+  var ea=el*Math.PI/180,a=az*Math.PI/180;
+  var rx=x*Math.cos(a)+y*Math.sin(a),ry=-x*Math.sin(a)+y*Math.cos(a);
+  return[cx+rx*sc,cy-(-z*Math.sin(ea)+ry*Math.cos(ea))*sc];
+}
+
+// Golden spiral on S² (identical to v3)
+function spiralPt(u){
+  var FR=0.65,TR=6,TE=4;
+  if(u<=FR){var s=u/FR,th=Math.PI/2*s,pa=2*Math.PI*TR*s*(1+(phi-1)*s);return[Math.sin(th)*Math.cos(pa),Math.sin(th)*Math.sin(pa),Math.cos(th)];}
+  var ph=2*Math.PI*TE*(u-FR)/(1-FR);return[Math.cos(ph),Math.sin(ph),0];
+}
+var SP=[];for(var i=0;i<800;i++)SP.push(spiralPt(i/799));
+
+// Breathing R (identical to v3)
+function breathingR(t){
+  var am=ba*(R_B-R_P)*0.55,ap=ba*(R_P-R_S)*0.40;
+  return R_P+am*Math.abs(Math.sin(2*Math.PI*f_par*t))-ap*Math.abs(Math.sin(2*Math.PI*f_vis*t+Math.PI/phi));
+}
+function spinorPos(u,t){
+  var base=spiralPt(u),R=breathingR(t);
+  if(ba<1e-4)return{pos:base,R:R_P};
+  var ref=[0,0,1];if(Math.abs(base[2])>0.92)ref=[1,0,0];
+  var p1=norm(xp(base,ref)),p2=norm(xp(base,p1));
+  var d=ba*0.08*Math.sin(2*Math.PI*f_vis*t),gg=ba*0.03*Math.cos(2*Math.PI*f_vis*t*phi);
+  var pos=norm([base[0]+p1[0]*d+p2[0]*gg,base[1]+p1[1]*d+p2[1]*gg,base[2]+p1[2]*d+p2[2]*gg]);
+  return{pos:pos,R:R};
+}
+
+// π/n circles on S² (identical to v3)
+function obliqCirc(n){
+  var tn=Math.PI/n,nv=[Math.sin(tn),0,Math.cos(tn)];
+  var v1=norm(xp(nv,[0,1,0])),v2=norm(xp(nv,v1)),pts=[];
+  for(var i=0;i<=140;i++){var a=2*Math.PI*i/140;pts.push([v1[0]*Math.cos(a)+v2[0]*Math.sin(a),v1[1]*Math.cos(a)+v2[1]*Math.sin(a),v1[2]*Math.cos(a)+v2[2]*Math.sin(a)]);}
+  return pts;
+}
+var CR={};NL.forEach(function(n){CR[n]=obliqCirc(n);});
+
+function lkw(theta){
+  var w={},s=0;
+  NL.forEach(function(n){var v=Math.exp(-0.5*Math.pow((theta-Math.PI/n)/Math.max(ls,1e-9),2));w[n]=v;s+=v;});
+  if(s>1e-12)NL.forEach(function(n){w[n]/=s;});
+  return w;
+}
+function latColor(z){
+  // P06: North=bulk(blue), Equator=gold, South=entropy(violet)
+  var t=Math.max(0,Math.min(1,(1-z)/2));
+  if(t<0.5){var u=t*2;return'rgba('+(Math.round(40+u*215))+',' +(Math.round(80+u*120))+','+(Math.round(255-u*55))+',0.15)';}
+  var u=(t-0.5)*2;return'rgba('+(Math.round(255-u*55))+','+(Math.round(200-u*150))+','+(Math.round(200+u*55))+',0.15)';
+}
+
+// ── Lissajous orbit in (ξ,η) plane ───────────────────────────────
+// C1(11:5), C2(2:5), C3(3:5), C4(7:11)
+// ξ(t)=ξ*·(1+A·sin(p·Γτ·t)), η(t)=η*·(1+A·sin(q·Γτ·t))
+// constrained on ξη≈α⁻¹ by the nonlinear deformation
+// (linear approximation as per P09 figure)
+function lissajousPt(p,q,A_liss,t_liss){
+  var xi=XI_STAR*(1+A_liss*Math.sin(p*t_liss));
+  var eta=ETA_STAR*(1+A_liss*Math.sin(q*t_liss));
+  return{xi:xi,eta:eta};
+}
+
+// History for Lissajous trails in c2
+var LISS_HIST_LEN=600;
+var lissTime=0;
+var LISS_HIST={};
+LISS_CLASSES.forEach(function(c){LISS_HIST[c.id]=[];});
+// Pre-populate with one full quasi-periodic cycle per class
+(function(){
+  var A_pre=0.35;
+  for(var i=0;i<LISS_HIST_LEN;i++){
+    var t_pre=i*0.08;
+    LISS_CLASSES.forEach(function(c){
+      var pt2=lissajousPt(c.p,c.q,A_pre,t_pre*Gamma);
+      LISS_HIST[c.id].push(pt2);
+    });
+  }
+})();
+
+// ── State ─────────────────────────────────────────────────────────
+var t_phys=0,azm=30;
+var RH=[],RHM=280;
+var BS=140;
+var xi_hist=new Float32Array(BS).fill(sq_a);
+var eta_hist=new Float32Array(BS).fill(sq_a);
+
+// ── DRAW SPHERE (S² with spiral + π/n holonomy + P06 poles) ──────
+function drawSphere(){
+  var W=c3.width,H=c3.height,cx=W*.50,cy=H*.47,sc=W*.30,el=36;
+  function pt(x,y,z,R){R=R||1;return proj3d(x*R,y*R,z*R,el,azm,cx,cy,sc);}
+  function dep(x,y,z,R){R=R||1;
+    var az=azm*Math.PI/180,ea=el*Math.PI/180;
+    var rx=x*R*Math.cos(az)+y*R*Math.sin(az),ry=-x*R*Math.sin(az)+y*R*Math.cos(az);
+    return z*R*Math.sin(ea)-ry*Math.cos(ea);
+  }
+  x3.clearRect(0,0,W,H);x3.fillStyle='#07070d';x3.fillRect(0,0,W,H);
+
+  var u=((t_phys*f_par*sm)%1+1)%1;
+  var sp=spinorPos(u,t_phys),r=sp.pos,Reff=sp.R;
+  var theta=Math.acos(Math.max(-1,Math.min(1,r[2])));
+  var w=lkw(theta),ns=NL.reduce(function(a,b){return w[a]>w[b]?a:b;});
+
+  // Pre-compute equatorial plane points and split front/back
+  var eq_pts=[];
+  for(var j=0;j<=120;j++){
+    var b=2*Math.PI*j/120;
+    var cx_=Math.cos(b),cy_=Math.sin(b);
+    eq_pts.push({pp:pt(cx_,cy_,0,Reff), d:dep(cx_,cy_,0,Reff), b:b});
+  }
+  // Back half: depth < 0 → draw first (behind sphere)
+  function drawEqHalf(front){
+    x3.beginPath();
+    var started=false;
+    eq_pts.forEach(function(p){
+      if(front ? p.d>=0 : p.d<0){
+        if(!started){x3.moveTo(p.pp[0],p.pp[1]);started=true;}
+        else x3.lineTo(p.pp[0],p.pp[1]);
+      } else { started=false; }
+    });
+    x3.strokeStyle=front?'rgba(240,200,40,0.90)':'rgba(240,200,40,0.30)';
+    x3.lineWidth=front?2.0:1.0;
+    x3.setLineDash(front?[]:[5,4]);
+    x3.stroke();
+    x3.setLineDash([]);
+  }
+  // Fill back half faintly
+  x3.beginPath();
+  eq_pts.forEach(function(p,i){
+    if(p.d<0){i===0||eq_pts[i-1].d>=0?x3.moveTo(p.pp[0],p.pp[1]):x3.lineTo(p.pp[0],p.pp[1]);}
+  });
+  x3.fillStyle='rgba(240,168,40,0.04)';x3.fill();
+  drawEqHalf(false);
+
+  // ── Atmosphere glow at poles (P06) ──
+  var pN=pt(0,0,1,Reff);
+  var gN=x3.createRadialGradient(pN[0],pN[1],0,pN[0],pN[1],sc*0.65);
+  gN.addColorStop(0,'rgba(40,90,255,0.10)');gN.addColorStop(1,'rgba(0,0,0,0)');
+  x3.fillStyle=gN;x3.fillRect(0,0,W,H);
+  var pS=pt(0,0,-1,Reff);
+  var gS=x3.createRadialGradient(pS[0],pS[1],0,pS[0],pS[1],sc*0.65);
+  gS.addColorStop(0,'rgba(170,40,255,0.08)');gS.addColorStop(1,'rgba(0,0,0,0)');
+  x3.fillStyle=gS;x3.fillRect(0,0,W,H);
+
+  // ── α layer spheres ──
+  var sorted=ALPHA_RS.slice().sort(function(a,b){return b.R-a.R;});
+  sorted.forEach(function(lay){
+    x3.strokeStyle=lay.col+'28';x3.lineWidth=0.5;
+    for(var i=1;i<=7;i++){
+      var a1=Math.PI*i/8;x3.beginPath();
+      for(var j=0;j<=32;j++){var b=2*Math.PI*j/32,pp=pt(Math.sin(a1)*Math.cos(b),Math.sin(a1)*Math.sin(b),Math.cos(a1),lay.R);j===0?x3.moveTo(pp[0],pp[1]):x3.lineTo(pp[0],pp[1]);}
+      x3.stroke();
+    }
+    for(var j=0;j<5;j++){var b=Math.PI*j/5;x3.beginPath();for(var i=0;i<=14;i++){var a=Math.PI*i/14,pp=pt(Math.sin(a)*Math.cos(b),Math.sin(a)*Math.sin(b),Math.cos(a),lay.R);i===0?x3.moveTo(pp[0],pp[1]):x3.lineTo(pp[0],pp[1]);}x3.stroke();}
+    // P layer pulse when near B*=8
+    if(lay.key==='P'){
+      var bk=8*(xi_hist[BS-1]/XI_STAR)*(eta_hist[BS-1]/ETA_STAR);
+      var prox=Math.max(0,1-Math.abs(bk-8)/4);
+      if(prox>0.1){
+        x3.strokeStyle='rgba(240,168,40,'+(0.12+prox*0.40).toFixed(3)+')';x3.lineWidth=0.8+prox*1.2;
+        x3.beginPath();for(var j=0;j<=48;j++){var b=2*Math.PI*j/48,pp=pt(Math.cos(b),Math.sin(b),0,lay.R);j===0?x3.moveTo(pp[0],pp[1]):x3.lineTo(pp[0],pp[1]);}x3.stroke();
+      }
+    }
+  });
+
+  // ── Latitude colouring (P06 orientation) ──
+  for(var i=0;i<=12;i++){
+    var a1=Math.PI*i/12,z_rep=Math.cos((a1+Math.PI*(i+1)/12)*0.5);
+    x3.strokeStyle=latColor(z_rep);x3.lineWidth=3.5;x3.beginPath();
+    for(var j=0;j<=40;j++){var b=2*Math.PI*j/40,pp=pt(Math.sin(a1)*Math.cos(b),Math.sin(a1)*Math.sin(b),Math.cos(a1),Reff);j===0?x3.moveTo(pp[0],pp[1]):x3.lineTo(pp[0],pp[1]);}
+    x3.stroke();
+  }
+
+  // ── Equator: boundary R⁴, t=0, θ=π/2 ──
+  x3.strokeStyle='rgba(240,168,40,.75)';x3.lineWidth=2.2;x3.beginPath();
+  for(var j=0;j<=64;j++){var b=2*Math.PI*j/64,pp=pt(Math.cos(b),Math.sin(b),0,Reff);j===0?x3.moveTo(pp[0],pp[1]):x3.lineTo(pp[0],pp[1]);}x3.stroke();
+
+  // ── π/n holonomy circles ──
+  NL.forEach(function(n){
+    var ah=Math.round((0.12+0.55*w[n])*255).toString(16).padStart(2,'0');
+    x3.strokeStyle=COL_N[n]+ah;
+    x3.lineWidth=n===ns?1.8:0.6;x3.setLineDash(n===ns?[]:[4,4]);
+    x3.beginPath();CR[n].forEach(function(pt2,i){var pp=pt(pt2[0],pt2[1],pt2[2],Reff);i===0?x3.moveTo(pp[0],pp[1]):x3.lineTo(pp[0],pp[1]);});
+    x3.stroke();x3.setLineDash([]);
+    // label
+    var la=Math.PI/n*0.55;
+    x3.fillStyle=COL_N[n]+(n===ns?'ee':'88');x3.font=(n===ns?'bold ':'')+'9px monospace';
+    var lp=pt(Math.sin(la)*1.12,0,Math.cos(la),Reff);
+    x3.fillText('π/'+n,lp[0]-6,lp[1]+3);
+  });
+
+  // ── Golden spiral ──
+  x3.strokeStyle='rgba(150,150,190,.14)';x3.lineWidth=1.0;x3.beginPath();
+  SP.forEach(function(p2,i){var pp=pt(p2[0],p2[1],p2[2],1);i===0?x3.moveTo(pp[0],pp[1]):x3.lineTo(pp[0],pp[1]);});x3.stroke();
+
+  // ── Spinor trails ──
+  if(RH.length>1){
+    for(var i=1;i<RH.length;i++){
+      var t01=i/(RH.length-1);
+      var rh0=RH[i-1],rh1=RH[i];
+      x3.strokeStyle='rgba(46,200,152,'+(t01*0.85).toFixed(3)+')';x3.lineWidth=0.7+t01*1.4;
+      x3.beginPath();var pp0=pt(rh0[0],rh0[1],rh0[2],rh0[3]),pp1=pt(rh1[0],rh1[1],rh1[2],rh1[3]);
+      x3.moveTo(pp0[0],pp0[1]);x3.lineTo(pp1[0],pp1[1]);x3.stroke();
+      x3.strokeStyle='rgba(255,128,48,'+(t01*0.65).toFixed(3)+')';x3.lineWidth=0.5+t01*0.9;
+      x3.beginPath();pp0=pt(-rh0[0],-rh0[1],-rh0[2],rh0[3]);pp1=pt(-rh1[0],-rh1[1],-rh1[2],rh1[3]);
+      x3.moveTo(pp0[0],pp0[1]);x3.lineTo(pp1[0],pp1[1]);x3.stroke();
+    }
+  }
+
+  // ── Spinor heads with glow ──
+  var bx=pt(r[0],r[1],r[2],Reff);
+  var gXi=x3.createRadialGradient(bx[0],bx[1],0,bx[0],bx[1],16);
+  gXi.addColorStop(0,'rgba(46,200,152,0.9)');gXi.addColorStop(1,'rgba(46,200,152,0)');
+  x3.fillStyle=gXi;x3.beginPath();x3.arc(bx[0],bx[1],16,0,2*Math.PI);x3.fill();
+  x3.fillStyle='#2ec898';x3.strokeStyle='rgba(255,255,255,0.4)';x3.lineWidth=1;
+  x3.beginPath();x3.arc(bx[0],bx[1],6,0,2*Math.PI);x3.fill();x3.stroke();
+
+  var mx=pt(-r[0],-r[1],-r[2],Reff);
+  var gEt=x3.createRadialGradient(mx[0],mx[1],0,mx[0],mx[1],13);
+  gEt.addColorStop(0,'rgba(255,128,48,0.85)');gEt.addColorStop(1,'rgba(255,128,48,0)');
+  x3.fillStyle=gEt;x3.beginPath();x3.arc(mx[0],mx[1],13,0,2*Math.PI);x3.fill();
+  x3.fillStyle='#ff8030';x3.strokeStyle='rgba(255,255,255,0.35)';x3.lineWidth=1;
+  x3.beginPath();x3.arc(mx[0],mx[1],6,0,2*Math.PI);x3.fill();x3.stroke();
+
+  // ── Pole labels P06 ──
+  var fs=Math.max(9,Math.round(W*0.022));
+  // North: bulk coherence t→−∞
+  var pNd=pt(0,0,1,Reff);
+  var gNd=x3.createRadialGradient(pNd[0],pNd[1],0,pNd[0],pNd[1],12);
+  gNd.addColorStop(0,'rgba(68,136,255,0.9)');gNd.addColorStop(1,'rgba(68,136,255,0)');
+  x3.fillStyle=gNd;x3.beginPath();x3.arc(pNd[0],pNd[1],12,0,2*Math.PI);x3.fill();
+  x3.fillStyle='rgba(68,136,255,1)';x3.beginPath();x3.arc(pNd[0],pNd[1],4,0,2*Math.PI);x3.fill();
+  x3.fillStyle='rgba(140,180,255,.90)';x3.font='bold '+fs+'px monospace';
+  x3.fillText('N  bulk  t→−∞',pNd[0]+8,pNd[1]+3);
+  // South: entropy t→+∞
+  var pSd=pt(0,0,-1,Reff);
+  var gSd=x3.createRadialGradient(pSd[0],pSd[1],0,pSd[0],pSd[1],12);
+  gSd.addColorStop(0,'rgba(190,60,255,0.9)');gSd.addColorStop(1,'rgba(190,60,255,0)');
+  x3.fillStyle=gSd;x3.beginPath();x3.arc(pSd[0],pSd[1],12,0,2*Math.PI);x3.fill();
+  x3.fillStyle='rgba(190,60,255,1)';x3.beginPath();x3.arc(pSd[0],pSd[1],4,0,2*Math.PI);x3.fill();
+  x3.fillStyle='rgba(210,130,255,.90)';x3.font='bold '+fs+'px monospace';
+  x3.fillText('S  entropy  t→+∞',pSd[0]+8,pSd[1]+3);
+  // Equator label
+  var peq=pt(Reff*1.04,0,0);
+  x3.fillStyle='rgba(240,168,40,.85)';x3.font='bold '+fs+'px monospace';
+  x3.fillText('E  t=0  boundary R⁴',peq[0]+4,peq[1]+4);
+  // τ axis
+  var o1=pt(0,0,-1.38,1),o2=pt(0,0,1.38,1);
+  x3.strokeStyle='rgba(100,120,200,.25)';x3.lineWidth=.6;x3.setLineDash([4,4]);
+  x3.beginPath();x3.moveTo(o1[0],o1[1]);x3.lineTo(o2[0],o2[1]);x3.stroke();x3.setLineDash([]);
+  x3.fillStyle='rgba(140,150,220,.65)';x3.font=(fs+1)+'px monospace';x3.fillText('τ',o2[0]+4,o2[1]-2);
+  // Corner labels
+  x3.fillStyle='rgba(46,200,152,.85)';x3.font='bold '+fs+'px monospace';x3.fillText('Ψ₊ ξ longitudinal (gravity)',8,fs+2);
+  x3.fillStyle='rgba(255,128,48,.85)';x3.font='bold '+fs+'px monospace';x3.fillText('Ψ₋ η transverse (EM)',8,fs*2+5);
+  x3.fillStyle=COL_N[ns];x3.font='bold '+fs+'px monospace';x3.fillText('n★='+ns,8,H-fs-4);
+  // R label
+  var col=Reff>R_P+0.04?'#F0997B':Reff<R_P-0.04?'#7F77DD':'#f0a828';
+  x3.fillStyle=col;x3.font=fs+'px monospace';x3.fillText('R='+Reff.toFixed(3),8,H-4);
+
+  // Front half of equatorial plane (on top of everything)
+  x3.beginPath();
+  eq_pts.forEach(function(p,i){
+    if(p.d>=0){i===0||eq_pts[i-1].d<0?x3.moveTo(p.pp[0],p.pp[1]):x3.lineTo(p.pp[0],p.pp[1]);}
+  });
+  x3.fillStyle='rgba(240,168,40,0.08)';x3.fill();
+  drawEqHalf(true);
+}
+
+// ── DRAW POLY — equatorial section θ=π/2 (boundary R⁴, t=0) ──────
+// This is the projection Π of S¹(τ) onto R⁴ at the present moment.
+// Shows the 5 admissible holonomy classes π/n as polygons,
+// with a moving point on the dominant class and conformal time bar.
+function polyPt(n,frac){
+  frac=((frac%1)+1)%1;
+  var kf=frac*n,k=Math.floor(kf)%n,loc=kf-Math.floor(kf);
+  var a0=2*Math.PI*k/n,a1=2*Math.PI*(k+1)/n;
+  return[Math.cos(a0)+(Math.cos(a1)-Math.cos(a0))*loc,
+         Math.sin(a0)+(Math.sin(a1)-Math.sin(a0))*loc];
+}
+
+function drawPoly(){
+  var W=cp.width,H=cp.height;
+  xp2.clearRect(0,0,W,H);xp2.fillStyle='#07070d';xp2.fillRect(0,0,W,H);
+
+  var cx=W*0.50, cy=H*0.48, sc=Math.min(W,H)*0.32;
+  var el=34; // same elevation as main sphere
+  var fss=9;
+
+  // Use same azimuth as main sphere so they rotate together
+  function pt3(x,y,z){
+    var az=azm*Math.PI/180, ea=el*Math.PI/180;
+    var rx=x*Math.cos(az)+y*Math.sin(az);
+    var ry=-x*Math.sin(az)+y*Math.cos(az);
+    return[cx+rx*sc, cy-(-z*Math.sin(ea)+ry*Math.cos(ea))*sc];
+  }
+  function dep3(x,y,z){
+    var az=azm*Math.PI/180, ea=el*Math.PI/180;
+    var ry=-x*Math.sin(az)+y*Math.cos(az);
+    return z*Math.sin(ea)-ry*Math.cos(ea);
+  }
+
+  var u=((t_phys*f_par*sm)%1+1)%1;
+  var sp=spinorPos(u,t_phys),r=sp.pos,Reff=sp.R;
+  var theta=Math.acos(Math.max(-1,Math.min(1,r[2])));
+  var w=lkw(theta),ns=NL.reduce(function(a,b){return w[a]>w[b]?a:b;});
+
+  // pt3 and dep3 now scale by Reff so the sphere breathes
+  function pt3R(x,y,z){return pt3(x*Reff,y*Reff,z*Reff);}
+  function dep3R(x,y,z){return dep3(x*Reff,y*Reff,z*Reff);}
+
+  // ── Atmosphere glow N/S poles ──
+  var pN=pt3R(0,0,1);
+  var gN=xp2.createRadialGradient(pN[0],pN[1],0,pN[0],pN[1],sc*0.55);
+  gN.addColorStop(0,'rgba(40,90,255,0.12)');gN.addColorStop(1,'rgba(0,0,0,0)');
+  xp2.fillStyle=gN;xp2.fillRect(0,0,W,H);
+  var pS=pt3R(0,0,-1);
+  var gS=xp2.createRadialGradient(pS[0],pS[1],0,pS[0],pS[1],sc*0.55);
+  gS.addColorStop(0,'rgba(170,40,255,0.08)');gS.addColorStop(1,'rgba(0,0,0,0)');
+  xp2.fillStyle=gS;xp2.fillRect(0,0,W,H);
+
+  // ── Sphere wireframe (light) ──
+  // ── S² wireframe — meridians and parallels, front/back split ──
+  var GRID_COL_F='rgba(60,80,160,0.55)';  // front
+  var GRID_COL_B='rgba(40,55,110,0.25)';   // back (dashed)
+  // Meridians: 12 half-circles every 15°
+  for(var j=0;j<12;j++){
+    var b=Math.PI*j/12;
+    var seg_pts=[];
+    for(var i=0;i<=32;i++){
+      var a=Math.PI*i/32;
+      seg_pts.push({x:Math.sin(a)*Math.cos(b),y:Math.sin(a)*Math.sin(b),z:Math.cos(a)});
+    }
+    // front half
+    xp2.strokeStyle=GRID_COL_F;xp2.lineWidth=0.8;
+    xp2.beginPath();var sf=false;
+    seg_pts.forEach(function(q){
+      var d=dep3R(q.x,q.y,q.z),pp=pt3R(q.x,q.y,q.z);
+      if(d>=0){if(!sf){xp2.moveTo(pp[0],pp[1]);sf=true;}else xp2.lineTo(pp[0],pp[1]);}else sf=false;
+    });xp2.stroke();
+    // back half dashed
+    xp2.strokeStyle=GRID_COL_B;xp2.setLineDash([2,3]);
+    xp2.beginPath();var sb=false;
+    seg_pts.forEach(function(q){
+      var d=dep3R(q.x,q.y,q.z),pp=pt3R(q.x,q.y,q.z);
+      if(d<0){if(!sb){xp2.moveTo(pp[0],pp[1]);sb=true;}else xp2.lineTo(pp[0],pp[1]);}else sb=false;
+    });xp2.stroke();xp2.setLineDash([]);
+  }
+  // Parallels: 10 latitude circles every 18°
+  for(var i=1;i<=9;i++){
+    var a1=Math.PI*i/10;
+    var r_=Math.sin(a1),z_=Math.cos(a1);
+    var seg_pts=[];
+    for(var j=0;j<=48;j++){
+      var b=2*Math.PI*j/48;
+      seg_pts.push({x:r_*Math.cos(b),y:r_*Math.sin(b),z:z_});
+    }
+    xp2.strokeStyle=GRID_COL_F;xp2.lineWidth=0.8;
+    xp2.beginPath();var sf=false;
+    seg_pts.forEach(function(q){
+      var d=dep3R(q.x,q.y,q.z),pp=pt3R(q.x,q.y,q.z);
+      if(d>=0){if(!sf){xp2.moveTo(pp[0],pp[1]);sf=true;}else xp2.lineTo(pp[0],pp[1]);}else sf=false;
+    });xp2.stroke();
+    xp2.strokeStyle=GRID_COL_B;xp2.setLineDash([2,3]);
+    xp2.beginPath();var sb=false;
+    seg_pts.forEach(function(q){
+      var d=dep3R(q.x,q.y,q.z),pp=pt3R(q.x,q.y,q.z);
+      if(d<0){if(!sb){xp2.moveTo(pp[0],pp[1]);sb=true;}else xp2.lineTo(pp[0],pp[1]);}else sb=false;
+    });xp2.stroke();xp2.setLineDash([]);
+  }
+
+  // ── Equator — boundary R⁴, t=0 ──
+  xp2.strokeStyle='rgba(240,168,40,0.70)';xp2.lineWidth=1.8;
+  xp2.beginPath();
+  for(var j=0;j<=64;j++){
+    var b=2*Math.PI*j/64;
+    var pp=pt3R(Math.cos(b),Math.sin(b),0);
+    j===0?xp2.moveTo(pp[0],pp[1]):xp2.lineTo(pp[0],pp[1]);
+  }xp2.stroke();
+
+  // ── Holonomy circles at colatitude θ=π/n ──
+  // n=11: closest to N pole (θ=16°), n=2: equator (θ=90°)
+  // Sort by depth for painter's algorithm
+  var circleItems=NL.map(function(n){
+    var tn=Math.PI/n; // colatitude
+    // centre depth of this circle
+    var cz=Math.cos(tn);
+    var cdep=dep3R(0,0,cz);
+    return{n:n,tn:tn,dep:cdep};
+  }).sort(function(a,b){return a.dep-b.dep;}); // back to front
+
+  circleItems.forEach(function(item){
+    var n=item.n, tn=item.tn;
+    var isNS=(n===ns);
+    var alp=0.20+0.70*w[n];
+
+    // Circle on S² at colatitude tn:
+    // points: (sin(tn)cos(φ), sin(tn)sin(φ), cos(tn))
+    var r_lat=Math.sin(tn); // radius of circle in xy plane
+    var z_lat=Math.cos(tn); // z height
+
+    // Collect points with depth for back/front split
+    var pts=[];
+    var NP2=80;
+    for(var j=0;j<=NP2;j++){
+      var phi=2*Math.PI*j/NP2;
+      var x=r_lat*Math.cos(phi), y=r_lat*Math.sin(phi), z=z_lat;
+      pts.push({pp:pt3R(x,y,z), d:dep3R(x,y,z)});
+    }
+
+    // Draw back half (dashed)
+    xp2.strokeStyle=COL_N[n]+Math.round(alp*0.45*255).toString(16).padStart(2,'0');
+    xp2.lineWidth=isNS?1.2:0.6;
+    xp2.setLineDash([3,3]);
+    xp2.beginPath();var started=false;
+    pts.forEach(function(p){
+      if(p.d<0){
+        if(!started){xp2.moveTo(p.pp[0],p.pp[1]);started=true;}
+        else xp2.lineTo(p.pp[0],p.pp[1]);
+      }else{started=false;}
+    });
+    xp2.stroke();xp2.setLineDash([]);
+
+    // Draw front half (solid, bright)
+    xp2.strokeStyle=COL_N[n]+Math.round(alp*255).toString(16).padStart(2,'0');
+    xp2.lineWidth=isNS?2.4:1.0;
+    xp2.beginPath();started=false;
+    pts.forEach(function(p){
+      if(p.d>=0){
+        if(!started){xp2.moveTo(p.pp[0],p.pp[1]);started=true;}
+        else xp2.lineTo(p.pp[0],p.pp[1]);
+      }else{started=false;}
+    });
+    xp2.stroke();
+
+    // Glow fill for dominant
+    if(isNS){
+      xp2.beginPath();
+      pts.forEach(function(p,i){i===0?xp2.moveTo(p.pp[0],p.pp[1]):xp2.lineTo(p.pp[0],p.pp[1]);});
+      xp2.fillStyle=COL_N[n]+'18';xp2.fill();
+    }
+
+    // Label: place at the rightmost point of the circle (front side)
+    var best=pts.reduce(function(m,p){return p.d>m.d?p:m;},pts[0]);
+    xp2.fillStyle=COL_N[n]+(isNS?'ff':'99');
+    xp2.font=(isNS?'bold ':'')+fss+'px monospace';
+    xp2.fillText('π/'+n,best.pp[0]+5,best.pp[1]+4);
+    // θ value
+    xp2.fillStyle=COL_N[n]+'77';xp2.font=(fss-1)+'px monospace';
+    xp2.fillText((tn*180/Math.PI).toFixed(0)+'°',best.pp[0]+5,best.pp[1]+fss+4);
+
+    // ── Inscribed n-gon rotating with time ──
+    // The polygon rotates at angular speed Γτ/n (each class its own frequency)
+    // Vertices lie on the holonomy circle at colatitude tn
+    var rot_phase = Gamma*t_phys*sm/n; // phase rotates with class frequency
+    var poly_pts=[];
+    for(var k=0;k<=n;k++){
+      var phi_k=2*Math.PI*k/n + rot_phase;
+      var x=r_lat*Math.cos(phi_k), y=r_lat*Math.sin(phi_k), z=z_lat;
+      poly_pts.push({pp:pt3R(x,y,z), d:dep3R(x,y,z)});
+    }
+    // Draw polygon edges sorted back→front per segment
+    var poly_alp=(isNS?0.85:0.40)*alp;
+    for(var k=0;k<poly_pts.length-1;k++){
+      var p0=poly_pts[k], p1=poly_pts[k+1];
+      var avg_d=(p0.d+p1.d)*0.5;
+      var seg_alp=poly_alp*(avg_d>=0?1.0:0.25);
+      xp2.strokeStyle=COL_N[n]+Math.round(seg_alp*255).toString(16).padStart(2,'0');
+      xp2.lineWidth=isNS?1.8:0.7;
+      xp2.setLineDash(avg_d>=0?[]:[3,3]);
+      xp2.beginPath();xp2.moveTo(p0.pp[0],p0.pp[1]);xp2.lineTo(p1.pp[0],p1.pp[1]);xp2.stroke();
+      xp2.setLineDash([]);
+    }
+    // Vertex dots
+    poly_pts.slice(0,n).forEach(function(p){
+      if(p.d>=0){
+        xp2.fillStyle=COL_N[n]+Math.round(poly_alp*255).toString(16).padStart(2,'0');
+        xp2.beginPath();xp2.arc(p.pp[0],p.pp[1],isNS?3:1.5,0,2*Math.PI);xp2.fill();
+      }
+    });
+  });
+
+  // ── Vertical axis τ ──
+  var o1=pt3R(0,0,-1.3), o2=pt3R(0,0,1.3);
+  xp2.strokeStyle='rgba(100,120,200,0.22)';xp2.lineWidth=0.6;xp2.setLineDash([4,4]);
+  xp2.beginPath();xp2.moveTo(o1[0],o1[1]);xp2.lineTo(o2[0],o2[1]);xp2.stroke();xp2.setLineDash([]);
+
+  // ── Pole labels (P06) ──
+  // North — bulk, coherence, n=11 closest
+  var pNd=pt3R(0,0,1);
+  var gNg=xp2.createRadialGradient(pNd[0],pNd[1],0,pNd[0],pNd[1],10);
+  gNg.addColorStop(0,'rgba(68,136,255,0.9)');gNg.addColorStop(1,'rgba(68,136,255,0)');
+  xp2.fillStyle=gNg;xp2.beginPath();xp2.arc(pNd[0],pNd[1],10,0,2*Math.PI);xp2.fill();
+  xp2.fillStyle='rgba(68,136,255,1)';xp2.beginPath();xp2.arc(pNd[0],pNd[1],3.5,0,2*Math.PI);xp2.fill();
+  xp2.fillStyle='rgba(140,180,255,0.90)';xp2.font='bold '+fss+'px monospace';
+  xp2.fillText('N  θ→0  t→−∞',pNd[0]+7,pNd[1]+3);
+  // South — entropy
+  var pSd=pt3R(0,0,-1);
+  var gSg=xp2.createRadialGradient(pSd[0],pSd[1],0,pSd[0],pSd[1],10);
+  gSg.addColorStop(0,'rgba(190,60,255,0.9)');gSg.addColorStop(1,'rgba(190,60,255,0)');
+  xp2.fillStyle=gSg;xp2.beginPath();xp2.arc(pSd[0],pSd[1],10,0,2*Math.PI);xp2.fill();
+  xp2.fillStyle='rgba(190,60,255,1)';xp2.beginPath();xp2.arc(pSd[0],pSd[1],3.5,0,2*Math.PI);xp2.fill();
+  xp2.fillStyle='rgba(210,130,255,0.90)';xp2.font='bold '+fss+'px monospace';
+  xp2.fillText('S  θ→π  t→+∞',pSd[0]+7,pSd[1]+3);
+  // Equator label
+  var peq=pt3R(1.05,0,0);
+  xp2.fillStyle='rgba(240,168,40,0.80)';xp2.font='bold '+fss+'px monospace';
+  xp2.fillText('E  t=0  n=2',peq[0]+4,peq[1]+4);
+
+  // ── Spinor head ──
+  var bx=pt3R(r[0],r[1],r[2]);
+  var gXi=xp2.createRadialGradient(bx[0],bx[1],0,bx[0],bx[1],11);
+  gXi.addColorStop(0,'rgba(46,200,152,0.9)');gXi.addColorStop(1,'rgba(46,200,152,0)');
+  xp2.fillStyle=gXi;xp2.beginPath();xp2.arc(bx[0],bx[1],11,0,2*Math.PI);xp2.fill();
+  xp2.fillStyle='#2ec898';xp2.strokeStyle='rgba(255,255,255,0.4)';xp2.lineWidth=1;
+  xp2.beginPath();xp2.arc(bx[0],bx[1],5,0,2*Math.PI);xp2.fill();xp2.stroke();
+
+  // ── Conformal time bar ──
+  var bX=W-7,bHb=sc*1.8,bY0=cy-bHb/2,bY1=cy+bHb/2;
+  var tb=xp2.createLinearGradient(bX,bY0,bX,bY1);
+  tb.addColorStop(0,'rgba(68,136,255,0.65)');
+  tb.addColorStop(0.5,'rgba(255,255,255,0.80)');
+  tb.addColorStop(1,'rgba(190,60,255,0.65)');
+  xp2.fillStyle=tb;xp2.fillRect(bX,bY0,4,bHb);
+  xp2.fillStyle='rgba(240,168,40,0.85)';xp2.fillRect(bX-3,cy-1,10,2);
+  var tFrac=Math.max(0,Math.min(1,theta/Math.PI));
+  var mY=bY0+tFrac*bHb;
+  xp2.fillStyle='rgba(255,255,255,0.90)';xp2.fillRect(bX-3,mY-1.5,10,3);
+
+  // ── Labels ──
+  xp2.fillStyle='rgba(240,168,40,0.80)';xp2.font='bold '+fss+'px monospace';
+  xp2.fillText('S²(τ) holonomy circles π/n',6,fss+2);
+  xp2.fillStyle='rgba(200,180,100,0.55)';xp2.font=(fss-1)+'px monospace';
+  xp2.fillText('N pole n=11 → equator n=2',6,fss*2+4);
+  xp2.fillStyle=COL_N[ns];xp2.font='bold '+fss+'px monospace';
+  xp2.fillText('n★='+ns,6,H-5);
+}
+
+
+// Shows the 4 Lissajous orbit classes C1-C4 in the (ξ,η) plane
+// evolving on ξη ≈ α⁻¹ (P09)
+// ── DRAW LISSAJOUS — annular boundary shell (P11) ──────────────────
+function drawLissajous(){
+  var W=c2.width,H=c2.height;
+  x2.clearRect(0,0,W,H);x2.fillStyle='#07070d';x2.fillRect(0,0,W,H);
+  var fss=9, fs=11;
+  var cx=W/2, cy=H/2;
+
+  var xi_cur=xi_hist[BS-1], eta_cur=eta_hist[BS-1];
+  var bk=8*(xi_cur/XI_STAR)*(eta_cur/ETA_STAR);
+  var breath=Math.sin(Gamma*t_phys*sm);
+
+  // Radii: DW2=inner, DW1=outer, shell breathes
+  var sc=Math.min(W,H)/2*0.90;
+  var R_inner=sc*0.54*(1-0.06*breath);
+  var R_outer=sc*0.95*(1+0.06*breath);
+
+  // Bulk interior (ker Pi)
+  var gB=x2.createRadialGradient(cx,cy,0,cx,cy,R_inner);
+  gB.addColorStop(0,'rgba(15,15,40,1)');gB.addColorStop(1,'rgba(8,8,20,1)');
+  x2.fillStyle=gB;x2.beginPath();x2.arc(cx,cy,R_inner,0,2*Math.PI);x2.fill();
+  x2.fillStyle='rgba(70,80,130,0.50)';x2.font='bold '+fss+'px monospace';
+  x2.textAlign='center';x2.fillText('ker Π  bulk M⁵',cx,cy+4);x2.textAlign='left';
+
+  // Shell R4
+  var gS=x2.createRadialGradient(cx,cy,R_inner,cx,cy,R_outer);
+  gS.addColorStop(0,'rgba(140,55,10,0.20)');
+  gS.addColorStop(0.5,'rgba(190,80,20,0.35)');
+  gS.addColorStop(1,'rgba(140,55,10,0.18)');
+  x2.fillStyle=gS;
+  x2.beginPath();x2.arc(cx,cy,R_outer,0,2*Math.PI);
+  x2.arc(cx,cy,R_inner,0,2*Math.PI,true);x2.fill();
+
+  // DW2 inner — violet
+  x2.strokeStyle='rgba(190,60,255,0.85)';x2.lineWidth=2.0;
+  x2.beginPath();x2.arc(cx,cy,R_inner,0,2*Math.PI);x2.stroke();
+  // DW1 outer — blue, pulses
+  var p1=0.5+0.5*Math.abs(breath);
+  x2.strokeStyle='rgba(68,136,255,'+(0.55+0.35*p1).toFixed(2)+')';
+  x2.lineWidth=1.5+p1;
+  x2.beginPath();x2.arc(cx,cy,R_outer,0,2*Math.PI);x2.stroke();
+
+  // ── R⁴ — stable circle at midpoint, our spacetime ────────────────
+  // R⁴ is the fixed locus between the two breathing DWs
+  // It does NOT breathe — it is the Noether lock-in surface ξη=α⁻¹
+  var R_R4=(R_inner+R_outer)*0.5;
+  x2.strokeStyle='rgba(255,255,255,0.90)';
+  x2.lineWidth=2.8;
+  x2.beginPath();x2.arc(cx,cy,R_R4,0,2*Math.PI);x2.stroke();
+  // Glow
+  var gR4=x2.createRadialGradient(cx,cy,R_R4-4,cx,cy,R_R4+4);
+  gR4.addColorStop(0,'rgba(255,255,255,0)');
+  gR4.addColorStop(0.5,'rgba(255,255,255,0.15)');
+  gR4.addColorStop(1,'rgba(255,255,255,0)');
+  x2.strokeStyle=gR4;x2.lineWidth=8;
+  x2.beginPath();x2.arc(cx,cy,R_R4,0,2*Math.PI);x2.stroke();
+  // Label
+  x2.fillStyle='rgba(255,255,255,0.90)';x2.font='bold '+fss+'px monospace';
+  x2.textAlign='center';
+  x2.fillText('R⁴  ξη=α⁻¹',cx,cy-R_R4-5);
+  x2.textAlign='left';
+
+  // Lissajous orbits mapped into shell: xi->radial, eta->angular
+  // Each class has ratio p:q — angular speed scales by q, radial by p
+  // This gives the correct quasi-periodic winding on the annulus
+  var R_mid=(R_inner+R_outer)/2;
+  var R_hw=(R_outer-R_inner)*0.42;
+  LISS_CLASSES.forEach(function(cls){
+    if(!cls.show)return;
+    var hist=LISS_HIST[cls.id];
+    if(hist.length<2)return;
+    // Phase offset per class so they don't overlap at start
+    var phase_off=LISS_CLASSES.indexOf(cls)*Math.PI*0.5;
+    for(var i=1;i<hist.length;i++){
+      var t01=i/(hist.length-1);
+      var h0=hist[i-1],h1=hist[i];
+      // Radial: ξ deviation from lock-in
+      var r0=R_mid+(h0.xi-XI_STAR)/XI_STAR*R_hw;
+      var r1=R_mid+(h1.xi-XI_STAR)/XI_STAR*R_hw;
+      // Angular: η deviation scaled by class ratio q/p for correct winding
+      var q_ratio=cls.q/cls.p;
+      var a0=(h0.eta-ETA_STAR)/ETA_STAR*Math.PI*2*q_ratio+phase_off-Math.PI/2;
+      var a1=(h1.eta-ETA_STAR)/ETA_STAR*Math.PI*2*q_ratio+phase_off-Math.PI/2;
+      var alp=0.04+0.70*t01*t01; // quadratic fade — old points very transparent
+      x2.strokeStyle=cls.col+Math.round(alp*255).toString(16).padStart(2,'0');
+      x2.lineWidth=0.5+t01*1.2;
+      x2.beginPath();
+      x2.moveTo(cx+r0*Math.cos(a0),cy+r0*Math.sin(a0));
+      x2.lineTo(cx+r1*Math.cos(a1),cy+r1*Math.sin(a1));
+      x2.stroke();
+    }
+    if(hist.length>0){
+      var cur=hist[hist.length-1];
+      var rc=R_mid+(cur.xi-XI_STAR)/XI_STAR*R_hw;
+      var ac=(cur.eta-ETA_STAR)/ETA_STAR*Math.PI*2-Math.PI/2;
+      var px=cx+rc*Math.cos(ac), py=cy+rc*Math.sin(ac);
+      var gc=x2.createRadialGradient(px,py,0,px,py,9);
+      gc.addColorStop(0,cls.col+'dd');gc.addColorStop(1,cls.col+'00');
+      x2.fillStyle=gc;x2.beginPath();x2.arc(px,py,9,0,2*Math.PI);x2.fill();
+      x2.fillStyle=cls.col;x2.beginPath();x2.arc(px,py,3,0,2*Math.PI);x2.fill();
+    }
+  });
+
+  // Poynting vector xi — radial outward (top)
+  var S_n=Math.min(1,(xi_cur*eta_cur)/inv_a);
+  var pw=(R_outer-R_inner)*0.85*S_n;
+  x2.strokeStyle='rgba(46,200,152,0.90)';x2.lineWidth=2.2;
+  x2.beginPath();x2.moveTo(cx,cy-R_inner-2);x2.lineTo(cx,cy-R_inner-pw);x2.stroke();
+  x2.fillStyle='rgba(46,200,152,0.90)';
+  x2.beginPath();x2.moveTo(cx,cy-R_inner-pw);
+  x2.lineTo(cx-5,cy-R_inner-pw+9);x2.lineTo(cx+5,cy-R_inner-pw+9);
+  x2.closePath();x2.fill();
+  x2.fillStyle='rgba(46,200,152,0.80)';x2.font='bold '+fss+'px monospace';
+  x2.textAlign='center';x2.fillText('ξ S∝α⁻¹',cx,cy-R_inner-pw-4);x2.textAlign='left';
+
+  // eta tangential arrow
+  x2.strokeStyle='rgba(255,128,48,0.70)';x2.lineWidth=1.5;
+  var ea=R_inner*0.65;
+  x2.beginPath();x2.moveTo(cx+R_inner+3,cy);x2.lineTo(cx+R_inner+3+ea,cy);x2.stroke();
+  x2.fillStyle='rgba(255,128,48,0.70)';
+  x2.beginPath();x2.moveTo(cx+R_inner+3+ea,cy);
+  x2.lineTo(cx+R_inner+3+ea-7,cy-4);x2.lineTo(cx+R_inner+3+ea-7,cy+4);
+  x2.closePath();x2.fill();
+  x2.fillStyle='rgba(255,128,48,0.65)';x2.font=fss+'px monospace';
+  x2.fillText('η',cx+R_inner+3+ea+4,cy+4);
+
+  // DCE pump arrows outward on DW1
+  for(var k=0;k<4;k++){
+    var ang=-Math.PI/2+k*Math.PI/2+Gamma*t_phys*sm*0.4;
+    x2.strokeStyle='rgba(240,168,40,0.45)';x2.lineWidth=1.2;
+    x2.beginPath();
+    x2.moveTo(cx+R_outer*0.93*Math.cos(ang),cy+R_outer*0.93*Math.sin(ang));
+    x2.lineTo(cx+(R_outer+9)*Math.cos(ang),cy+(R_outer+9)*Math.sin(ang));
+    x2.stroke();
+  }
+
+  // Labels
+  x2.fillStyle='rgba(68,136,255,0.80)';x2.font='bold '+fss+'px monospace';
+  x2.fillText('DW₁',2,cy+2);
+  x2.fillStyle='rgba(190,60,255,0.80)';x2.font='bold '+fss+'px monospace';
+  x2.fillText('DW₂',cx-R_inner*0.9,cy-R_inner*0.55);
+  x2.fillStyle='rgba(240,168,40,0.75)';x2.font='bold '+fs+'px monospace';
+  x2.textAlign='center';x2.fillText('∂V · R⁴ breathing shell',cx,H-fss-2);
+  x2.fillStyle='rgba(200,180,100,0.55)';x2.font=fss+'px monospace';
+  x2.fillText('ξη=α⁻¹  B_k='+bk.toFixed(2),cx,H-2);
+  x2.textAlign='left';
+  LISS_CLASSES.forEach(function(cls,i){
+    if(!cls.show)return;
+    x2.fillStyle=cls.col+'cc';x2.font='bold '+fss+'px monospace';
+    x2.fillText(cls.name+' '+cls.p+':'+cls.q,W-fss*5,fss*(i+1)+4);
+  });
+}
+
+
+// ── DRAW BREATHING CHART ──────────────────────────────────────────
+function drawBreath(){
+  var W=cb.width,H=cb.height;
+  xb.clearRect(0,0,W,H);xb.fillStyle='#09090e';xb.fillRect(0,0,W,H);
+  var vmin=sq_a*Math.exp(-A_breath)*0.92,vmax=sq_a*Math.exp(A_breath)*1.08;
+  function vy(v){return H-2-(v-vmin)/(vmax-vmin)*(H-4);}
+  xb.strokeStyle='rgba(240,168,40,.18)';xb.lineWidth=0.7;
+  xb.beginPath();xb.moveTo(0,vy(sq_a));xb.lineTo(W,vy(sq_a));xb.stroke();
+  // lock-in lines
+  xb.strokeStyle='rgba(46,200,152,.12)';xb.lineWidth=0.5;xb.setLineDash([3,3]);
+  xb.beginPath();xb.moveTo(0,vy(XI_STAR));xb.lineTo(W,vy(XI_STAR));xb.stroke();
+  xb.strokeStyle='rgba(255,128,48,.12)';
+  xb.beginPath();xb.moveTo(0,vy(ETA_STAR));xb.lineTo(W,vy(ETA_STAR));xb.stroke();
+  xb.setLineDash([]);
+  xb.strokeStyle='#2ec898';xb.lineWidth=1.4;xb.beginPath();
+  for(var i=0;i<BS;i++){var x=W*i/(BS-1),y=vy(xi_hist[i]);i===0?xb.moveTo(x,y):xb.lineTo(x,y);}xb.stroke();
+  xb.strokeStyle='#ff8030';xb.lineWidth=1.4;xb.beginPath();
+  for(var i=0;i<BS;i++){var x=W*i/(BS-1),y=vy(eta_hist[i]);i===0?xb.moveTo(x,y):xb.lineTo(x,y);}xb.stroke();
+  xb.fillStyle='#2ec898';xb.beginPath();xb.arc(W-3,vy(xi_hist[BS-1]),3,0,2*Math.PI);xb.fill();
+  xb.fillStyle='#ff8030';xb.beginPath();xb.arc(W-3,vy(eta_hist[BS-1]),3,0,2*Math.PI);xb.fill();
+}
+
+// ── UPDATE PANEL ──────────────────────────────────────────────────
+function updatePanel(){
+  var u=((t_phys*f_par*sm)%1+1)%1;
+  var sp=spinorPos(u,t_phys),r=sp.pos,Reff=sp.R;
+  var theta=Math.acos(Math.max(-1,Math.min(1,r[2])));
+  var w=lkw(theta),ns=NL.reduce(function(a,b){return w[a]>w[b]?a:b;});
+  var xi=xi_hist[BS-1],eta=eta_hist[BS-1];
+
+  g('p-tau').textContent=u.toFixed(3);
+  g('p-ns').textContent=ns;
+  g('p-xi').textContent=xi.toFixed(2);
+  g('p-eta').textContent=eta.toFixed(2);
+  g('p-prod').textContent=(xi*eta).toFixed(2);
+  g('p-th').textContent=(theta*180/Math.PI).toFixed(1)+'°';
+
+  // α layers
+  var Rmin=R_S-0.02,Rmax=R_B+0.05;
+  g('layers').innerHTML=ALPHA_RS.map(function(ar){
+    var isA=Math.abs(Reff-ar.R)<0.06;
+    var bp=Math.max(0,Math.min(100,(ar.R-Rmin)/(Rmax-Rmin)*100));
+    var cp=Math.max(0,Math.min(100,(Reff-Rmin)/(Rmax-Rmin)*100));
+    return'<div class="lrow"><div class="ldot" style="background:'+ar.col+(isA?'':';opacity:.3')+'"></div>'
+      +'<span class="lname" style="color:'+(isA?ar.col:'#2a3848')+'">'+ar.name+'</span>'
+      +'<span class="lval">'+ar.val+'</span>'
+      +'<div class="lbar-w"><div class="lbar" style="width:'+bp.toFixed(0)+'%;background:'+ar.col+'40"></div>'
+      +'<div class="lcur" style="left:'+cp.toFixed(0)+'%;background:'+(isA?ar.col:'#ffffff33')+'"></div></div></div>';
+  }).join('');
+
+  // holonomy badges
+  g('badges').innerHTML=NL.map(function(n){
+    var pct=Math.round(w[n]*100),isA=n===ns;
+    return'<div class="bg-row"><span class="bg-lbl" style="color:'+COL_N[n]+'">π/'+n+'</span>'
+      +'<div class="bg-w"><div class="bg-bar" style="width:'+pct+'%;background:'+COL_N[n]+'55"></div></div>'
+      +'<span class="bg-pct" style="'+(isA?'color:'+COL_N[n]+';font-weight:700':'')+'">'+pct+'%</span></div>';
+  }).join('');
+}
+
+// ── LOOP ──────────────────────────────────────────────────────────
+var LT=null;
+function loop(ts){
+  if(LT===null){sizeCanvases();}
+  else{
+    var dt=Math.min((ts-LT)/1000,.05);
+    t_phys+=dt;
+    lissTime+=dt*sm;
+    azm=(30+rot_amp*50*t_phys*0.06)%360;
+
+    // Breathing ξ/η (same as v3)
+    var s_b=A_breath*Math.sin(Gamma*t_phys*sm);
+    var xi_c=sq_a*Math.exp(s_b),eta_c=sq_a*Math.exp(-s_b);
+    xi_hist.copyWithin(0,1);xi_hist[BS-1]=xi_c;
+    eta_hist.copyWithin(0,1);eta_hist[BS-1]=eta_c;
+
+    // Spinor trail
+    var u=((t_phys*f_par*sm)%1+1)%1;
+    var sp=spinorPos(u,t_phys);
+    RH.push([sp.pos[0],sp.pos[1],sp.pos[2],sp.R]);if(RH.length>RHM)RH.shift();
+
+    // Lissajous orbit histories (each class evolves at its own p:q rate)
+    // A_liss breathes with the actual ξ/η breathing cycle
+    var breath_phase = A_breath*Math.sin(Gamma*t_phys*sm);
+    var A_liss = 0.30 + 0.18*Math.abs(Math.sin(Gamma*t_phys*sm));
+    LISS_CLASSES.forEach(function(cls){
+      var pt2=lissajousPt(cls.p,cls.q,A_liss,lissTime*Gamma);
+      LISS_HIST[cls.id].push(pt2);
+      if(LISS_HIST[cls.id].length>LISS_HIST_LEN)LISS_HIST[cls.id].shift();
+    });
+
+    drawSphere();drawPoly();drawLissajous();drawBreath();updatePanel();
+  }
+  LT=ts;requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
