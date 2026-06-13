@@ -77,7 +77,8 @@ M_xi  = np.array([[2,1],[1/np.sqrt(n_min),-1]], dtype=float) * np.sqrt(n_min)
 # SVD di M_eta => autovalori leptonici
 sigma1 = np.sqrt((n_conf - np.sqrt(c_EW)) / (2*n_min**2))  # = sqrt((7-sqrt13)/8)
 sigma2 = np.sqrt((n_conf + np.sqrt(c_EW)) / (2*n_min**2))  # = sqrt((7+sqrt13)/8)
-Lambda = alpha_inv * 3 / 8    # in Q[sqrt5]
+# Lambda: canone monografia (App. U, entrambe le edizioni): Λ = α_phys^{-1}·3/8
+# → mμ/me = 205.57 (−0.58%). Definita più sotto, dopo alpha_inv_phys.
 
 # v_EW = 246.20 GeV (Cap. 35, dimostrato)
 v_EW_GeV  = 246.20
@@ -96,8 +97,9 @@ alpha_inv_phys = (alpha_inv - c_EW*eps7) / (1 - f_brea)
 # fissa sigma = alpha_phys^{-1} = 137.036, NON la alpha_Pi^{-1}=137.082 strutturale.
 sigma_CMB = alpha_inv_phys
 
+Lambda  = alpha_inv_phys * 3 / 8   # canone monografia: α_phys, NON la strutturale 137.082
 H_ker   = [19, 43, 67]
-m_mu_me = H_ker[1]*sigma2 / (H_ker[0]*sigma1) * Lambda
+m_mu_me = H_ker[1]*sigma2 / (H_ker[0]*sigma1) * Lambda   # = 205.5714 (−0.58% da PDG)
 
 T_CMB_QGT  = np.pi/np.log(np.pi) * (1 - 1/(np.sqrt(2)*100))
 Omega_b_h2 = np.sqrt(5) / 100
@@ -461,7 +463,7 @@ def run_all():
     print(f"  Omega_b = {Omega_b_h2:.5f}  Omega_c = {Omega_c_h2:.5f}")
 
     print("\n▸ MASSE LEPTONICHE")
-    print(f"  Lambda = alpha_inv*3/8 = {Lambda:.6f}  (in Q[sqrt5])")
+    print(f"  Lambda = alpha_phys*3/8 = {Lambda:.6f}  (canone App. U)")
     print(f"  m_mu/m_e = {m_mu_me:.4f}  PDG {CODATA['m_mu_me']:.4f}  err {(m_mu_me/CODATA['m_mu_me']-1)*100:+.3f}%")
     print(f"  tau_pi+  = {tau_pi:.5e} s  PDG 2.6033e-8 s  err {(tau_pi/2.6033e-8-1)*1e6:+.2f} ppb  (dimostrato)")
     print(f"  m_tau/m_e: GATE APERTO (sigma3 non esplicitata)")

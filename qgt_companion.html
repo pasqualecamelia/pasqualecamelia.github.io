@@ -1079,7 +1079,7 @@ const XI_STAR  = N_SAT  * Math.sqrt(ALPHA_INV / (N_SAT * N_LOCK));
 const ETA_STAR = N_LOCK * Math.sqrt(ALPHA_INV / (N_SAT * N_LOCK));
 const SIGMA1 = Math.sqrt((N_CONF - Math.sqrt(C_EW)) / (2*N_MIN*N_MIN));
 const SIGMA2 = Math.sqrt((N_CONF + Math.sqrt(C_EW)) / (2*N_MIN*N_MIN));
-const LAMBDA = ALPHA_INV * 3 / 8;
+const LAMBDA = ((ALPHA_INV - C_EW*EPS7)/(1 - F_BREA)) * 3 / 8;  // Λ su α_phys (canone monografia App. U) → mμ/mₑ = 205.57
 const H_KER  = [19, 43, 67];
 const M_MU_ME = H_KER[1]*SIGMA2 / (H_KER[0]*SIGMA1) * LAMBDA;
 const DELTA_B  = 3*PHI*1e-3 + 3*PHI*PHI*1e-4 - 3*Math.sqrt(5)*1e-5 - N_MIN*1e-6;
@@ -1472,7 +1472,7 @@ const GATES = [
   { level:'A', text:"ξ·η = α⁻¹  (invariante di breathing)", src:"Cap02" },
   { level:'A', text:"αs(Mz) = √140/100 = 0.11832  (−0.15% da PDG)", src:"Cap09" },
   { level:'A', text:"v_EW = 246.20 GeV  (−0.008% da PDG)", src:"Cap25" },
-  { level:'A', text:"mμ/mₑ via H_ker = [19,43]  (~0.5% — interi strutturali)", src:"CapMateria" },
+  { level:'A', text:"mμ/mₑ via H_ker = [19,43]  (−0.58% — interi strutturali, canone App. U)", src:"CapMateria" },
   { level:'A', text:"mτ/mₑ: gerarchia relativa leptoni carichi — proposizione strutturale", src:"CapMateria" },
   { level:'A', text:"T_CMB = π/ln(π)·(1 − 1/(√2·100))  (2.72499 K)", src:"Cap37" },
   { level:'A', text:"lock-in n=5: ξ·η = α⁻¹, B* = 8", src:"Cap14" },
