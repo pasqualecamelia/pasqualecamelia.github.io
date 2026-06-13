@@ -974,6 +974,35 @@ document.addEventListener('DOMContentLoaded', () => {
 <div style="margin-top:8px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);
             border-radius:var(--radius);font-family:var(--mono);font-size:0.75rem;color:var(--text2);"
      id="h3d-info">Loading...</div>
+
+<div style="margin-top:14px;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);
+            border-left:3px solid var(--gold);border-radius:var(--radius);">
+  <div style="font-family:var(--mono);font-size:0.8rem;color:var(--gold);margin-bottom:8px;">
+    What you are watching &mdash; 290 attoseconds of electron dynamics</div>
+  <div style="font-size:0.84rem;color:var(--text2);line-height:1.55;">
+    <p style="margin:0 0 8px;"><b>Timescale.</b> One atomic unit of time = 24.19 attoseconds.
+    The loop spans t = 0 &rarr; 12 a.u. &asymp; 290 as &mdash; the natural window of attosecond
+    charge dynamics. Playback is slowed down by a factor of ~3&times;10<sup>16</sup>.</p>
+    <p style="margin:0 0 8px;"><b>Charge migration &mdash; the main event.</b> The superposition
+    (|1s&rang;+|2p<sub>z</sub>&rang;+|3d<sub>z&sup2;</sub>&rang;)/&radic;3 is not stationary.
+    Its dipole &lang;z&rang;, measured from this very solver, runs from +1.12 a.u. through zero
+    (t &asymp; 4.7) to &minus;1.30 a.u. at t &asymp; 12: one full stroke of the electron cloud
+    from the upper lobe to the lower one (slow 2p&harr;3d beat, period &asymp; 24 a.u.
+    &asymp; 0.59 fs). Visually: the gold lobe empties into the magenta one.</p>
+    <p style="margin:0 0 8px;"><b>Breathing drive.</b> The QGT term
+    f<sub>t</sub>&middot;cos(2&Gamma;<sub>&tau;</sub>t)&middot;e<sup>&minus;r&sup2;/2</sup>
+    completes 2.8 cycles in the window (T = &pi;/&Gamma;<sub>&tau;</sub> = 4.34 a.u.) &mdash;
+    the pulsing of the core.</p>
+    <p style="margin:0 0 8px;"><b>Fast beat and filaments.</b> The 1s&harr;2p energy difference
+    rotates the iso-phase mesh ~2.6 times &mdash; the churning of the colours &mdash; while the
+    filaments (probability current Im&nbsp;&Psi;*&nabla;&Psi;) re-orient as the migration proceeds.</p>
+    <p style="margin:0;"><b>Spreading and the honest stop.</b> &lang;r&rang; grows from 3.0 to
+    6.3 a.u.: the shells inflate because the packet is non-stationary. Beyond t &asymp; 14 the
+    tail would approach the periodic box boundary, so the loop stops where the numerics are still
+    clean. All figures above (&lang;z&rang;(t), &lang;r&rang;(t)) are measured from the in-page
+    solver and reproducible from its source.</p>
+  </div>
+</div>
 </section>
 
 <section id="cmb">
