@@ -936,7 +936,7 @@ document.addEventListener('DOMContentLoaded', () => {
       style="display:inline-block !important;background:#1a1a28;color:#c8c8d8;
              border:1px solid #333350;border-radius:4px;padding:7px 16px;
              cursor:pointer;font-family:monospace;font-size:0.85rem;">↺ Reset</button>
-    <input type="range" min="0" max="24" step="1" value="0" id="h3d-slider"
+    <input type="range" min="0" max="50" step="1" value="0" id="h3d-slider"
            oninput="h3dGoto(+this.value)"
            style="flex:1;min-width:140px;cursor:pointer;"/>
     <span id="h3d-tval"
@@ -944,7 +944,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  min-width:110px;display:inline-block;">t = 0.00 a.u.</span>
   </div>
   <div style="font-family:monospace;font-size:0.72rem;color:#666688;margin-top:2px;">
-    N=64³ · a₀_QGT=Γ²τ · Split-operator FFT · LIVE in your browser · dt=0.24 a.u. · loop 0–6 a.u.
+    N=64³ · a₀_QGT=Γ²τ · Split-operator FFT · LIVE in your browser · dt=0.24 a.u. · loop 0–12 a.u. ≈ 290 as — one full charge-migration stroke
   </div>
 </div>
 <div style="margin-top:10px;">
@@ -1750,7 +1750,7 @@ GATES.forEach(g => {
 
 
 // ── QGT Hydrogen 3D — LIVE controller (replaces the pre-computed player) ──
-var H3D_TOT = 26;          // frames per loop: t = 0 .. 6.0 a.u. (dt = 0.24)
+var H3D_TOT = 51;          // frames per loop: t = 0 .. 12.0 a.u. ≈ 290 as (dt = 0.24)
 var h3d_eng = null, h3d_frames = [], h3d_fi = 0;
 var h3d_playing = false, h3d_timer = null;
 
@@ -1868,7 +1868,7 @@ function h3dDraw(fi) {
 
   var sl = document.getElementById('h3d-slider');
   sl.max = H3D_TOT - 1; sl.value = fi;
-  document.getElementById('h3d-tval').textContent = 't = ' + fr.t.toFixed(2) + ' a.u.';
+  document.getElementById('h3d-tval').textContent = 't = ' + fr.t.toFixed(2) + ' a.u. = ' + (fr.t*24.19).toFixed(0) + ' as';
 
   h3d_rotY += 0.045;            // rotazione lenta legata all'avanzamento
   h3dRender3D(fr);
@@ -1880,7 +1880,7 @@ function h3dDraw(fi) {
   var drift = Math.abs(fr.norm - norm0) / norm0;
   document.getElementById('h3d-info').innerHTML =
     '<b>LIVE</b> split-operator &nbsp;|&nbsp; ' +
-    '<b>t</b> = ' + fr.t.toFixed(3) + ' a.u. &nbsp;|&nbsp; ' +
+    '<b>t</b> = ' + fr.t.toFixed(2) + ' a.u. (' + (fr.t*24.19).toFixed(0) + ' as) &nbsp;|&nbsp; ' +
     '<b>norm</b> = ' + fr.norm.toFixed(10) + ' &nbsp;|&nbsp; ' +
     '<b>&Delta;norm</b> = ' + drift.toExponential(1) + ' &nbsp;|&nbsp; ' +
     '<b>a&#8320;_QGT</b> = ' + h3d_eng.cfg.a0.toFixed(6) + ' &nbsp;|&nbsp; ' +
