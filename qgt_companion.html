@@ -952,8 +952,9 @@ document.addEventListener('DOMContentLoaded', () => {
     style="width:100%;max-height:480px;border:1px solid var(--border);border-radius:6px;
            background:#000;display:block;cursor:grab;touch-action:none;"></canvas>
   <div style="font-family:var(--mono);font-size:0.7rem;color:#666688;margin:4px 0 2px;">
-    Volumetric rendering of the live field — colour = phase arg&nbsp;Ψ, luminous shells = iso-density
-    bands of |Ψ|². Drag to rotate. Every pixel is solver data; nothing decorative.
+    Volumetric rendering of the live field — colour = phase arg&nbsp;Ψ; luminous shells = iso-density
+    bands of |Ψ|²; mesh = iso-phase bands; filaments = probability current Im(Ψ*∇Ψ).
+    Drag to rotate. Every pixel is solver data; nothing decorative.
   </div>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;">
@@ -1679,7 +1680,7 @@ GATES.forEach(g => {
 
   // voxel cloud for volumetric rendering: [x,y,z,p/pmax,phase] above adaptive threshold
   Engine.prototype.voxels = function (maxCount) {
-    var N = this.N, N3 = N * N * N, re = this.re, im = this.im, xs = this.xs;
+    var N = this.N, N2 = N*N, N3 = N*N*N, re = this.re, im = this.im, xs = this.xs, dx = this.cfg.dx;
     if (!this._pArr) this._pArr = new Float32Array(N3);
     var pA = this._pArr, pmax = 0, i;
     for (i = 0; i < N3; i++) { var q = re[i]*re[i] + im[i]*im[i]; pA[i] = q; if (q > pmax) pmax = q; }
@@ -1690,15 +1691,27 @@ GATES.forEach(g => {
       if (count <= maxCount) break;
       thr *= 1.8;
     }
-    var X = new Float32Array(count), Y = new Float32Array(count), Z = new Float32Array(count);
-    var P = new Float32Array(count), PH = new Float32Array(count);
-    var idx = 0, n = 0;
-    for (var a = 0; a < N; a++) for (var b = 0; b < N; b++) for (var c = 0; c < N; c++, idx++) {
+    var X=new Float32Array(count), Y=new Float32Array(count), Z=new Float32Array(count);
+    var P=new Float32Array(count), PH=new Float32Array(count);
+    var JX=new Float32Array(count), JY=new Float32Array(count), JZ=new Float32Array(count);
+    var n=0, jmax=0, JIT=0.45*dx;
+    for (var a=1; a<N-1; a++) for (var b=1; b<N-1; b++) for (var c=1; c<N-1; c++) {
+      var idx = a*N2 + b*N + c;
       if (pA[idx] > thr && n < count) {
-        X[n]=xs[a]; Y[n]=xs[b]; Z[n]=xs[c]; P[n]=pA[idx]/pmax; PH[n]=Math.atan2(im[idx],re[idx]); n++;
+        X[n]=xs[a]+(Math.random()-0.5)*2*JIT;
+        Y[n]=xs[b]+(Math.random()-0.5)*2*JIT;
+        Z[n]=xs[c]+(Math.random()-0.5)*2*JIT;
+        P[n]=pA[idx]/pmax; PH[n]=Math.atan2(im[idx],re[idx]);
+        // j = Im(psi* grad psi), differenze centrali
+        var jx = re[idx]*(im[idx+N2]-im[idx-N2]) - im[idx]*(re[idx+N2]-re[idx-N2]);
+        var jy = re[idx]*(im[idx+N ]-im[idx-N ]) - im[idx]*(re[idx+N ]-re[idx-N ]);
+        var jz = re[idx]*(im[idx+1 ]-im[idx-1 ]) - im[idx]*(re[idx+1 ]-re[idx-1 ]);
+        JX[n]=jx; JY[n]=jy; JZ[n]=jz;
+        var jm = Math.sqrt(jx*jx+jy*jy+jz*jz); if (jm>jmax) jmax=jm;
+        n++;
       }
     }
-    return { n:n, x:X, y:Y, z:Z, p:P, ph:PH };
+    return { n:n, x:X, y:Y, z:Z, p:P, ph:PH, jx:JX, jy:JY, jz:JZ, jmax:jmax };
   };
 
   // central slices |Ψ|², scaled 0..255 (same convention as the old player)
@@ -1763,11 +1776,13 @@ function h3dSprites() {
   };
   var arr = [];
   for (var i = 0; i < 12; i++) arr.push(mk(200 + i * 30, false));
-  h3d_sprites = { hue: arr, white: mk(0, true) };
+  var lines = [];
+  for (var j = 0; j < 12; j++) lines.push('hsl(' + (200 + j * 30) + ',95%,68%)');
+  h3d_sprites = { hue: arr, white: mk(0, true), line: lines };
   return h3d_sprites;
 }
 function h3dBand(p) {
-  var w = 0, B = [[0.45,0.12,0.9],[0.13,0.05,1.2],[0.035,0.016,1.5],[0.008,0.004,1.2]];
+  var w = 0, B = [[0.45,0.07,0.7],[0.13,0.03,1.0],[0.035,0.010,1.4],[0.008,0.0028,1.1]];
   for (var i = 0; i < 4; i++) { var d = (p - B[i][0]) / B[i][1]; w += B[i][2] * Math.exp(-d * d); }
   return w;
 }
@@ -1782,6 +1797,7 @@ function h3dRender3D(fr) {
   var sp = h3dSprites(), v = fr.vox;
   var cyr = Math.cos(h3d_rotY), syr = Math.sin(h3d_rotY);
   var ct = Math.cos(h3d_tilt), st = Math.sin(h3d_tilt);
+  var jmax = v.jmax || 1e-30;
   for (var i = 0; i < v.n; i++) {
     var p = v.p[i];
     var X = v.x[i] * cyr + v.z[i] * syr;
@@ -1790,15 +1806,33 @@ function h3dRender3D(fr) {
     var u = cx + scale * X, vv = cy - scale * Y;
     var a = Math.pow(Math.min(p, 0.30), 0.5);
     var bd = h3dBand(p);
-    var w = 0.10 * Math.pow(p, 0.30) + 0.55 * bd;
-    var size = (0.5 + 1.1 * a + 0.9 * bd) * 16;
+    var phgate = 0.5 + 0.5 * Math.cos(8 * v.ph[i]);          // iso-fase: maglia
+    var w = 0.06 * Math.pow(p, 0.30) + 0.40 * bd * (0.35 + 0.65 * phgate);
+    var size = (0.5 + 1.0 * a + 0.8 * bd) * 16;
     if (u + size < 0 || vv + size < 0 || u - size > W || vv - size > H) continue;
     var b = ((v.ph[i] + Math.PI) / (2 * Math.PI) * 12) | 0; if (b > 11) b = 11;
     ctx.globalAlpha = Math.min(0.85, w * 0.45);
     ctx.drawImage(sp.hue[b], u - size / 2, vv - size / 2, size, size);
     if (p > 0.5) {
-      ctx.globalAlpha = Math.min(0.8, (p - 0.5) * 1.2);
+      ctx.globalAlpha = Math.min(0.7, (p - 0.5) * 1.1);
       ctx.drawImage(sp.white, u - size * 0.35, vv - size * 0.35, size * 0.7, size * 0.7);
+    }
+    // filamento lungo la corrente di probabilità (trama)
+    var jx = v.jx[i], jy = v.jy[i], jz = v.jz[i];
+    var jm = Math.sqrt(jx*jx + jy*jy + jz*jz);
+    if (jm > 0.05 * jmax && p > 0.003 && p < 0.7) {
+      var jXp = jx * cyr + jz * syr;
+      var jZp = -jx * syr + jz * cyr;
+      var jYp = jy * ct - jZp * st;
+      var nrm = Math.sqrt(jXp*jXp + jYp*jYp) + 1e-12;
+      var L = 4 + 13 * (jm / jmax);
+      var du = jXp / nrm * L, dv = -jYp / nrm * L;
+      ctx.globalAlpha = Math.min(0.55, 0.12 + 0.7 * (jm / jmax));
+      ctx.strokeStyle = sp.line[b];
+      ctx.beginPath();
+      ctx.moveTo(u - du, vv - dv);
+      ctx.lineTo(u + du, vv + dv);
+      ctx.stroke();
     }
   }
   ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
