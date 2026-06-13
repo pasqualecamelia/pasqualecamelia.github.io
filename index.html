@@ -608,7 +608,7 @@ function css(v){return getComputedStyle(document.documentElement).getPropertyVal
 function fit(c){const d=Math.max(c.parentElement.clientWidth-32,0); if(d>0)c.width=d; return d;}
 
 function drawBreathing(){
-  const c=document.getElementById('brCanvas'), W=fit(c); if(!W)return, H=300, ctx=c.getContext('2d');
+  const c=document.getElementById('brCanvas'), W=fit(c); if(!W)return; const H=300, ctx=c.getContext('2d');
   c.height=H; ctx.clearRect(0,0,W,H);
   const T=parseFloat(document.getElementById('brT').value);
   document.getElementById('brTv').textContent=T.toFixed(1);
@@ -636,7 +636,7 @@ function drawBreathing(){
 }
 
 function drawGluing(){
-  const c=document.getElementById('glCanvas'),W=fit(c); if(!W)return,H=280,ctx=c.getContext('2d');
+  const c=document.getElementById('glCanvas'),W=fit(c); if(!W)return; const H=280,ctx=c.getContext('2d');
   c.height=H;ctx.clearRect(0,0,W,H);
   const ratio=parseFloat(document.getElementById('glR').value);
   document.getElementById('glRv').textContent=ratio.toFixed(2);
@@ -661,7 +661,7 @@ function drawGluing(){
 }
 
 function drawCMB(){
-  const c=document.getElementById('cmbCanvas'),W=fit(c); if(!W)return,H=300,ctx=c.getContext('2d');
+  const c=document.getElementById('cmbCanvas'),W=fit(c); if(!W)return; const H=300,ctx=c.getContext('2d');
   c.height=H;ctx.clearRect(0,0,W,H);
   const planck=[220.6,538.1,809.8,1147.8,1446.8,1779.0];
   const amp=[5733,2586,2518,1227,799,378], pad=46, Lmax=2000, Amax=6200;
