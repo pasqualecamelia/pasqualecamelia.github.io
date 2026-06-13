@@ -5,7 +5,7 @@
 MODIFICATI:
 - index.html
 - qgt_companion.html   (Hydrogen 3D: da player di 25 frame pre-calcolati a
-  SOLVER LIVE split-operator 64x64x64 (render bilineare a 256²) in JS puro, eseguito nel browser.
+  SOLVER LIVE split-operator 64x64x64 (render bilineare a 256²; vista volumetrica 3D phase-coloured con rotazione) in JS puro, eseguito nel browser.
   Stessa UI, stessi controlli, stessa fisica dichiarata nell'intestazione.
   Validazione headless (Node): |Delta norm|/norm < 4e-14 su 200 passi,
   ~57 ms/passo, respirazione visibile in <r>. Pagina da 240 KB a 89 KB.
