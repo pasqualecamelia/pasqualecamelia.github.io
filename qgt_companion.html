@@ -522,8 +522,8 @@ document.addEventListener('DOMContentLoaded', () => {
     color: var(--blue);
     margin-top: 0.25rem;
   }
-  .const-level-a { border-left: 3px solid var(--green); }
-  .const-level-b { border-left: 3px solid var(--gold); }
+  .const-level-a { border-left: 3px solid var(--green); background: var(--green2); }
+  .const-level-b { border-left: 3px solid var(--gold); background: var(--gold2); }
 
 
 
@@ -769,7 +769,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- ═══════════════════════════════════════════════════════ CASCADE -->
 <section id="cascade">
 <h2><span class="sec-num">02</span>α⁻¹ cascade — three algebraic steps </h2>
-<table class="cascade-table">
+<p style="font-size:0.74rem;color:var(--text2);margin:0.2rem 0 0.7rem;font-family:var(--mono);"><span class="badge badge-a" style="font-size:0.65rem;">\u2713 dimostrato</span> <span class="badge badge-b" style="font-size:0.65rem;">~ stima strutturale</span> &mdash; il colore della cella indica il livello epistemico</p><table class="cascade-table">
   <thead>
     <tr><th>Step</th><th>α⁻¹</th><th>Residual from CODATA 2022</th><th>Level</th></tr>
   </thead>
@@ -785,7 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- ═══════════════════════════════════════════════════════ CONSTANTS -->
 <section id="constants">
 <h2><span class="sec-num">03</span>Structural constants</h2>
-<div class="const-grid" id="const-grid"></div>
+<p style="font-size:0.74rem;color:var(--text2);margin:0.2rem 0 0.7rem;font-family:var(--mono);"><span class="badge badge-a" style="font-size:0.65rem;">\u2713 dimostrato</span> <span class="badge badge-b" style="font-size:0.65rem;">~ stima strutturale</span> &mdash; il colore della cella indica il livello epistemico</p><div class="const-grid" id="const-grid"></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════ BREATHING -->
@@ -1092,7 +1092,7 @@ function renderAlphaModule() {
     var cls = r[0].indexOf('3.')===0 ? ' class="final"' : (r[0]==='reference' ? ' class="highlight"' : '');
     var res = r[4]==='reference' ? '(reference only)' : ((r[3]>=0?'+':'')+r[3].toExponential(3)+' · '+(Math.abs(r[3])/sigma).toFixed(2)+'σ');
     var badge = r[4]==='Level A' ? 'badge-a' : '';
-    return '<tr'+cls+'><td>'+r[0]+'<br/><span class="err-note">'+r[1]+'</span></td><td>'+r[2].toFixed(12)+'</td><td class="'+(r[0].indexOf('3.')===0?'ok':'')+'">'+res+'</td><td><span class="badge '+badge+'" style="font-size:0.65rem">'+r[4]+'</span></td></tr>';
+    return '<tr'+cls+'><td>'+r[0]+'<br/><span class="err-note">'+r[1]+'</span></td><td>'+r[2].toFixed(12)+'</td><td class="'+(r[0].indexOf('3.')===0?'ok':'')+'">'+res+'</td><td><span class="badge '+badge+'" style="font-size:0.65rem">'+(r[4]==='Level A'?'\u2713 dimostrato':r[4])+'</span></td></tr>';
   }).join('');
   function chain(n,c){ return (bare - c*(Math.sqrt(5)*Math.PI/n - 1))/(1-fb); }
   var counterRows = [
@@ -1184,7 +1184,7 @@ cascadeRows.forEach(r => {
     <td style="font-family:var(--mono)">${r.step}</td>
     <td style="font-family:var(--mono)">${r.val.toFixed(9)}</td>
     <td style="font-family:var(--mono)" class="${r.final?'ok':''}">${resStr}</td>
-    <td><span class="badge ${r.level==='A'?'badge-a':r.level==='ref'?'':'badge-b'}" style="font-size:0.65rem">${r.level==='ref'?'CODATA':'LEVEL_'+r.level}</span></td>
+    <td><span class="badge ${r.level==='A'?'badge-a':r.level==='ref'?'':'badge-b'}" style="font-size:0.65rem">${r.level==='ref'?'CODATA':(r.level==='A'?'\u2713 dimostrato':'~ stima')}</span></td>
   </tr>`;
 });
 
@@ -1208,7 +1208,7 @@ CONSTS.forEach(c => {
   cg.innerHTML += `<div class="const-card const-level-${c.level.toLowerCase()}">
     <div class="const-label">${c.label}</div>
     <div class="const-value">${c.val}</div>
-    <div class="const-src">${c.src} · LEVEL_${c.level}</div>
+    <div class="const-src">${c.src}</div>
   </div>`;
 });
 

@@ -128,6 +128,18 @@ footer p{max-width:none;margin:.3rem 0}
 .inlinecard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem 1.1rem;display:inline-block;margin-top:.6rem}
 /* ── launch additions ───────────────────────────────────── */
 section,#validators{scroll-margin-top:3.4rem}
+/* accordion sezioni tecniche */
+details.acc{border-bottom:1px solid var(--border);scroll-margin-top:3.4rem}
+details.acc>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:.6rem;
+  padding:1.45rem 0;font-size:1.45rem;font-weight:600;color:var(--text);user-select:none}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:'+';margin-left:auto;color:var(--text3);font-weight:400;
+  font-size:1.35rem;line-height:1;transition:transform .15s}
+details.acc[open]>summary::after{content:'\2212'}
+details.acc>summary:hover{color:var(--blue,#1a3a6b)}
+details.acc>.acc-body{padding:0 0 2.4rem}
+@media(max-width:640px){details.acc>summary{font-size:1.15rem;padding:1.1rem 0}}
+
 .tagline{font-family:var(--serif);font-style:italic;font-size:1.12rem;color:var(--gold);margin:.9rem 0 .2rem}
 .btn-main.watch{background:var(--blue3);border-color:var(--blue2);color:var(--blue2);font-weight:600}
 .btn-main.watch:hover{background:var(--blue2);color:var(--bg)}
@@ -277,8 +289,74 @@ section,#validators{scroll-margin-top:3.4rem}
   </div>
 </section>
 
-<section id="thread">
-  <h2><span class="num">01</span>The thread, in one read</h2>
+<section id="gallery">
+  <h2><span class="num">01</span>The qubit — visualised</h2>
+  <p class="lead">The self-similar hierarchy of the QGT elementary qubit. Each luminous node is a
+    topological attractor O_top (the B₃-protected palindromic centre). The filaments are
+    Fibonacci worldlines; the dark internode regions are the kernel — gravitationally active,
+    metrologically invisible. These images are in colour for the companion; the monograph
+    prints them in greyscale.</p>
+  <div style="display:flex;flex-direction:column;gap:1.2rem;margin-top:1.4rem;">
+    <div style="display:flex;flex-wrap:wrap;gap:1.2rem;justify-content:center;align-items:flex-start;">
+      <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
+        <img src="qubit_cover_hires.jpg" alt="QGT elementary qubit — cover" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;">
+        <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+          The elementary qubit Q_x — cover image of the monograph.
+          DW₁ (equator, θ=π/2): the white ring — the present, t=0.
+          DW₂ (lower pole, θ=π/11): the pink node — far boundary of the observable slab.
+          Gold filament: S¹_χ(τ), the compact internal chiral fibre.
+          Blue rings: five admissible modes of the rank-5 projection.
+        </figcaption>
+      </figure>
+      <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
+        <img src="copertina_quibit2.png" alt="QGT Majorana qubit — spinorial structure" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;">
+        <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+          The Majorana qubit on S²_χ. The kernel (dark centre) is what Π cannot see;
+          the luminous equatorial ring is the boundary — the present.
+          The filaments are Fibonacci worldlines carrying the five admissible modes.
+        </figcaption>
+      </figure>
+      
+    <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
+        <a href="G1_qubit_color.png" target="_blank" rel="noopener" title="Open full image"><img src="G1_qubit_color.png" alt="QGT qubit spacetime G1" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;"></a>
+      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+        G1 — The gluing network. Observable slab: five Lyapunov basins connected by coherent Noether flux.
+        Blue filaments = boundary channels; dark voids = ker Π.
+      </figcaption>
+    </figure>
+    <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
+        <a href="G2_qubit_color.png" target="_blank" rel="noopener" title="Open full image"><img src="G2_qubit_color.png" alt="QGT qubit spacetime G2" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;"></a>
+      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+        G2 — The palindromic hierarchy. Golden filaments = Fibonacci tower N_int(k) = F_{2k+5}.
+        Warm nodes = PLL cascade α_k = α·10^k, k = 0…4. The kernel internode is gravitationally active.
+      </figcaption>
+    </figure>
+    <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
+        <a href="G3_qubit_color.png" target="_blank" rel="noopener" title="Open full image"><img src="G3_qubit_color.png" alt="QGT qubit spacetime G3" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;"></a>
+      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+        G3 — The topological attractor O_top at the centre: the B₃-protected spinorial fixed point
+        of the breathing recursion, B★ = 8. Violet rings = Lyapunov basin boundary.
+        This is what every elementary qubit carries at its core.
+      </figcaption>
+    </figure>
+    </div>
+    <figure style="margin:0;text-align:center;">
+      <img src="fig_phasor_geometry.png" alt="Heegner partition — phasor geometry" style="width:100%;border-radius:8px;display:block;">
+      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+        The Heegner partition H = H_bdy ∪ H_ker ∪ {163} realised geometrically.
+        Left: the nine class-number-one phasors on S¹_χ. Fields with N_d² ≤ 3 (d ∈ {1,2,3,7,11})
+        close their holonomy on the circle — pure boundary phasors.
+        Right: fields with N_d² &gt; 5 (d ∈ {19,43,67}) require a Majorana lift to S²_χ —
+        the three matter generations. The field d=163 (N²=41) admits no admissible lift:
+        Baker–Stark terminus, arithmetic boundary of the kernel.
+        Bottom bar: collapse threshold r=5 · lift window · terminus.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<details class="acc" id="thread"><summary><span class="num">02</span>The thread, in one read</summary><div class="acc-body">
+  
   <p class="lead">Five steps take you from the conservation law to a hydrogen atom.
     Each is a chapter; each has a tool here.</p>
   <table class="layers">
@@ -289,10 +367,10 @@ section,#validators{scroll-margin-top:3.4rem}
     <tr><td class="n">4</td><td>Two cells glue when their shell phases lock &mdash; the boundary current cancels.</td><td class="m">|&delta;&omega;| &le; K</td></tr>
     <tr><td class="n">5</td><td>The first stable lock is a bound proton&ndash;electron pair: hydrogen.</td><td class="m">B&#8902; = 8</td></tr>
   </table>
-</section>
+</div></details>
 
-<section id="qubit">
-  <h2><span class="num">02</span>The six-layer qubit</h2>
+<details class="acc" id="qubit"><summary><span class="num">03</span>The six-layer qubit</summary><div class="acc-body">
+  
   <p class="lead">The elementary object is not a point. It is a layered structure,
     each layer carrying its own algebra, symmetry, and physical readout.</p>
   <table class="layers">
@@ -328,10 +406,10 @@ section,#validators{scroll-margin-top:3.4rem}
       <a class="go" href="M5_toroide_QGT.svg">Open diagram &rarr;</a>
     </div>
   </div>
-</section>
+</div></details>
 
-<section id="breathing">
-  <h2><span class="num">03</span>The breathing flow</h2>
+<details class="acc" id="breathing"><summary><span class="num">04</span>The breathing flow</summary><div class="acc-body">
+  
   <p class="lead">On the lock-in surface the two channels rotate hyperbolically. Their
     product never changes; their ratio does. That conserved product is
     &alpha;<sup>&minus;1</sup>.</p>
@@ -358,10 +436,10 @@ section,#validators{scroll-margin-top:3.4rem}
   <p class="inlinecard">For the full interactive verifier (constants, soliton,
     cascade, spectrum) open the
     <a href="qgt_companion.html"><strong>QGT Companion simulator &rarr;</strong></a></p>
-</section>
+</div></details>
 
-<section id="gluing">
-  <h2><span class="num">04</span>Gluing is phase synchronisation</h2>
+<details class="acc" id="gluing"><summary><span class="num">05</span>Gluing is phase synchronisation</summary><div class="acc-body">
+  
   <p class="lead">Two cells glue when their shell phases lock. The boundary current
     that must cancel is the imaginary overlap of the two shell amplitudes read in the
     quantum Fibonacci&ndash;Mellin basis &mdash; so the sine is a current, not an
@@ -388,11 +466,11 @@ section,#validators{scroll-margin-top:3.4rem}
   <p class="note">The reduced equation belongs to the known class of phase-locking
     equations; in QGT the phases, oscillators and coupling are <em>fixed by the
     projection</em>, not postulated.</p>
-</section>
+</div></details>
 
 <div id="validators" aria-hidden="true"></div>
-<section id="hydrogen">
-  <h2><span class="num">05</span>Hydrogen &mdash; the first lock</h2>
+<details class="acc" id="hydrogen"><summary><span class="num">06</span>Hydrogen &mdash; the first lock</summary><div class="acc-body">
+  
   <p class="lead">Hydrogen is the first place the whole chain closes into a stable,
     neutral, measurable object: a proton (k=0) and electron (k=2) whose shells
     phase-lock at the breathing fixed point B&#8902;=8.</p>
@@ -434,10 +512,10 @@ section,#validators{scroll-margin-top:3.4rem}
       <a class="go" href="qgt_companion.html#spectrum">H spectrum vs CODATA &rarr;</a>
     </div>
   </div>
-</section>
+</div></details>
 
-<section id="cmb">
-  <h2><span class="num">06</span>CMB &mdash; the cosmological lock</h2>
+<details class="acc" id="cmb"><summary><span class="num">07</span>CMB &mdash; the cosmological lock</summary><div class="acc-body">
+  
   <p class="lead">The same gluing, read at cosmological scale, fixes the acoustic peak
     ladder and the cosmological parameters from structural numbers alone &mdash; no
     cosmological fit.</p>
@@ -463,76 +541,13 @@ section,#validators{scroll-margin-top:3.4rem}
     <canvas id="cmbCanvas" height="300"></canvas>
     <div class="cap">Structural peak ladder &ell;<sub>k</sub> against the six Planck Table-5 positions (markers).</div>
   </div>
-</section>
-
-<section id="gallery">
-  <h2><span class="num">07</span>The qubit — visualised</h2>
-  <p class="lead">The self-similar hierarchy of the QGT elementary qubit. Each luminous node is a
-    topological attractor O_top (the B₃-protected palindromic centre). The filaments are
-    Fibonacci worldlines; the dark internode regions are the kernel — gravitationally active,
-    metrologically invisible. These images are in colour for the companion; the monograph
-    prints them in greyscale.</p>
-  <div style="display:flex;flex-direction:column;gap:1.2rem;margin-top:1.4rem;">
-    <div style="display:flex;flex-wrap:wrap;gap:1.2rem;justify-content:center;align-items:flex-start;">
-      <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
-        <img src="qubit_cover_hires.jpg" alt="QGT elementary qubit — cover" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;">
-        <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
-          The elementary qubit Q_x — cover image of the monograph.
-          DW₁ (equator, θ=π/2): the white ring — the present, t=0.
-          DW₂ (lower pole, θ=π/11): the pink node — far boundary of the observable slab.
-          Gold filament: S¹_χ(τ), the compact internal chiral fibre.
-          Blue rings: five admissible modes of the rank-5 projection.
-        </figcaption>
-      </figure>
-      <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
-        <img src="copertina_quibit2.png" alt="QGT Majorana qubit — spinorial structure" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;">
-        <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
-          The Majorana qubit on S²_χ. The kernel (dark centre) is what Π cannot see;
-          the luminous equatorial ring is the boundary — the present.
-          The filaments are Fibonacci worldlines carrying the five admissible modes.
-        </figcaption>
-      </figure>
-    </div>
-    <figure style="margin:0;text-align:center;">
-      <img src="fig_phasor_geometry.png" alt="Heegner partition — phasor geometry" style="width:100%;border-radius:8px;display:block;">
-      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
-        The Heegner partition H = H_bdy ∪ H_ker ∪ {163} realised geometrically.
-        Left: the nine class-number-one phasors on S¹_χ. Fields with N_d² ≤ 3 (d ∈ {1,2,3,7,11})
-        close their holonomy on the circle — pure boundary phasors.
-        Right: fields with N_d² &gt; 5 (d ∈ {19,43,67}) require a Majorana lift to S²_χ —
-        the three matter generations. The field d=163 (N²=41) admits no admissible lift:
-        Baker–Stark terminus, arithmetic boundary of the kernel.
-        Bottom bar: collapse threshold r=5 · lift window · terminus.
-      </figcaption>
-    </figure>
-    <figure style="margin:0;">
-      <img src="G1_qubit_color.png" alt="QGT qubit spacetime G1" style="width:100%;border-radius:8px;display:block;">
-      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
-        G1 — The gluing network. Observable slab: five Lyapunov basins connected by coherent Noether flux.
-        Blue filaments = boundary channels; dark voids = ker Π.
-      </figcaption>
-    </figure>
-    <figure style="margin:0;">
-      <img src="G2_qubit_color.png" alt="QGT qubit spacetime G2" style="width:100%;border-radius:8px;display:block;">
-      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
-        G2 — The palindromic hierarchy. Golden filaments = Fibonacci tower N_int(k) = F_{2k+5}.
-        Warm nodes = PLL cascade α_k = α·10^k, k = 0…4. The kernel internode is gravitationally active.
-      </figcaption>
-    </figure>
-    <figure style="margin:0;">
-      <img src="G3_qubit_color.png" alt="QGT qubit spacetime G3" style="width:100%;border-radius:8px;display:block;">
-      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
-        G3 — The topological attractor O_top at the centre: the B₃-protected spinorial fixed point
-        of the breathing recursion, B★ = 8. Violet rings = Lyapunov basin boundary.
-        This is what every elementary qubit carries at its core.
-      </figcaption>
-    </figure>
-  </div>
-</section>
+</div></details>
 
 
-<section id="alpha">
-  <h2><span class="num">08</span>Alpha module</h2>
+
+
+<details class="acc" id="alpha"><summary><span class="num">08</span>Alpha module</summary><div class="acc-body">
+  
   <p class="lead">The public entry point for the α verification block is the companion-site module:</p>
   <div class="cards">
     <div class="card">
@@ -540,7 +555,7 @@ section,#validators{scroll-margin-top:3.4rem}
       <p><a class="go" href="qgt_companion.html#alpha-module">https://pasqualecamelia.github.io/qgt_companion.html#alpha-module</a></p>
     </div>
   </div>
-</section>
+</div></details>
 
 <section id="tools">
   <h2><span class="num">09</span>Run it yourself</h2>
@@ -590,10 +605,10 @@ section,#validators{scroll-margin-top:3.4rem}
 const PHI = (1+Math.sqrt(5))/2, GT = PHI/Math.sqrt(5);
 const ALPHA_INV_PHYS = 137.036, DELTA_F = 1 - 3*Math.PI/Math.pow(2*Math.sqrt(5),1.5);
 function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
-function fit(c){const d=c.parentElement.clientWidth-32; c.width=d; return d;}
+function fit(c){const d=Math.max(c.parentElement.clientWidth-32,0); if(d>0)c.width=d; return d;}
 
 function drawBreathing(){
-  const c=document.getElementById('brCanvas'), W=fit(c), H=300, ctx=c.getContext('2d');
+  const c=document.getElementById('brCanvas'), W=fit(c); if(!W)return, H=300, ctx=c.getContext('2d');
   c.height=H; ctx.clearRect(0,0,W,H);
   const T=parseFloat(document.getElementById('brT').value);
   document.getElementById('brTv').textContent=T.toFixed(1);
@@ -621,7 +636,7 @@ function drawBreathing(){
 }
 
 function drawGluing(){
-  const c=document.getElementById('glCanvas'),W=fit(c),H=280,ctx=c.getContext('2d');
+  const c=document.getElementById('glCanvas'),W=fit(c); if(!W)return,H=280,ctx=c.getContext('2d');
   c.height=H;ctx.clearRect(0,0,W,H);
   const ratio=parseFloat(document.getElementById('glR').value);
   document.getElementById('glRv').textContent=ratio.toFixed(2);
@@ -646,7 +661,7 @@ function drawGluing(){
 }
 
 function drawCMB(){
-  const c=document.getElementById('cmbCanvas'),W=fit(c),H=300,ctx=c.getContext('2d');
+  const c=document.getElementById('cmbCanvas'),W=fit(c); if(!W)return,H=300,ctx=c.getContext('2d');
   c.height=H;ctx.clearRect(0,0,W,H);
   const planck=[220.6,538.1,809.8,1147.8,1446.8,1779.0];
   const amp=[5733,2586,2518,1227,799,378], pad=46, Lmax=2000, Amax=6200;
@@ -669,6 +684,18 @@ function redraw(){drawBreathing();drawGluing();drawCMB();}
 document.getElementById('brT').addEventListener('input',drawBreathing);
 document.getElementById('glR').addEventListener('input',drawGluing);
 window.addEventListener('resize',redraw);
+// accordion: apri su navigazione, ridisegna i canvas quando si apre
+function openAcc(id){
+  var map={validators:'hydrogen'}; id=map[id]||id;
+  var d=document.getElementById(id);
+  if(d&&d.tagName==='DETAILS'&&!d.open){d.open=true; setTimeout(redraw,30);}
+}
+window.addEventListener('hashchange',function(){openAcc(location.hash.slice(1));});
+if(location.hash) openAcc(location.hash.slice(1));
+document.querySelectorAll('details.acc').forEach(function(d){
+  d.addEventListener('toggle',function(){ if(d.open) setTimeout(redraw,30); });
+});
+
 redraw();
 </script>
 </body>
