@@ -26,7 +26,10 @@ lettore col companion aperto.
 claim più forte del corpus, MA si usa solo se la catena è documentabile
 come fissata **prima** del rilascio CODATA 2022. Da verificare con date di
 deposito/commit. Se non documentabile: limitarsi a "0.32σ from CODATA 2022".
-**Destinazione:** Zenodo P10 v2 → ResearchGate. Priorità: ALTA.
+**Destinazione:** Zenodo P10 v2 → ResearchGate + pagina errata sito.
+**Il libro NON va toccato** (verificato sul testo stampato 13/06): Cap. 2.6.9
+EN / Cap. 50 IT usano già CODATA 2022 (−0.049 ppb = 0.3σ) e non citano mai
+l'8.6×10⁻⁸ — il libro è il testimone della baseline corretta. Priorità: ALTA.
 
 ### E2 · P10, Theorem 7.1: mp/me = 6π⁵
 **Stato attuale:** P10 lo presenta come Teorema (0.002%), con
@@ -55,6 +58,11 @@ T_CMB = (π/ln π)(1 − 1/(√2·100)) = 2.724991 K. P10 è stantio rispetto al
 proprio corpus: depositarlo così significa auto-smentirsi al ribasso.
 **Correzione:** aggiornare §14 e la tabella "What Is Derived" citando la
 chiusura (WN v63 §26 o il paper dedicato quando esce). Priorità: ALTA.
+**Il libro NON è in errore** (verificato 13/06): Tab. 5.3.2 classifica T_CMB
+come P (Proposizione, 0.9σ FIRAS) e §5.3.4 contiene già la derivazione
+S_osc = ln π al floor n=0 senza invocare R∞, senza mai dire "Neff open".
+La chiusura WN è un upgrade P→A: nel libro va in batch (futuro update KDP /
+2ª ed.), nel frattempo registrata qui e nella pagina errata del sito.
 
 ### E4 · P10, etichetta "Level A" per la catena α
 **Problema:** il registro della monografia classifica α⁻¹_phys =
