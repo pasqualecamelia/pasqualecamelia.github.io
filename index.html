@@ -6,8 +6,13 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'analytics_storage': 'granted',
+    'ad_storage': 'denied',
+    'wait_for_update': 500
+  });
   gtag('js', new Date());
-  gtag('config', 'G-MTVYWSLES3');
+  gtag('config', 'G-MTVYWSLES3', {'anonymize_ip': true});
 </script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -175,8 +180,8 @@ details.acc>.acc-body{padding:0 0 2.4rem}
     <div class="byline">Pasquale Camelia &middot; 2026 &middot; companion to the First Edition &nbsp;&middot;&nbsp; <a href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:.35rem;font-family:var(--mono);font-size:.76rem;color:var(--text3);text-decoration:none;" title="ORCID profile"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID" width="16" height="16" style="vertical-align:middle"/>&nbsp;0009-0006-4779-4647</a></div>
     <p class="tagline">Time is what the boundary reads when the kernel remembers.</p>
     <div class="hero-actions">
-      <a class="btn-main amazon" href="https://www.amazon.com/dp/B0H4NWW5J4" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'EN_B0H4NWW5J4'});">Buy the English edition &rarr;</a>
-      <a class="btn-main amazon" href="{{AMAZON_IT_URL}}" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'IT_edition'});">Edizione italiana &rarr;</a>
+      <a class="btn-main amazon" href="https://www.amazon.com/dp/B0H5315LNM" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'EN_B0H4NWW5J4'});">Buy the English edition &rarr;</a>
+      <a class="btn-main amazon" href="https://www.amazon.it/dp/B0H4YXQHQT" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'IT_edition'});">Edizione italiana &rarr;</a>
       <a class="btn-main watch" href="qgt_companion.html#hydrogen3d" onclick="gtag('event','watch_hydrogen_click',{'event_category':'engagement','event_label':'hero'});">Watch the hydrogen atom &mdash; 3D, real time &rarr;</a>
     </div>
   </div>
@@ -232,7 +237,7 @@ details.acc>.acc-body{padding:0 0 2.4rem}
         <h4>The Quantum Gauge Theory of Time</h4>
         <div class="ed-meta">The Majorana Qubit and the Structure of Physical Time<br>
           648 pp &middot; print + Kindle<br>ISBN 9798198195011 &middot; ASIN B0H4NWW5J4</div>
-        <a class="btn-main amazon" href="https://www.amazon.com/dp/B0H4NWW5J4" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'EN_B0H4NWW5J4'});">Buy on Amazon &rarr;</a>
+        <a class="btn-main amazon" href="https://www.amazon.com/dp/B0H5315LNM" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'EN_B0H4NWW5J4'});">Buy on Amazon &rarr;</a>
       </div>
     </div>
     <div class="edition">
@@ -242,7 +247,7 @@ details.acc>.acc-body{padding:0 0 2.4rem}
         <h4>La Teoria Quantistica di Gauge del Tempo</h4>
         <div class="ed-meta">Il qubit di Majorana e la struttura del tempo fisico<br>
           432 pp &middot; cartaceo + Kindle Print Replica a colori<br>ISBN 9798181307070</div>
-        <a class="btn-main amazon" href="{{AMAZON_IT_URL}}" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'IT_edition'});">Compra su Amazon.it &rarr;</a>
+        <a class="btn-main amazon" href="https://www.amazon.it/dp/B0H4YXQHQT" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'IT_edition'});">Compra su Amazon.it &rarr;</a>
       </div>
     </div>
   </div>
