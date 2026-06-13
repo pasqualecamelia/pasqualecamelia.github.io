@@ -1199,6 +1199,8 @@ const CHECKS = [
   { name:"T_CMB [K]",          val: T_CMB,       ref: 2.72548,   unit:" K",  level:"A", fmt_d:5 },
   { name:"mμ/mₑ",              val: M_MU_ME,     ref: 206.76828, unit:"",   level:"B", fmt_d:4 },
   { name:"sin²θ_W = 3/13",     val: 3/13,        ref: 0.23122,   unit:"",   level:"A", fmt_d:6 },
+  { name:"beat: σ₊−σ₋ = 1/2",  val: Math.sqrt((7+Math.sqrt(13))/8)-Math.sqrt((7-Math.sqrt(13))/8), ref: 0.5, unit:"", level:"A", fmt_d:12 },
+  { name:"q_H¹⁴ = 10⁻⁷",       val: Math.pow(Math.sqrt(2)*Math.sqrt(5), -14), ref: 1e-7, unit:"", level:"A", fmt_d:12 },
 ];
 
 const vrows = document.getElementById('verify-rows');
@@ -1487,6 +1489,7 @@ const GATES = [
   { level:'B', text:"α⁻¹(Mz) = 129.036  (0.072% — running EW, manca equazione strutturale)", src:"Cap25" },
   { level:'B', text:"mZ = 91.19 GeV  (<0.01%) — da dimostrato + stima strutturale", src:"Cap25" },
   { level:'B', text:"mW = 79.97 GeV  (0.5% — correzioni radiative non derivate)", src:"Cap25" },
+  { level:'B', text:"F_π = 130.065 MeV  (−0.10% da PDG — test di consistenza, nessun parametro forte)", src:"HKY v4" },
 
   { level:'B', text:"Λ_QGT = 1.1044×10⁻⁵² m⁻² da closure cosmologica (Cap.38): stima strutturale / B forte. Microstate proof da Ẑ_QGT aperta." },
   // ── aperto ───────────────────────────────────────────────────────
