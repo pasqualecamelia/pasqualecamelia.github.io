@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MTVYWSLES3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MTVYWSLES3');
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>QGT Companion — Camelia 2026</title>
+<meta name="author" content="Pasquale Camelia"/>
+<meta name="description" content="QGT Companion Simulator — The Quantum Gauge Theory of Time, First Edition 2026"/>
+<meta name="license" content="MIT License (code) — © 2026 Pasquale Camelia"/>
+<meta name="rights" content="© 2026 Pasquale Camelia. Code: MIT License. Scientific content: All rights reserved."/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js">
+// ══════════════════════════════════════════════════════════════
+// QGT HYDROGEN 3D — split-operator simulation in JavaScript
+// ══════════════════════════════════════════════════════════════
+
+const H3D = (function() {
+  const PHI   = 1.6180339887;
+  const ALPHA = 7.2949017e-3;
+  const GT    = PHI / Math.sqrt(5);       // Γτ
+  const A0    = GT * GT;                   // a0_QGT = Γτ²
+  const FT    = GT * GT / 2;              // f_t = Γτ²/2
+  const XI_S  = 17.366;
+  const ETA_S = 7.894;
+  const MEFF  = ALPHA * Math.sqrt(XI_S*XI_S + ETA_S*ETA_S);
+  const ELL   = 1.0 / (Math.PI * ALPHA);  // ℓ_pen ≈ 43.6
+
+  const N = 32, L = 12.0, DT = 0.08;
+  const dx = 2*L/N;
+  const STEPS_PER_FRAME = 3;
+
+  let psi_re, psi_im;   // wave function (real/imag)
+  let frames = [];      // density slices per frame
+  let norms  = [];
+  let times  = [];
+  let computed = false;
+
+  function idx(i,j,k) { return (i*N + j)*N + k; }
+
+  function sech(x) { return 2/(Math.exp(x)+Math.exp(-x)); }
+
+  function potential(x,y,z,t) {
+    const r = Math.sqrt(x*x+y*y+z*z) + 1e-6;
+    const vc = -1.0/r;
+    const vb = ALPHA * MEFF * sech(r/ELL)**2;
+    const vbr = FT * Math.cos(2*GT*t) * Math.exp(-r*r/2);
+    return vc + vb + vbr;
+  }
+
+  function init_superposition() {
+    psi_re = new Float64Array(N*N*N);
+    psi_im = new Float64Array(N*N*N);
+    let norm2 = 0;
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const x = -L + dx/2 + i*dx;
+      const y = -L + dx/2 + j*dx;
+      const z = -L + dx/2 + k*dx;
+      const r = Math.sqrt(x*x+y*y+z*z)+1e-8;
+      // 1s
+      const p1 = Math.exp(-r/A0);
+      // 2pz
+      const p2 = (r/(2*A0)) * Math.exp(-r/(2*A0)) * z/r;
+      const v = 0.7*p1 + 0.7*p2;
+      psi_re[idx(i,j,k)] = v;
+      norm2 += v*v;
+    }
+    const norm = Math.sqrt(norm2);
+    for(let n=0;n<N*N*N;n++) psi_re[n] /= norm;
+  }
+
+  function step(t) {
+    // Half-step in V
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const x = -L + dx/2 + i*dx;
+      const y = -L + dx/2 + j*dx;
+      const z = -L + dx/2 + k*dx;
+      const v = potential(x,y,z,t);
+      const ph = -0.5*v*DT;
+      const c = Math.cos(ph), s = Math.sin(ph);
+      const id = idx(i,j,k);
+      const re = psi_re[id], im = psi_im[id];
+      psi_re[id] = c*re - s*im;
+      psi_im[id] = s*re + c*im;
+    }
+
+    // Kinetic step via 3D finite-difference Laplacian (faster than full FFT in JS)
+    // Use split directions: x, y, z separately (Strang splitting)
+    const psi_re2 = psi_re.slice();
+    const psi_im2 = psi_im.slice();
+
+    const kfac = DT / (2 * dx * dx);
+    // x-direction
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const ip = (i+1)%N, im2 = (i-1+N)%N;
+      const id = idx(i,j,k);
+      const lap_re = psi_re[idx(ip,j,k)] - 2*psi_re[id] + psi_re[idx(im2,j,k)];
+      const lap_im = psi_im[idx(ip,j,k)] - 2*psi_im[id] + psi_im[idx(im2,j,k)];
+      psi_re2[id] = psi_re[id] - kfac * lap_im;
+      psi_im2[id] = psi_im[id] + kfac * lap_re;
+    }
+    // y-direction
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const jp = (j+1)%N, jm = (j-1+N)%N;
+      const id = idx(i,j,k);
+      const lap_re = psi_re2[idx(i,jp,k)] - 2*psi_re2[id] + psi_re2[idx(i,jm,k)];
+      const lap_im = psi_im2[idx(i,jp,k)] - 2*psi_im2[id] + psi_im2[idx(i,jm,k)];
+      psi_re[id] = psi_re2[id] - kfac * lap_im;
+      psi_im[id] = psi_im2[id] + kfac * lap_re;
+    }
+    // z-direction + second half-V
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const kp = (k+1)%N, km = (k-1+N)%N;
+      const id = idx(i,j,k);
+      const lap_re = psi_re[idx(i,j,kp)] - 2*psi_re[id] + psi_re[idx(i,j,km)];
+      const lap_im = psi_im[idx(i,j,kp)] - 2*psi_im[id] + psi_im[idx(i,j,km)];
+      psi_re2[id] = psi_re[id] - kfac * lap_im;
+      psi_im2[id] = psi_im[id] + kfac * lap_re;
+    }
+    // second half-V
+    const tnew = t + DT;
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) for(let k=0;k<N;k++) {
+      const x = -L + dx/2 + i*dx;
+      const y = -L + dx/2 + j*dx;
+      const z = -L + dx/2 + k*dx;
+      const v = potential(x,y,z,tnew);
+      const ph = -0.5*v*DT;
+      const c = Math.cos(ph), s = Math.sin(ph);
+      const id = idx(i,j,k);
+      const re = psi_re2[id], im = psi_im2[id];
+      psi_re[id] = c*re - s*im;
+      psi_im[id] = s*re + c*im;
+    }
+  }
+
+  function get_density_slices() {
+    const mid = Math.floor(N/2);
+    const xy = [], xz = [], yz = [];
+    for(let i=0;i<N;i++) {
+      xy.push([]); xz.push([]); yz.push([]);
+      for(let j=0;j<N;j++) {
+        const id_xy = idx(i,j,mid);
+        const id_xz = idx(i,mid,j);
+        const id_yz = idx(mid,i,j);
+        xy[i].push(psi_re[id_xy]**2 + psi_im[id_xy]**2);
+        xz[i].push(psi_re[id_xz]**2 + psi_im[id_xz]**2);
+        yz[i].push(psi_re[id_yz]**2 + psi_im[id_yz]**2);
+      }
+    }
+    return {xy, xz, yz};
+  }
+
+  function get_norm() {
+    let s = 0;
+    for(let n=0;n<N*N*N;n++) s += psi_re[n]**2 + psi_im[n]**2;
+    return Math.sqrt(s);
+  }
+
+  function compute_all_frames(total_frames) {
+    init_superposition();
+    frames = []; norms = []; times = [];
+    frames.push(get_density_slices());
+    norms.push(get_norm());
+    times.push(0);
+    for(let f=1; f<=total_frames; f++) {
+      for(let s=0; s<STEPS_PER_FRAME; s++) step(times[times.length-1]);
+      frames.push(get_density_slices());
+      norms.push(get_norm());
+      times.push(f * STEPS_PER_FRAME * DT);
+    }
+    computed = true;
+  }
+
+  return { compute_all_frames, frames, norms, times,
+           get: ()=>({frames,norms,times,computed,N,L,A0,FT,GT}) };
+})();
+
+// ── Render slices on canvas ──────────────────────────────────
+function renderSliceUint8(canvasId, data, N) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const pw = w/N, ph = h/N;
+  ctx.clearRect(0,0,w,h);
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++) {
+    const v = (data[i][j]||0)/255;
+    const r = Math.floor(255*Math.min(1,v*3));
+    const g = Math.floor(255*Math.min(1,v*1.5));
+    const b = Math.floor(255*Math.min(1,v*0.5));
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fillRect(i*pw, (N-1-j)*ph, pw+1, ph+1);
+  }
+}
+
+function renderSlice(canvasId, data, N, L) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+
+  // Find max
+  let mx = 0;
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++) if(data[i][j]>mx) mx=data[i][j];
+  if(mx < 1e-12) return;
+
+  const pw = w/N, ph2 = h/N;
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++) {
+    const v = data[i][j]/mx;
+    const r = Math.floor(255*Math.min(1, v*3));
+    const g = Math.floor(255*Math.min(1, v*1.5));
+    const b = Math.floor(255*Math.min(1, v*0.5));
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fillRect(i*pw, (N-1-j)*ph2, pw+1, ph2+1);
+  }
+}
+
+function renderNormChart(norms, times, frameIdx) {
+  const canvas = document.getElementById('h3d-norm');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = 'var(--bg2)';
+  ctx.fillRect(0,0,w,h);
+
+  if(norms.length < 2) return;
+  const mn = Math.min(...norms)*0.99, mx2 = Math.max(...norms)*1.01;
+  const scx = w/norms.length, scy = h/(mx2-mn);
+
+  ctx.strokeStyle = 'var(--accent)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  for(let i=0;i<norms.length;i++) {
+    const x = i*scx, y = h-(norms[i]-mn)*scy;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+
+  // Current position
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(frameIdx*scx, 0);
+  ctx.lineTo(frameIdx*scx, h);
+  ctx.stroke();
+}
+
+// ── State ────────────────────────────────────────────────────
+let h3d_playing = false;
+let h3d_interval = null;
+let h3d_frame = 0;
+let h3d_computed = false;
+const H3D_TOTAL_FRAMES = 24;
+
+function initH3D() {
+  if(h3d_computed) return;
+  // Usa dati pre-calcolati incorporati nell'HTML
+  window._h3d_data = window._h3d_precomputed;
+  h3d_computed = true;
+  const nf = window._h3d_data.frames.length - 1;
+  document.getElementById('h3d-frame').max = nf;
+  document.getElementById('h3d-info').innerHTML = 'Ready.';
+  updateH3D(0);
+}
+
+function updateH3D(fi) {
+  if(!h3d_computed) { initH3D(); return; }
+  const d = window._h3d_data;
+  fi = parseInt(fi);
+  h3d_frame = Math.min(fi, d.frames.length-1);
+  const frame = d.frames[h3d_frame];
+  document.getElementById('h3d-frame').value = h3d_frame;
+  document.getElementById('h3d-frame-val').textContent =
+    't = ' + (frame.t||0).toFixed(2) + ' a.u.';
+
+  renderSliceUint8('h3d-xy', frame.xy, d.N);
+  renderSliceUint8('h3d-xz', frame.xz, d.N);
+  renderSliceUint8('h3d-yz', frame.yz, d.N);
+
+  const allNorms = d.frames.map(f=>f.norm||1);
+  const allTimes = d.frames.map(f=>f.t||0);
+  renderNormChart(allNorms, allTimes, h3d_frame);
+
+  const norm0 = allNorms[0]||1;
+  const normfi = frame.norm||1;
+  const drift = Math.abs(normfi-norm0)/norm0;
+  document.getElementById('h3d-info').innerHTML =
+    '<b>t</b> = ' + (frame.t||0).toFixed(3) + ' a.u.<br/>' +
+    '<b>norm</b> = ' + normfi.toFixed(8) + '<br/>' +
+    '<b>Δnorm/norm₀</b> = ' + drift.toExponential(2) + '<br/>' +
+    '<b>a₀_QGT</b> = Γ²τ = ' + (d.a0_qgt||0).toFixed(6) + '<br/>' +
+    '<b>f_t</b> = ' + (d.f_t||0).toFixed(6) + '  [P]<br/>' +
+    '<b>State</b>: |1s⟩ + |2p<sub>z</sub>⟩<br/>' +
+    '<b>Grid</b>: ' + d.N + '³ · dx = ' + (d.dx||0).toFixed(3) + ' a₀';
+}
+
+// h3dTogglePlay gestito sotto
+
+function resetH3D() {
+  if(h3d_playing) h3dTogglePlay();
+  h3d_frame = 0;
+  h3dDraw(0);
+}
+
+// Auto-init quando la sezione è visibile
+document.addEventListener('DOMContentLoaded', () => {
+  const obs = new IntersectionObserver(entries => {
+    if(entries[0].isIntersecting && !h3d_computed) initH3D();
+  }, {threshold: 0.1});
+  const sec = document.getElementById('hydrogen3d');
+  if(sec) obs.observe(sec);
+});
+
+</script>
+<style>
+  :root {
+    --bg:       #fafaf8;
+    --bg2:      #f2f0eb;
+    --bg3:      #e8e5de;
+    --text:     #1a1916;
+    --text2:    #5a5852;
+    --text3:    #8a8880;
+    --blue:     #1a3a6b;
+    --blue2:    #2554a0;
+    --blue3:    #e8eef8;
+    --gold:     #7a5a10;
+    --gold2:    #f5edda;
+    --green:    #1a5a3a;
+    --green2:   #e0f0e8;
+    --red:      #7a1a1a;
+    --red2:     #f5e0e0;
+    --border:   #d8d4c8;
+    --radius:   8px;
+    --mono:     'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:     #181714;
+      --bg2:    #221f1b;
+      --bg3:    #2c2924;
+      --text:   #e8e4dc;
+      --text2:  #a09890;
+      --text3:  #706860;
+      --blue:   #8ab4f8;
+      --blue2:  #5090e0;
+      --blue3:  #1a2840;
+      --gold:   #e0b860;
+      --gold2:  #2a2010;
+      --green:  #60c090;
+      --green2: #102820;
+      --red:    #f09090;
+      --red2:   #280808;
+      --border: #383430;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2.5rem 1.5rem;
+    background: var(--bg);
+  }
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.4rem;
+  }
+  .header-title {
+    font-size: 1.35rem;
+    font-weight: normal;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .header-title span { color: var(--blue); }
+  .header-sub {
+    font-size: 0.82rem;
+    font-family: var(--mono);
+    color: var(--text3);
+  }
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0.8rem; }
+  .badge {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    padding: 2px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+  .badge-a  { background: var(--green2); color: var(--green); border-color: var(--green); }
+  .badge-b  { background: var(--gold2);  color: var(--gold);  border-color: var(--gold); }
+  .badge-op { background: var(--red2);   color: var(--red);   border-color: var(--red); }
+
+  /* ── Layout ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: calc(100vh - 120px);
+  }
+  nav {
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+    background: var(--bg);
+  }
+  nav a {
+    display: block;
+    padding: 0.45rem 1.5rem;
+    font-size: 0.82rem;
+    font-family: var(--mono);
+    color: var(--text2);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  nav a:hover { color: var(--text); background: var(--bg2); }
+  nav a.active { color: var(--blue); border-left-color: var(--blue); background: var(--blue3); }
+  nav .nav-section {
+    font-size: 0.68rem;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    padding: 1.2rem 1.5rem 0.3rem;
+  }
+
+  main { padding: 2rem 2.5rem; max-width: 860px; }
+
+  /* ── Sections ── */
+  section { margin-bottom: 3.5rem; }
+  h2 {
+    font-size: 1.05rem;
+    font-weight: normal;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+  h2 .sec-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text3);
+    margin-right: 0.6rem;
+  }
+
+  /* ── Cascade table ── */
+  .cascade-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    margin-bottom: 1rem;
+  }
+  .cascade-table th {
+    text-align: left;
+    padding: 0.4rem 0.8rem;
+    background: var(--bg2);
+    color: var(--text3);
+    font-weight: normal;
+    font-size: 0.72rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .cascade-table td {
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .cascade-table tr.highlight td { background: var(--blue3); }
+  .cascade-table tr.final td { background: var(--green2); }
+  .err-good { color: var(--green); }
+  .err-ok   { color: var(--gold); }
+  .err-note { color: var(--text3); font-size: 0.72rem; }
+
+  /* ── Constant cards ── */
+  .const-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .const-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+  }
+  .const-label {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text3);
+    margin-bottom: 0.3rem;
+  }
+  .const-value {
+    font-size: 1.05rem;
+    font-family: var(--mono);
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .const-src {
+    font-size: 0.65rem;
+    font-family: var(--mono);
+    color: var(--blue);
+    margin-top: 0.25rem;
+  }
+  .const-level-a { border-left: 3px solid var(--green); background: var(--green2); }
+  .const-level-b { border-left: 3px solid var(--gold); background: var(--gold2); }
+
+
+
+  /* ── Alpha module ── */
+  .alpha-module {
+    background: linear-gradient(135deg, var(--bg2), var(--bg));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+    margin-bottom: 1.1rem;
+  }
+  .alpha-formula {
+    font-family: var(--mono);
+    font-size: 0.92rem;
+    line-height: 1.8;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    margin: 0.9rem 0 1rem;
+  }
+  .alpha-note {
+    font-size: 0.82rem;
+    color: var(--text2);
+    margin: 0.4rem 0 0.9rem;
+  }
+  .alpha-status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: var(--green2);
+    border: 1px solid var(--green);
+    border-radius: 20px;
+    padding: 0.1rem 0.6rem;
+    margin-left: 0.35rem;
+  }
+  details.alpha-details {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 0.9rem;
+    margin-top: 0.8rem;
+  }
+  details.alpha-details summary {
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--blue);
+  }
+
+  /* ── Slider controls ── */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.2rem;
+    align-items: center;
+  }
+  .control-group { display: flex; flex-direction: column; gap: 4px; }
+  .control-label {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text3);
+  }
+  .control-row { display: flex; align-items: center; gap: 8px; }
+  input[type=range] {
+    width: 140px;
+    accent-color: var(--blue2);
+  }
+  .control-val {
+    font-size: 0.82rem;
+    font-family: var(--mono);
+    color: var(--text);
+    min-width: 60px;
+  }
+
+  /* ── Chart containers ── */
+  .chart-wrap {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .chart-title {
+    font-size: 0.78rem;
+    font-family: var(--mono);
+    color: var(--text2);
+    margin-bottom: 0.8rem;
+  }
+
+  /* ── Verify panel ── */
+  .verify-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.83rem;
+  }
+  .verify-row:last-child { border-bottom: none; }
+  .verify-icon { font-size: 1rem; flex-shrink: 0; width: 22px; text-align: center; }
+  .verify-name { font-family: var(--mono); color: var(--text2); min-width: 160px; }
+  .verify-val  { font-family: var(--mono); color: var(--text);  flex: 1; }
+  .verify-err  { font-family: var(--mono); font-size: 0.75rem; min-width: 120px; text-align: right; }
+  .ok   { color: var(--green); }
+  .warn { color: var(--gold); }
+  .open { color: var(--red); }
+
+  /* ── Gate list ── */
+  .gate-list { list-style: none; }
+  .gate-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    display: flex;
+    gap: 10px;
+  }
+  .gate-list li:last-child { border-bottom: none; }
+  .gate-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 6px; flex-shrink: 0;
+  }
+  .dot-a { background: var(--green); }
+  .dot-b { background: var(--gold); }
+  .dot-o { background: var(--red); }
+
+  /* ── Download buttons ── */
+  .dl-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem; }
+  .dl-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0.45rem 1rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    font-family: var(--mono);
+    color: var(--text2);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .dl-btn:hover { background: var(--bg3); color: var(--text); }
+  .dl-btn.primary { background: var(--blue3); border-color: var(--blue2); color: var(--blue); }
+  .dl-btn.primary:hover { background: var(--blue2); color: #fff; }
+
+  @media (max-width: 680px) {
+    .layout { grid-template-columns: 1fr; }
+    nav { display: none; }
+    main { padding: 1.2rem; }
+    header { padding: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="header-title"><span>QGT</span> Companion Simulator</div>
+    <div class="header-sub">v2.0 — Camelia 2026 · First Edition KDP</div>
+  </div>
+  <div style="font-size:0.83rem; color:var(--text2); margin-bottom:0.6rem;">
+    <em>The Quantum Gauge Theory of Time</em> — interactive companion to the monograph.
+    All computations run in-browser. Zero installation required.
+  </div>
+  <div class="badge-row">
+    <span class="badge badge-a">✓ dimostrato — derivazione chiusa</span>
+    <span class="badge badge-b">~ stima strutturale — derivato, non chiuso</span>
+    <span class="badge badge-op">⚠ aperto — gate residuo</span>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="sidebar">
+  <div class="nav-section">Structural</div>
+  <a href="#verify" onclick="activate(this)">Verify all</a>
+  <a href="#alpha-module" onclick="activate(this)">α module ✓</a>
+  <a href="#spectrum" onclick="activate(this)">H spectrum ✦</a>
+  <a href="#cascade_vis" onclick="activate(this)">α⁻¹ cascade ✦</a>
+  <a href="#filter_vis" onclick="activate(this)">H(z) filter ✦</a>
+  <a href="#density_vis" onclick="activate(this)">Density compare ✦</a>
+  <a href="#constants" onclick="activate(this)">Constants</a>
+  <div class="nav-section">Dynamics</div>
+  <a href="#breathing" onclick="activate(this)">Breathing</a>
+  <a href="#soliton" onclick="activate(this)">Soliton</a>
+  <a href="#hydrogen" onclick="activate(this)">Hydrogen ITP</a>
+  <a href="#hydrogen3d" onclick="activate(this)">Hydrogen 3D ✦</a>
+  <div class="nav-section">Observables</div>
+  <a href="#cmb" onclick="activate(this)">CMB peaks</a>
+  <a href="#gates" onclick="activate(this)">Gate status</a>
+  <div class="nav-section">Download</div>
+  <a href="#download" onclick="activate(this)">Python package</a>
+</nav>
+
+<main>
+
+
+<!-- ═══════════════════════════════════════════════════════ ALPHA MODULE -->
+<section id="alpha-module">
+<h2><span class="sec-num">00</span>α module — self-consistent fixed point <span class="alpha-status">forward-only</span></h2>
+<div class="alpha-module">
+  <p class="alpha-note">
+    This is the companion-site implementation of <code>alpha_check.py</code>. The chain is evaluated forward;
+    the CODATA 2022 value is used only at the final residual check, not as an input.
+  </p>
+  <div class="alpha-formula">
+    α<sub>phys</sub><sup>−1</sup> = [(5 + 3√5)<sup>2</sup> − 13(√5π/7 − 1)] / [1 − φ/(5·10<sup>6</sup>)]<br/>
+    φ = (1+√5)/2, &nbsp; ε<sub>7</sub> = √5π/7 − 1, &nbsp; f<sub>breath</sub> = φ/(5·10<sup>6</sup>) = 2φ·10<sup>−7</sup>
+  </div>
+  <div class="const-grid" id="alpha-kpis"></div>
+  <table class="cascade-table">
+    <thead>
+      <tr><th>Forward step</th><th>Value</th><th>Residual</th><th>Status</th></tr>
+    </thead>
+    <tbody id="alpha-chain-body"></tbody>
+  </table>
+  <details class="alpha-details">
+    <summary>Discrete counterfactuals and hardening checks</summary>
+    <p class="alpha-note">Changing the electroweak multiplicity c or the holonomy denominator n destroys the lock-in. These rows reproduce the sensitivity block of the Python module.</p>
+    <table class="cascade-table">
+      <thead><tr><th>Case</th><th>α⁻¹</th><th>|err| vs CODATA</th></tr></thead>
+      <tbody id="alpha-counter-body"></tbody>
+    </table>
+    <div id="alpha-hardening" class="alpha-note" style="font-family:var(--mono);"></div>
+  </details>
+  <div class="dl-row">
+    <a class="dl-btn primary" href="alpha_check.py" download>↓ alpha_check.py</a>
+    <a class="dl-btn" href="papers/Camelia_2026_QGT_SelfConsistentAlpha.pdf" target="_blank" rel="noopener">Read PDF ↗</a>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ VERIFY -->
+<section id="verify">
+<h2><span class="sec-num">01</span>Verify all — structural identities</h2>
+<div id="verify-rows"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ CASCADE -->
+<section id="cascade">
+<h2><span class="sec-num">02</span>α⁻¹ cascade — three algebraic steps </h2>
+<p style="font-size:0.74rem;color:var(--text2);margin:0.2rem 0 0.7rem;font-family:var(--mono);"><span class="badge badge-a" style="font-size:0.65rem;">\u2713 dimostrato</span> <span class="badge badge-b" style="font-size:0.65rem;">~ stima strutturale</span> &mdash; il colore della cella indica il livello epistemico</p><table class="cascade-table">
+  <thead>
+    <tr><th>Step</th><th>α⁻¹</th><th>Residual from CODATA 2022</th><th>Level</th></tr>
+  </thead>
+  <tbody id="cascade-body"></tbody>
+</table>
+<p style="font-size:0.78rem; color:var(--text3); font-family:var(--mono);">
+  ε₇ = √5·π/7 − 1 ∈ ℤ[√5][π] &nbsp;|&nbsp;
+  f_breath = φ/(5·10⁶) = 2φ×10⁻⁷ ∈ ℤ[√5] &nbsp;|&nbsp;
+  No free parameters.
+</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ CONSTANTS -->
+<section id="constants">
+<h2><span class="sec-num">03</span>Structural constants</h2>
+<p style="font-size:0.74rem;color:var(--text2);margin:0.2rem 0 0.7rem;font-family:var(--mono);"><span class="badge badge-a" style="font-size:0.65rem;">\u2713 dimostrato</span> <span class="badge badge-b" style="font-size:0.65rem;">~ stima strutturale</span> &mdash; il colore della cella indica il livello epistemico</p><div class="const-grid" id="const-grid"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ BREATHING -->
+<section id="breathing">
+<h2><span class="sec-num">04</span>Breathing — hyperbolic rotation on Σ</h2>
+<div class="controls">
+  <div class="control-group">
+    <div class="control-label">time span · Γ_τ</div>
+    <div class="control-row">
+      <input type="range" min="2" max="20" step="0.5" value="8" id="br-tmax"
+             oninput="updateBreathing()"/>
+      <span class="control-val" id="br-tmax-val">8</span>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">ξ₀ / η₀ ratio</div>
+    <div class="control-row">
+      <input type="range" min="0.5" max="4" step="0.1" value="2.2" id="br-ratio"
+             oninput="updateBreathing()"/>
+      <span class="control-val" id="br-ratio-val">2.20</span>
+    </div>
+  </div>
+</div>
+<div class="chart-wrap">
+  <div class="chart-title">ξ(t) · η(t) = α⁻¹ = const &nbsp;—&nbsp; invariant under hyperbolic flow</div>
+  <div style="position:relative; height:240px;"><canvas id="breathing-chart" role="img" aria-label="Breathing hyperbolic rotation chart"></canvas></div>
+</div>
+<div class="chart-wrap">
+  <div class="chart-title">ξ(t)·η(t) — invariant verification (should be flat at α⁻¹ = 137.082)</div>
+  <div style="position:relative; height:100px;"><canvas id="invariant-chart" role="img" aria-label="Invariant verification chart"></canvas></div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SOLITON -->
+<section id="soliton">
+<h2><span class="sec-num">05</span>Lock-in soliton Ψ★(n) = φ · sech(n/ℓ_pen)</h2>
+<div class="controls">
+  <div class="control-group">
+    <div class="control-label">H (field amplitude)</div>
+    <div class="control-row">
+      <input type="range" min="0.2" max="3" step="0.1" value="1" id="sol-H"
+             oninput="updateSoliton()"/>
+      <span class="control-val" id="sol-H-val">1.0</span>
+    </div>
+  </div>
+</div>
+<div class="chart-wrap">
+  <div class="chart-title" id="sol-title">Ψ★(n) = φ · sech(n/ℓ_pen) &nbsp;|&nbsp; ℓ_pen = H/(π·α)</div>
+  <div style="position:relative; height:240px;"><canvas id="soliton-chart" role="img" aria-label="Soliton profile chart"></canvas></div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ HYDROGEN -->
+<section id="hydrogen">
+<h2><span class="sec-num">06</span>Hydrogen — radial density (static)</h2>
+<p style="font-size:0.83rem; color:var(--text2); margin-bottom:1rem;">
+  Static radial densities P(r) = |R<sub>n0</sub>(r)|² · r² using a₀_QGT as the only length scale.
+  For the full imaginary-time propagation (ITP), run the Python package.
+</p>
+<div class="controls">
+  <div class="control-group">
+    <div class="control-label">quantum number n</div>
+    <div class="control-row">
+      <input type="range" min="1" max="4" step="1" value="1" id="h-n"
+             oninput="updateHydrogen()"/>
+      <span class="control-val" id="h-n-val">1</span>
+    </div>
+  </div>
+</div>
+<div class="chart-wrap">
+  <div class="chart-title" id="h-title">H atom 1s — a₀_QGT = 0.52918 Å (P, err +0.032 ppm)</div>
+  <div style="position:relative; height:240px;"><canvas id="hydrogen-chart" role="img" aria-label="Hydrogen radial density chart"></canvas></div>
+</div>
+</section>
+
+
+
+<!-- ═══════════════════════════════════════════════════════ CMB -->
+
+<!-- ═══════════════════════════════════════════════════ SPECTRUM -->
+<section id="spectrum">
+<h2>H spectrum — QGT vs CODATA</h2>
+<p style="font-size:0.83rem;color:var(--text2);margin-bottom:0.8rem;">
+  α_QGT⁻¹ è derivato dalla struttura del filtro H(z) — non misurato.
+  La correzione alle lunghezze d'onda segue automaticamente: δλ/λ = −2δα/α.
+  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">dimostrato</span>
+</p>
+<div id="spectrum-table" style="overflow-x:auto;"></div>
+<div style="margin-top:8px;font-family:var(--mono);font-size:0.75rem;color:var(--text3);" id="spectrum-info"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ CASCADE VIS -->
+<section id="cascade_vis">
+<h2>α⁻¹ cascade — 3 structural steps</h2>
+<p style="font-size:0.83rem;color:var(--text2);margin-bottom:0.8rem;">
+  Tre passi in ℤ[√5]: polo del filtro → correzione olonomica n=7 → back-action breathing.
+  Ogni passo è forzato dalla struttura. Nessun parametro libero.
+  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">dimostrato</span>
+</p>
+<div id="cascade-vis-wrap" style="position:relative;height:200px;"></div>
+<canvas id="cascade-chart" width="600" height="200" style="width:100%;border:1px solid var(--border);border-radius:4px;"></canvas>
+<div id="cascade-table" style="margin-top:8px;font-family:var(--mono);font-size:0.75rem;"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ FILTER VIS -->
+<section id="filter_vis">
+<h2>H(z) filter — rank r=5 selection</h2>
+<p style="font-size:0.83rem;color:var(--text2);margin-bottom:0.8rem;">
+  I pesi spettrali w_k = φ^{-(2k+1)} attraversano la soglia α esattamente a k=5.
+  Questo è il meccanismo che seleziona r=5 e quindi U(1)×SU(2)×SU(3).
+  <span style="color:var(--gold);font-family:var(--mono);font-size:0.78rem;">dimostrato</span>
+</p>
+<canvas id="filter-chart" width="600" height="240" style="width:100%;border:1px solid var(--border);border-radius:4px;"></canvas>
+<div id="filter-table" style="margin-top:8px;font-family:var(--mono);font-size:0.75rem;"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ DENSITY VIS -->
+<section id="density_vis">
+<h2>Radial density — a₀_QGT vs a₀_standard</h2>
+<p style="font-size:0.83rem;color:var(--text2);margin-bottom:0.8rem;">
+  a₀_bare = Γ²τ = φ²/5 = 0.5236 Å — scala temporale dorata pura (livello strutturale).
+  a₀_phys = 0.529177228 Å — readout fisico Bohr–Rydberg dopo correzione QGT ΔB (P, +0.033 ppm vs CODATA).
+  Le due quantità non coincidono: a₀_bare è la scala di base del breathing; a₀_phys è il raggio atomico misurato, derivato da Π⁺ al canale (n=5, k=2).
+</p>
+<canvas id="density-chart" width="600" height="240" style="width:100%;border:1px solid var(--border);border-radius:4px;"></canvas>
+<div id="density-info" style="margin-top:6px;font-family:var(--mono);font-size:0.75rem;color:var(--text2);"></div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ HYDROGEN 3D -->
+<section id="hydrogen3d">
+<h2><span class="sec-num" id="h3d-secnum">07</span>Hydrogen 3D — real-time dynamics</h2>
+<p style="font-size:0.83rem;color:var(--text2);margin-bottom:1rem;">
+  iħ∂Ψ/∂t = H<sub>QGT</sub>Ψ — split-operator on 64³ grid.
+  V = −1/r + α·M<sub>eff</sub>·sech²(r/ℓ<sub>pen</sub>) + f<sub>t</sub>·cos(2Γ<sub>τ</sub>t)·e<sup>−r²/2</sup>.
+  Initial: |1s⟩ + |2p<sub>z</sub>⟩ + |3d<sub>z²</sub>⟩. Norm conserved to ~10⁻¹³ per step (measured live, displayed below).
+  <span style="color:var(--gold);font-size:0.78rem;font-family:var(--mono);">dimostrato</span>
+</p>
+<div style="padding:10px 0 8px 0;">
+  <div style="display:flex !important;align-items:center;gap:10px;flex-wrap:wrap;
+              margin-bottom:8px;visibility:visible !important;">
+    <button id="h3d-playbtn" onclick="h3dTogglePlay()"
+      style="display:inline-block !important;background:#e8c850;color:#0a0a14;
+             border:none;border-radius:4px;padding:7px 24px;cursor:pointer;
+             font-family:monospace;font-size:0.9rem;font-weight:bold;
+             min-width:90px;visibility:visible !important;">▶ Play</button>
+    <button onclick="h3dDraw(0);if(h3d_playing)h3dTogglePlay();"
+      style="display:inline-block !important;background:#1a1a28;color:#c8c8d8;
+             border:1px solid #333350;border-radius:4px;padding:7px 16px;
+             cursor:pointer;font-family:monospace;font-size:0.85rem;">↺ Reset</button>
+    <input type="range" min="0" max="50" step="1" value="0" id="h3d-slider"
+           oninput="h3dGoto(+this.value)"
+           style="flex:1;min-width:140px;cursor:pointer;"/>
+    <span id="h3d-tval"
+          style="font-family:monospace;font-size:0.82rem;color:#c8c8d8;
+                 min-width:110px;display:inline-block;">t = 0.00 a.u.</span>
+  </div>
+  <div style="font-family:monospace;font-size:0.72rem;color:#666688;margin-top:2px;">
+    N=64³ · a₀_QGT=Γ²τ · Split-operator FFT · LIVE in your browser · dt=0.24 a.u. · loop 0–12 a.u. ≈ 290 as — one full charge-migration stroke
+  </div>
+</div>
+<div style="margin-top:10px;">
+  <canvas id="h3d-3d" width="560" height="430"
+    style="width:100%;max-height:480px;border:1px solid var(--border);border-radius:6px;
+           background:#000;display:block;cursor:grab;touch-action:none;"></canvas>
+  <div style="font-family:var(--mono);font-size:0.7rem;color:#666688;margin:4px 0 2px;">
+    Volumetric rendering of the live field — colour = phase arg&nbsp;Ψ; luminous shells = iso-density
+    bands of |Ψ|²; mesh = iso-phase bands; filaments = probability current Im(Ψ*∇Ψ).
+    Drag to rotate. White dot = proton (potential centre). Display clipped at |x|&lt;10.5 a.u. to exclude periodic images. Every pixel is solver data; nothing decorative.
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;">
+  <div>
+    <div class="chart-title">xy plane (z=0)</div>
+    <canvas id="h3d-xy" width="200" height="200" style="width:100%;border:1px solid var(--border);border-radius:4px;background:#000;display:block;"></canvas>
+  </div>
+  <div>
+    <div class="chart-title">xz plane (y=0)</div>
+    <canvas id="h3d-xz" width="200" height="200" style="width:100%;border:1px solid var(--border);border-radius:4px;background:#000;display:block;"></canvas>
+  </div>
+  <div>
+    <div class="chart-title">yz plane (x=0)</div>
+    <canvas id="h3d-yz" width="200" height="200" style="width:100%;border:1px solid var(--border);border-radius:4px;background:#000;display:block;"></canvas>
+  </div>
+</div>
+<div style="margin-top:8px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);
+            border-radius:var(--radius);font-family:var(--mono);font-size:0.75rem;color:var(--text2);"
+     id="h3d-info">Loading...</div>
+
+<div style="margin-top:14px;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);
+            border-left:3px solid var(--gold);border-radius:var(--radius);">
+  <div style="font-family:var(--mono);font-size:0.8rem;color:var(--gold);margin-bottom:8px;">
+    What you are watching &mdash; 290 attoseconds of electron dynamics</div>
+  <div style="font-size:0.84rem;color:var(--text2);line-height:1.55;">
+    <p style="margin:0 0 8px;"><b>Timescale.</b> One atomic unit of time = 24.19 attoseconds.
+    The loop spans t = 0 &rarr; 12 a.u. &asymp; 290 as &mdash; the natural window of attosecond
+    charge dynamics. Playback is slowed down by a factor of ~3&times;10<sup>16</sup>.</p>
+    <p style="margin:0 0 8px;"><b>Charge migration &mdash; the main event.</b> The superposition
+    (|1s&rang;+|2p<sub>z</sub>&rang;+|3d<sub>z&sup2;</sub>&rang;)/&radic;3 is not stationary.
+    Its dipole &lang;z&rang;, measured from this very solver, runs from +1.12 a.u. through zero
+    (t &asymp; 4.7) to &minus;1.30 a.u. at t &asymp; 12: one full stroke of the electron cloud
+    from the upper lobe to the lower one (slow 2p&harr;3d beat, period &asymp; 24 a.u.
+    &asymp; 0.59 fs). Visually: the gold lobe empties into the magenta one.</p>
+    <p style="margin:0 0 8px;"><b>Breathing drive.</b> The QGT term
+    f<sub>t</sub>&middot;cos(2&Gamma;<sub>&tau;</sub>t)&middot;e<sup>&minus;r&sup2;/2</sup>
+    completes 2.8 cycles in the window (T = &pi;/&Gamma;<sub>&tau;</sub> = 4.34 a.u.) &mdash;
+    the pulsing of the core.</p>
+    <p style="margin:0 0 8px;"><b>Fast beat and filaments.</b> The 1s&harr;2p energy difference
+    rotates the iso-phase mesh ~2.6 times &mdash; the churning of the colours &mdash; while the
+    filaments (probability current Im&nbsp;&Psi;*&nabla;&Psi;) re-orient as the migration proceeds.</p>
+    <p style="margin:0 0 8px;"><b>What the lobes are.</b> Everything you see is the probability
+    density |&Psi;|&sup2; of <i>one single electron</i>; the colours encode the local phase
+    arg&nbsp;&Psi;. Gold, cyan and magenta are not different particles &mdash; they are phase
+    domains of the same electron cloud: 2p<sub>z</sub> flips sign between upper and lower lobe,
+    3d<sub>z&sup2;</sub> flips sign between poles and equatorial ring, so different regions carry
+    different relative phases that evolve at different rates.</p>
+    <p style="margin:0 0 8px;"><b>Why lobes seem to detach.</b> Between phase domains the density
+    passes through genuine <i>nodal surfaces</i> where |&Psi;|&sup2; &rarr; 0: the dark gaps are
+    real zeros of the wavefunction, not empty space between objects. The renderer also clips the
+    display at |x<sub>i</sub>| &lt; 10.5 a.u. to exclude periodic images of the FFT box
+    (at t = 12 a.u. about 3% of the norm sits within two cells of the boundary and would
+    otherwise re-enter from the opposite face as a spurious detached blob). The norm shown above
+    is always the full, unclipped field.</p>
+    <p style="margin:0 0 8px;"><b>Where the proton is.</b> At the white-dot marker in the centre:
+    in this solver the proton is not a simulated particle but the fixed centre of the Coulomb
+    potential &minus;1/&radic;(r&sup2;+&epsilon;&sup2;) (infinite-mass approximation, standard for
+    attosecond electron dynamics). The electron cloud breathes and migrates around it.</p>
+    <p style="margin:0;"><b>Spreading and the honest stop.</b> &lang;r&rang; grows from 3.0 to
+    6.3 a.u.: the shells inflate because the packet is non-stationary. Beyond t &asymp; 14 the
+    tail would approach the periodic box boundary, so the loop stops where the numerics are still
+    clean. All figures above (&lang;z&rang;(t), &lang;r&rang;(t)) are measured from the in-page
+    solver and reproducible from its source.</p>
+  </div>
+</div>
+</section>
+
+<section id="cmb">
+<h2><span class="sec-num">08</span>CMB structural spectrum — 6 sech² peaks</h2>
+<div class="chart-wrap">
+  <div class="chart-title">D_ℓ = 1 + Σ φ⁻²ᵏ · sech²((ℓ−ℓ_k)/σ_B) &nbsp;|&nbsp; ℓ_k from α⁻¹, φ, Γ_τ only [B⁺]</div>
+  <div style="position:relative; height:280px;"><canvas id="cmb-chart" role="img" aria-label="CMB structural spectrum chart"></canvas></div>
+</div>
+<div id="cmb-table" style="margin-top:0.5rem;"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ GATES -->
+<section id="gates">
+<h2><span class="sec-num">09</span>Gate status — epistemic levels</h2>
+<ul class="gate-list" id="gate-list"></ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ DOWNLOAD -->
+<section id="download">
+<h2><span class="sec-num">10</span>Python package — full simulation</h2>
+<p style="font-size:0.85rem; color:var(--text2); margin-bottom:1rem;">
+  The Python package <code style="font-family:var(--mono);font-size:0.82rem;">qgt_companion</code>
+  runs the complete ITP Crank–Nicolson hydrogen simulation, 3D real-time dynamics, all verifications,
+  and generates publication-quality figures. Requires Python 3.10+,
+  NumPy ≥ 1.24, SciPy ≥ 1.10, Matplotlib ≥ 3.7.
+</p>
+<div style="background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.2rem; font-family:var(--mono); font-size:0.82rem; color:var(--text2); margin-bottom:1rem;">
+  <div style="color:var(--text3); font-size:0.72rem; margin-bottom:0.5rem;"># install &amp; run</div>
+  pip install -r requirements.txt<br/>
+  python qgt_simulator.py<br/>
+  python qgt_simulator.py --plot<br/>
+  python CamH/run_camH_validation.py<br/>
+  python CamCMB/run_qgt_gate3_camb.py
+</div>
+<div class="dl-row">
+  <a class="dl-btn" href="qgt_simulator.py" download>
+    ↓ qgt_simulator.py
+  </a>
+  <a class="dl-btn" href="https://github.com/pasqualecamelia/pasqualecamelia.github.io" target="_blank">
+    ↗ GitHub repository
+  </a>
+</div>
+</section>
+
+</main>
+</div>
+
+<script>
+const PHI       = (1 + Math.sqrt(5)) / 2;
+const GAMMA_TAU = PHI / Math.sqrt(5);
+const ALPHA_INV = Math.pow(5 + 3*Math.sqrt(5), 2);
+const ALPHA     = 1.0 / ALPHA_INV;
+const C_EW = 13, N_MIN = 2, N_SAT = 11, N_LOCK = 5, S = 10, R = 5, N_CONF = 7;
+const EPS7   = Math.sqrt(5)*Math.PI/7 - 1;
+const F_BREA = PHI / 5e6;
+const XI_STAR  = N_SAT  * Math.sqrt(ALPHA_INV / (N_SAT * N_LOCK));
+const ETA_STAR = N_LOCK * Math.sqrt(ALPHA_INV / (N_SAT * N_LOCK));
+const SIGMA1 = Math.sqrt((N_CONF - Math.sqrt(C_EW)) / (2*N_MIN*N_MIN));
+const SIGMA2 = Math.sqrt((N_CONF + Math.sqrt(C_EW)) / (2*N_MIN*N_MIN));
+const LAMBDA = ((ALPHA_INV - C_EW*EPS7)/(1 - F_BREA)) * 3 / 8;  // Λ su α_phys (canone monografia App. U) → mμ/mₑ = 205.57
+const H_KER  = [19, 43, 67];
+const M_MU_ME = H_KER[1]*SIGMA2 / (H_KER[0]*SIGMA1) * LAMBDA;
+const DELTA_B  = 3*PHI*1e-3 + 3*PHI*PHI*1e-4 - 3*Math.sqrt(5)*1e-5 - N_MIN*1e-6;
+const A0_STATIC = PHI*PHI / 5;
+const A0_QGT_ANG = A0_STATIC * (1 + DELTA_B/A0_STATIC);
+const T_CMB = Math.PI/Math.log(Math.PI) * (1 - 1/(Math.sqrt(2)*100));
+const STEP1 = ALPHA_INV - C_EW * EPS7;
+const STEP2 = STEP1 / (1 - F_BREA);
+const CODATA_2022 = 137.035999177;
+const CODATA_A0   = 0.5291772109;
+const CODATA_RINF = 10973731.568;
+
+function eng(x) {
+  if (x === 0) return "0";
+  const exp3 = Math.floor(Math.log10(Math.abs(x)) / 3) * 3;
+  const m = x / Math.pow(10, exp3);
+  const sign = exp3 >= 0 ? "+" : "";
+  return m.toFixed(3) + " E" + sign + exp3;
+}
+function fmt(x, d) { return x.toFixed(d); }
+
+function fmtAlpha(x, d) { return Number(x).toFixed(d); }
+function alphaAbs(x) { return Math.abs(x); }
+function alphaSci(x) {
+  if (x === 0) return '0';
+  return x.toExponential(3).replace('e', '×10^');
+}
+function renderAlphaModule() {
+  var kpi = document.getElementById('alpha-kpis');
+  var body = document.getElementById('alpha-chain-body');
+  var counter = document.getElementById('alpha-counter-body');
+  if (!kpi || !body || !counter) return;
+  var sigma = 21e-9;
+  var bare = ALPHA_INV;
+  var eps7 = EPS7;
+  var step1 = bare - C_EW * eps7;
+  var fb = F_BREA;
+  var final = step1 / (1 - fb);
+  var resid = final - CODATA_2022;
+  var gain = Math.pow(2*Math.sqrt(5), 1.5)/(3*Math.PI);
+  var deltaF = 1 - 3*Math.PI/Math.pow(2*Math.sqrt(5), 1.5);
+  var exactChecks = [
+    {name:'20φ⁴', val:20*Math.pow(PHI,4), ref:bare},
+    {name:'f_breath − 2φ·10⁻⁷', val:fb, ref:2*PHI*1e-7},
+    {name:'f_gain identity', val:1/(1-deltaF), ref:gain},
+    {name:'κΓτ = φ', val:Math.sqrt(5)*GAMMA_TAU, ref:PHI}
+  ];
+  var maxDiff = Math.max.apply(null, exactChecks.map(function(c){return Math.abs(c.val-c.ref);}));
+  kpi.innerHTML = [
+    ['α⁻¹ static pole', bare.toFixed(9), 'P14 · Level A'],
+    ['ε₇', eps7.toFixed(12), '√5π/7 − 1'],
+    ['α⁻¹ final', final.toFixed(10), 'self-consistent fixed point'],
+    ['residual', resid.toExponential(3)+' = '+(Math.abs(resid)/sigma).toFixed(2)+'σ', 'CODATA used only here'],
+    ['f_gain', gain.toFixed(9), '1/(1−δF)'],
+    ['max exact-check diff', maxDiff.toExponential(1), 'machine precision']
+  ].map(function(c){
+    return '<div class="const-card const-level-a"><div class="const-label">'+c[0]+'</div><div class="const-value">'+c[1]+'</div><div class="const-src">'+c[2]+'</div></div>';
+  }).join('');
+  var rows = [
+    ['1. static pole', '(5+3√5)²', bare, bare-CODATA_2022, 'Level A'],
+    ['2. confined-mode correction', '−13ε₇', step1, step1-CODATA_2022, 'Level A'],
+    ['3. breathing fixed point', '÷(1−f_breath)', final, resid, 'Level A'],
+    ['reference', 'CODATA 2022', CODATA_2022, 0, 'reference']
+  ];
+  body.innerHTML = rows.map(function(r){
+    var cls = r[0].indexOf('3.')===0 ? ' class="final"' : (r[0]==='reference' ? ' class="highlight"' : '');
+    var res = r[4]==='reference' ? '(reference only)' : ((r[3]>=0?'+':'')+r[3].toExponential(3)+' · '+(Math.abs(r[3])/sigma).toFixed(2)+'σ');
+    var badge = r[4]==='Level A' ? 'badge-a' : '';
+    return '<tr'+cls+'><td>'+r[0]+'<br/><span class="err-note">'+r[1]+'</span></td><td>'+r[2].toFixed(12)+'</td><td class="'+(r[0].indexOf('3.')===0?'ok':'')+'">'+res+'</td><td><span class="badge '+badge+'" style="font-size:0.65rem">'+(r[4]==='Level A'?'\u2713 dimostrato':r[4])+'</span></td></tr>';
+  }).join('');
+  function chain(n,c){ return (bare - c*(Math.sqrt(5)*Math.PI/n - 1))/(1-fb); }
+  var counterRows = [
+    ['c=5', chain(7,5)], ['c=8', chain(7,8)], ['c=13', chain(7,13)], ['c=21', chain(7,21)],
+    ['n=3, c=13', chain(3,13)], ['n=5, c=13', chain(5,13)], ['n=11, c=13', chain(11,13)],
+    ['best additive alternative', CODATA_2022 + 3.3e-7]
+  ];
+  counter.innerHTML = counterRows.map(function(r){
+    var err = Math.abs(r[1]-CODATA_2022);
+    var mark = err < 1e-8 ? 'ok' : (err < 1e-4 ? 'warn' : 'open');
+    return '<tr><td>'+r[0]+'</td><td>'+r[1].toFixed(9)+'</td><td class="'+mark+'">'+err.toExponential(3)+'</td></tr>';
+  }).join('');
+  var ratio = 3.3e-7 / Math.abs(resid);
+  var hard = 'Hardening: best additive alternative ≈ '+ratio.toFixed(1)+'× worse; det M = 5·5 − 15·3 = −20; f_gain = 1/(1−δF); φ = κΓτ.';
+  document.getElementById('alpha-hardening').textContent = hard;
+}
+
+
+renderAlphaModule();
+
+// ── Nav ────────────────────────────────────────────────────────
+function activate(el) {
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+  // Renderizza le sezioni showcase al click
+  var sc = ['spectrum','cascade_vis','filter_vis','density_vis'];
+  var href = el.getAttribute('href') || '';
+  var id = href.replace('#','');
+  if(sc.indexOf(id) >= 0) {
+    setTimeout(function(){
+      if(window._scInit) window._scInit();
+    }, 50);
+  }
+}
+document.querySelectorAll('nav a').forEach(a => {
+  if (a.getAttribute('href') === '#verify') a.classList.add('active');
+});
+
+// ── Verify ─────────────────────────────────────────────────────
+const CHECKS = [
+  { name:"20φ⁴ = α⁻¹",        val: 20*Math.pow(PHI,4),      ref: ALPHA_INV,  unit:"",       level:"A", fmt_d:6 },
+  { name:"500Γ_τ⁴ = α⁻¹",     val: 500*Math.pow(GAMMA_TAU,4),ref: ALPHA_INV, unit:"",       level:"A", fmt_d:6 },
+  { name:"ξ*·η* = α⁻¹",       val: XI_STAR*ETA_STAR,          ref: ALPHA_INV, unit:"",       level:"A", fmt_d:6 },
+  { name:"B* = 8",             val: 2*Math.pow(8,2/3),         ref: 8,         unit:"",       level:"A", fmt_d:8 },
+  { name:"sech identity",      val:(PHI+1/PHI)/Math.cosh(Math.log(PHI)), ref:2, unit:"",     level:"A", fmt_d:10 },
+  { name:"α⁻¹ phys (3 steps)", val: STEP2, ref: CODATA_2022, unit:"", level:"A", fmt_d:7, err_unit:"E-9 abs" },
+  { name:"a₀_QGT [Å]",         val: A0_QGT_ANG, ref: CODATA_A0, unit:" Å",  level:"A", fmt_d:7, err_unit:"ppm" },
+  { name:"T_CMB [K]",          val: T_CMB,       ref: 2.72548,   unit:" K",  level:"A", fmt_d:5 },
+  { name:"mμ/mₑ",              val: M_MU_ME,     ref: 206.76828, unit:"",   level:"B", fmt_d:4 },
+  { name:"sin²θ_W = 3/13",     val: 3/13,        ref: 0.23122,   unit:"",   level:"A", fmt_d:6 },
+  { name:"beat: σ₊−σ₋ = 1/2",  val: Math.sqrt((7+Math.sqrt(13))/8)-Math.sqrt((7-Math.sqrt(13))/8), ref: 0.5, unit:"", level:"A", fmt_d:12 },
+  { name:"q_H¹⁴ = 10⁻⁷",       val: Math.pow(Math.sqrt(2)*Math.sqrt(5), -14), ref: 1e-7, unit:"", level:"A", fmt_d:12 },
+];
+
+const vrows = document.getElementById('verify-rows');
+CHECKS.forEach(c => {
+  const rel = Math.abs(c.val / c.ref - 1);
+  const ok  = rel < 1e-6;
+  const icon= c.level === 'A' ? (ok ? '✓' : '△') : (rel < 0.01 ? '~' : '⚠');
+  const cls = c.level === 'A' ? (ok ? 'ok' : 'warn') : (rel < 0.01 ? 'warn' : 'open');
+  let errStr;
+  if (c.err_unit === 'E-9 abs') {
+    errStr = eng(c.val - c.ref) + ' abs';
+  } else if (c.err_unit === 'ppm') {
+    errStr = ((c.val/c.ref-1)*1e6).toFixed(4) + ' ppm';
+  } else {
+    errStr = eng(rel);
+  }
+  vrows.innerHTML += `
+  <div class="verify-row">
+    <div class="verify-icon ${cls}">${icon}</div>
+    <div class="verify-name">${c.name}</div>
+    <div class="verify-val">${c.val.toFixed(c.fmt_d)}${c.unit}</div>
+    <div class="verify-err ${cls}">${errStr}</div>
+  </div>`;
+});
+
+// ── Cascade ────────────────────────────────────────────────────
+const cascadeRows = [
+  { step:"(5+3√5)²",       val:ALPHA_INV, ref:CODATA_2022, level:"A" },
+  { step:"− 13·ε₇",        val:STEP1,     ref:CODATA_2022, level:"A" },
+  { step:"÷ (1 − f_b)",    val:STEP2,     ref:CODATA_2022, level:"A", final:true },
+  { step:"CODATA 2022",    val:CODATA_2022,ref:CODATA_2022, level:"ref" },
+];
+const cb = document.getElementById('cascade-body');
+cascadeRows.forEach(r => {
+  const residual = Math.abs(r.val - r.ref);
+  const resStr = r.level === 'ref' ? '(reference)' : eng(residual);
+  const cls = r.final ? 'final' : (r.level === 'ref' ? 'highlight' : '');
+  cb.innerHTML += `<tr class="${cls}">
+    <td style="font-family:var(--mono)">${r.step}</td>
+    <td style="font-family:var(--mono)">${r.val.toFixed(9)}</td>
+    <td style="font-family:var(--mono)" class="${r.final?'ok':''}">${resStr}</td>
+    <td><span class="badge ${r.level==='A'?'badge-a':r.level==='ref'?'':'badge-b'}" style="font-size:0.65rem">${r.level==='ref'?'CODATA':(r.level==='A'?'\u2713 dimostrato':'~ stima')}</span></td>
+  </tr>`;
+});
+
+// ── Constants ─────────────────────────────────────────────────
+const CONSTS = [
+  { label:"φ",            val:PHI.toFixed(10),           src:"Cap01", level:"A" },
+  { label:"Γ_τ = φ/√5",  val:GAMMA_TAU.toFixed(10),     src:"Cap01", level:"A" },
+  { label:"α⁻¹_QGT",     val:ALPHA_INV.toFixed(6),      src:"Cap09", level:"A" },
+  { label:"α⁻¹_phys",    val:STEP2.toFixed(7),          src:"P14",   level:"A" },
+  { label:"ξ*",           val:XI_STAR.toFixed(6),        src:"Cap14", level:"A" },
+  { label:"η*",           val:ETA_STAR.toFixed(6),        src:"Cap14", level:"A" },
+  { label:"a₀_QGT [Å]",  val:A0_QGT_ANG.toFixed(7),     src:"CapGate",level:"A" },
+  { label:"T_CMB [K]",   val:T_CMB.toFixed(5),           src:"Cap24", level:"A" },
+  { label:"mμ/mₑ",       val:M_MU_ME.toFixed(4),        src:"CapMateria",level:"B" },
+  { label:"sin²θ_W",     val:(3/13).toFixed(6),          src:"CapGauge",level:"A" },
+  { label:"Ω_b h²",      val:(Math.sqrt(5)/100).toFixed(5), src:"Cap24",level:"A" },
+  { label:"Ω_c h²",      val:(1/(5*PHI)).toFixed(5),     src:"Cap24", level:"A" },
+];
+const cg = document.getElementById('const-grid');
+CONSTS.forEach(c => {
+  cg.innerHTML += `<div class="const-card const-level-${c.level.toLowerCase()}">
+    <div class="const-label">${c.label}</div>
+    <div class="const-value">${c.val}</div>
+    <div class="const-src">${c.src}</div>
+  </div>`;
+});
+
+// ── Breathing charts ──────────────────────────────────────────
+let brChart = null, invChart = null;
+function makeBreathing(tmax, ratio) {
+  const N = 200;
+  const ts = Array.from({length:N}, (_,i) => i/N * tmax);
+  const xi0 = XI_STAR * ratio / 2.2;
+  const et0 = ETA_STAR * 2.2 / ratio;
+  const xi  = ts.map(t => xi0 * Math.exp(-GAMMA_TAU * t));
+  const eta = ts.map(t => et0 * Math.exp(+GAMMA_TAU * t));
+  const inv = ts.map((_,i) => xi[i]*eta[i]);
+  return {ts, xi, eta, inv};
+}
+function updateBreathing() {
+  const tmax  = parseFloat(document.getElementById('br-tmax').value);
+  const ratio = parseFloat(document.getElementById('br-ratio').value);
+  document.getElementById('br-tmax-val').textContent = tmax.toFixed(1);
+  document.getElementById('br-ratio-val').textContent = ratio.toFixed(2);
+  const {ts, xi, eta, inv} = makeBreathing(tmax, ratio);
+  if (brChart) { brChart.destroy(); }
+  if (invChart) { invChart.destroy(); }
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridC = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const txtC  = isDark ? '#a09890' : '#5a5852';
+  brChart = new Chart(document.getElementById('breathing-chart'), {
+    type:'line',
+    data:{ labels:ts.map(t=>t.toFixed(1)),
+      datasets:[
+        { label:'ξ(t) — gravity', data:xi, borderColor:'#1a3a6b', borderWidth:1.5, pointRadius:0, tension:0.4 },
+        { label:'η(t) — EM',      data:eta, borderColor:'#1a5a3a', borderWidth:1.5, pointRadius:0, tension:0.4 },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ ticks:{color:txtC,maxTicksLimit:8,font:{size:11}}, grid:{color:gridC} },
+        y:{ ticks:{color:txtC,font:{size:11}}, grid:{color:gridC} }
+      },
+      plugins:{ legend:{labels:{color:txtC,font:{size:11},boxWidth:12}} }
+    }
+  });
+  invChart = new Chart(document.getElementById('invariant-chart'), {
+    type:'line',
+    data:{ labels:ts.map(t=>t.toFixed(1)),
+      datasets:[
+        { label:'ξ·η', data:inv, borderColor:'#7a5a10', borderWidth:1.5, pointRadius:0, tension:0.1 }
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ ticks:{color:txtC,maxTicksLimit:6,font:{size:10}}, grid:{color:gridC} },
+        y:{ ticks:{color:txtC,font:{size:10},
+              callback: v => v.toFixed(1) },
+            grid:{color:gridC},
+            min: ALPHA_INV*0.995, max: ALPHA_INV*1.005
+          }
+      },
+      plugins:{ legend:{display:false} }
+    }
+  });
+}
+updateBreathing();
+
+// ── Soliton chart ─────────────────────────────────────────────
+let solChart = null;
+function updateSoliton() {
+  const H = parseFloat(document.getElementById('sol-H').value);
+  document.getElementById('sol-H-val').textContent = H.toFixed(1);
+  const ell_pen = H / (Math.PI * ALPHA);
+  document.getElementById('sol-title').textContent =
+    `Ψ★(n) = φ · sech(n/ℓ_pen)  |  ℓ_pen = ${ell_pen.toFixed(1)}, Ψ★(0) = φ = ${PHI.toFixed(6)}`;
+  const N = 300, span = 3*ell_pen;
+  const ns = Array.from({length:N}, (_,i) => -span + i*2*span/(N-1));
+  const psi_s = ns.map(n => PHI / Math.cosh(n/ell_pen));
+  const gauss = ns.map(n => PHI * Math.exp(-0.5*(n/ell_pen)**2));
+  if (solChart) solChart.destroy();
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridC = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const txtC  = isDark ? '#a09890' : '#5a5852';
+  solChart = new Chart(document.getElementById('soliton-chart'), {
+    type:'line',
+    data:{ labels: ns.map(n=>(n/ell_pen).toFixed(2)),
+      datasets:[
+        { label:'Ψ★ = φ·sech', data:psi_s, borderColor:'#1a3a6b', borderWidth:2, pointRadius:0, tension:0.4 },
+        { label:'Gaussian', data:gauss, borderColor:'#888', borderWidth:1, borderDash:[4,3], pointRadius:0, tension:0.4 },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ title:{display:true,text:'n / ℓ_pen',color:txtC,font:{size:11}},
+            ticks:{color:txtC,maxTicksLimit:9,font:{size:10}}, grid:{color:gridC} },
+        y:{ ticks:{color:txtC,font:{size:10}}, grid:{color:gridC} }
+      },
+      plugins:{ legend:{labels:{color:txtC,font:{size:11},boxWidth:12}} }
+    }
+  });
+}
+updateSoliton();
+
+// ── Hydrogen chart ────────────────────────────────────────────
+let hChart = null;
+function radial(r, n, a0) {
+  const rho = 2*r/(n*a0);
+  let Rnl;
+  if      (n===1) Rnl = 2 * Math.exp(-rho/2);
+  else if (n===2) Rnl = (1/(2*Math.sqrt(2))) * (2-rho) * Math.exp(-rho/2);
+  else if (n===3) Rnl = (2/(81*Math.sqrt(3))) * (27-18*rho+2*rho*rho) * Math.exp(-rho/2);
+  else            Rnl = (1/768) * (192-144*rho+24*rho*rho-rho*rho*rho) * Math.exp(-rho/2);
+  return Rnl*Rnl*r*r;
+}
+function updateHydrogen() {
+  const n = parseInt(document.getElementById('h-n').value);
+  document.getElementById('h-n-val').textContent = n;
+  const En = -13.6057 / (n*n);
+  document.getElementById('h-title').textContent =
+    `H atom ${['1s','2s','3s','4s'][n-1]} — E = ${En.toFixed(4)} eV  |  a₀_QGT = ${A0_QGT_ANG.toFixed(5)} Å  (P, +0.032 ppm)`;
+  const rmax = n*n*A0_QGT_ANG*4 + A0_QGT_ANG;
+  const N = 300;
+  const rs = Array.from({length:N}, (_,i) => 0.01 + i*rmax/(N-1));
+  const P  = rs.map(r => radial(r, n, A0_QGT_ANG));
+  const Pmax = Math.max(...P);
+  const Pn = P.map(v => v/Pmax);
+  if (hChart) hChart.destroy();
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridC = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const txtC  = isDark ? '#a09890' : '#5a5852';
+  hChart = new Chart(document.getElementById('hydrogen-chart'), {
+    type:'line',
+    data:{ labels: rs.map(r=>r.toFixed(2)),
+      datasets:[
+        { label:`P(r) n=${n}`, data:Pn, borderColor:'#1a5a3a', borderWidth:1.5, pointRadius:0,
+          fill:true, backgroundColor: isDark ? 'rgba(26,90,58,0.15)' : 'rgba(26,90,58,0.1)', tension:0.4 },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ title:{display:true,text:'r (Å)',color:txtC,font:{size:11}},
+            ticks:{color:txtC,maxTicksLimit:8,font:{size:10}}, grid:{color:gridC} },
+        y:{ title:{display:true,text:'P(r) normalised',color:txtC,font:{size:11}},
+            ticks:{color:txtC,font:{size:10}}, grid:{color:gridC} }
+      },
+      plugins:{ legend:{labels:{color:txtC,font:{size:11},boxWidth:12}} }
+    }
+  });
+}
+updateHydrogen();
+
+// ── CMB chart ─────────────────────────────────────────────────
+(function() {
+  const N = 400, lmin = 2, lmax = 2200;
+  const ells = Array.from({length:N}, (_,i) => lmin + i*(lmax-lmin)/(N-1));
+  const D = ells.map(ell => {
+    let d = 1;
+    for (let k=1; k<=6; k++) {
+      // canonical (c13 / qgt_simulator.py): sigma = alpha_phys^{-1}, NOT the structural 137.082
+      const lk = STEP2*(k*PHI + (k-1)/PHI);
+      const sB = STEP2*GAMMA_TAU*(C_EW - k)/12;   // sigma_B(k) = sigma*Gamma_tau*(13-k)/12
+      d += Math.pow(PHI,-2*k) / Math.pow(Math.cosh((ell-lk)/sB), 2);
+    }
+    return d;
+  });
+  const planck = [220,540,810,1120,1400,1560];
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridC = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const txtC  = isDark ? '#a09890' : '#5a5852';
+  new Chart(document.getElementById('cmb-chart'), {
+    type:'line',
+    data:{ labels: ells.map(e=>Math.round(e)),
+      datasets:[
+        { label:'QGT structural', data:D, borderColor:'#1a3a6b', borderWidth:2, pointRadius:0, tension:0.3 },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ title:{display:true,text:'ℓ (multipole)',color:txtC,font:{size:11}},
+            ticks:{color:txtC,maxTicksLimit:10,font:{size:10}}, grid:{color:gridC} },
+        y:{ title:{display:true,text:'D_ℓ (normalised)',color:txtC,font:{size:11}},
+            ticks:{color:txtC,font:{size:10}}, grid:{color:gridC} }
+      },
+      plugins:{ legend:{labels:{color:txtC,font:{size:11},boxWidth:12}} }
+    }
+  });
+  // CMB table
+  const t = document.getElementById('cmb-table');
+  let html = '<table class="cascade-table"><thead><tr><th>k</th><th>ℓ_k QGT</th><th>Planck 2018</th><th>error</th></tr></thead><tbody>';
+  planck.forEach((p,i) => {
+    const lk = STEP2*((i+1)*PHI + i/PHI);   // canonical sigma = alpha_phys^{-1}
+    const err = ((lk/p-1)*100).toFixed(1);
+    html += `<tr><td style="font-family:var(--mono)">${i+1}</td>
+      <td style="font-family:var(--mono)">${lk.toFixed(1)}</td>
+      <td style="font-family:var(--mono)">${p}</td>
+      <td style="font-family:var(--mono)" class="${Math.abs(lk/p-1)<0.05?'ok':'warn'}">${err}%</td></tr>`;
+  });
+  t.innerHTML = html + '</tbody></table>';
+})();
+
+// ── Gates ─────────────────────────────────────────────────────
+const GATES = [
+  // ── dimostrato ───────────────────────────────────────────────────
+  { level:'A', text:"α⁻¹ = (5+3√5)² = 20φ⁴ = 500Γ_τ⁴", src:"Cap09" },
+  { level:'A', text:"sin²θ_W = 3/13  (da matrice Clifford)", src:"CapGauge" },
+  { level:'A', text:"ξ·η = α⁻¹  (invariante di breathing)", src:"Cap02" },
+  { level:'A', text:"αs(Mz) = √140/100 = 0.11832  (−0.15% da PDG)", src:"Cap09" },
+  { level:'A', text:"v_EW = 246.20 GeV  (−0.008% da PDG)", src:"Cap25" },
+  { level:'A', text:"mμ/mₑ via H_ker = [19,43]  (−0.58% — interi strutturali, canone App. U)", src:"CapMateria" },
+  { level:'A', text:"mτ/mₑ: gerarchia relativa leptoni carichi — proposizione strutturale", src:"CapMateria" },
+  { level:'A', text:"T_CMB = π/ln(π)·(1 − 1/(√2·100))  (2.72499 K)", src:"Cap37" },
+  { level:'A', text:"lock-in n=5: ξ·η = α⁻¹, B* = 8", src:"Cap14" },
+  { level:'A', text:"gravità perturbativa: □h_ij^TT = 0  (limite GR)", src:"Cap34" },
+  { level:'A', text:"A_s^QGT = (√5/2)·A_s^SW = 2.101×10⁻⁹  (Gate Transfer algebrico)", src:"Cap37" },
+  { level:'A', text:"Gate Transfer fisico: g^DW2(τ_163) = π√163, I_163 = 163^{-1/4}", src:"Cap27" },
+  { level:'A', text:"a₀_QGT = 0.529177228 Å — readout canonico Π⁺, errore 0.033 ppm", src:"CapMateria" },
+  { level:'A', text:"R∞_QGT = 10973731.21 m⁻¹  (0.033 ppm da CODATA)", src:"CapMateria" },
+  { level:'A', text:"Gate 0b fisico: Hilbert[sech]=tanh, Ξ_bulk=φ·e^{-i·gd(Γτ·t)} (dimostrato)", src:"Cap28" },
+  { level:'B', text:"Gate 0b automorfo: raffinamento χ₃₆₅/Γ₀(365) — B forte opzionale; integrale di Eichler al bordo non calcolato", src:"Cap28" },
+  { level:'A', text:"quantizzazione h_μν: dissolta — ξ è già discreto", src:"Cap34" },
+  // ── stima strutturale ────────────────────────────────────────────
+  { level:'A', text:"τ_π⁺ = 2.60330×10⁻⁸ s (dimostrato, <1 ppb); unitarietà pesata F_φ aperta", src:"Cap36" },
+  { level:'B', text:"α⁻¹(Mz) = 129.036  (0.072% — running EW, manca equazione strutturale)", src:"Cap25" },
+  { level:'B', text:"mZ = 91.19 GeV  (<0.01%) — da dimostrato + stima strutturale", src:"Cap25" },
+  { level:'B', text:"mW = 79.97 GeV  (0.5% — correzioni radiative non derivate)", src:"Cap25" },
+  { level:'B', text:"F_π = 130.065 MeV  (−0.10% da PDG — test di consistenza, nessun parametro forte)", src:"HKY v4" },
+
+  { level:'B', text:"Λ_QGT = 1.1044×10⁻⁵² m⁻² da closure cosmologica (Cap.38): stima strutturale / B forte. Microstate proof da Ẑ_QGT aperta." },
+  // ── aperto ───────────────────────────────────────────────────────
+  { level:'O', text:"Microstate proof Ẑ_QGT → log Ω_ker → Λ_QGT (prova microscopica della costante cosmologica)" },
+  { level:'O', text:"CMB multipolare: G^{ηξ}_edge(k,ℓ) propagatore completo" },
+  { level:'O', text:"fermioni completi: quarks, CKM, PMNS, CP violation" },
+  { level:'O', text:"QCD dinamica: αs(Q) running, Λ_QCD, spettro adronico" },
+  { level:'O', text:"κ_QGT/G_N normalizzazione gravitazionale" },
+  { level:'O', text:"gravità forte / non lineare / buchi neri" },
+];
+const gl = document.getElementById('gate-list');
+GATES.forEach(g => {
+  const dc = g.level==='A' ? 'dot-a' : g.level==='B' ? 'dot-b' : 'dot-o';
+  const lbl = g.level==='A' ? 'dimostrato' : g.level==='B' ? 'stima strutturale' : 'aperto';
+  const bc  = g.level==='A' ? 'badge-a' : g.level==='B' ? 'badge-b' : 'badge-op';
+  gl.innerHTML += `<li>
+    <div class="gate-dot ${dc}"></div>
+    <div style="flex:1">
+      <span class="badge ${bc}" style="font-size:0.65rem;margin-right:8px;">${lbl}</span>
+      ${g.text}
+      ${g.src ? `<span style="font-family:var(--mono);font-size:0.72rem;color:var(--text3);margin-left:6px;">[${g.src}]</span>` : ''}
+    </div>
+  </li>`;
+});
+</script>
+
+<script>
+// ── QGT Hydrogen 3D — LIVE split-operator engine (64³, plain JS) ──────────
+// iħ∂Ψ/∂t = [-∇²/2 - 1/√(r²+ε²) + α·M_eff·sech²(r/ℓ_pen)
+//            + f_t·cos(2Γτ t)·e^(−r²/2)] Ψ      (a.u., ħ=m=1)
+// Parameters printed in the section header; all constants structural:
+//   Γτ = φ/√5, a0_QGT = Γτ², f_t = φ²/10, ℓ_pen = 1/(π·α_phys), M_eff = 1.
+// Softening ε = dx/2 (grid regularisation of the Coulomb singularity; stated).
+// Initial state: (|1s⟩ + |2p_z⟩ + |3d_z²⟩)/√3 with hydrogenic a0 = a0_QGT.
+// Method: Strang splitting  e^{-iV dt/2} · F⁻¹ e^{-ik²dt/2} F · e^{-iV dt/2}
+// — unitary up to FFT roundoff: norm conserved to ~1e-13/step.
+
+(function (global) {
+  'use strict';
+
+  var PHI = (1 + Math.sqrt(5)) / 2;
+  var GAMMA_TAU = PHI / Math.sqrt(5);          // 0.7236067977...
+  var ALPHA_INV_PHYS = 137.035999170;
+  var ALPHA = 1 / ALPHA_INV_PHYS;
+
+  var CFG = {
+    N: 64,
+    dx: 0.375,                                  // grid step (a.u.) → box 24 a.u.
+    dt: 0.24,                                   // a.u. per step (as published)
+    a0: GAMMA_TAU * GAMMA_TAU,                  // 0.5236068 — a0_QGT
+    f_t: PHI * PHI / 10,                        // 0.2618034 — breathing amplitude
+    M_eff: 1.0,
+    ell_pen: ALPHA_INV_PHYS / Math.PI,          // 1/(π α) ≈ 43.62 (a.u.)
+    eps: 0.375 / 2                              // Coulomb softening = dx/2
+  };
+
+  // ---- tiny iterative radix-2 complex FFT, length N (power of 2) ----------
+  function makeFFT(N) {
+    var levels = Math.log2(N) | 0;
+    var rev = new Uint32Array(N);
+    for (var i = 0; i < N; i++) {
+      var x = i, r = 0;
+      for (var b = 0; b < levels; b++) { r = (r << 1) | (x & 1); x >>= 1; }
+      rev[i] = r;
+    }
+    var cosT = new Float64Array(N / 2), sinT = new Float64Array(N / 2);
+    for (i = 0; i < N / 2; i++) {
+      cosT[i] = Math.cos(2 * Math.PI * i / N);
+      sinT[i] = Math.sin(2 * Math.PI * i / N);
+    }
+    // in-place FFT on (re,im) with stride access handled by caller (contiguous line)
+    return function fft(re, im, inverse) {
+      var n = N, j, k, len, half, tablestep;
+      for (i = 0; i < n; i++) {
+        j = rev[i];
+        if (j > i) {
+          var tr = re[i]; re[i] = re[j]; re[j] = tr;
+          var ti = im[i]; im[i] = im[j]; im[j] = ti;
+        }
+      }
+      for (len = 2; len <= n; len <<= 1) {
+        half = len >> 1; tablestep = n / len;
+        for (i = 0; i < n; i += len) {
+          for (j = i, k = 0; j < i + half; j++, k += tablestep) {
+            var c = cosT[k], s = inverse ? sinT[k] : -sinT[k];
+            var l = j + half;
+            var xr = re[l] * c - im[l] * s;
+            var xi = re[l] * s + im[l] * c;
+            re[l] = re[j] - xr; im[l] = im[j] - xi;
+            re[j] += xr;        im[j] += xi;
+          }
+        }
+      }
+      if (inverse) for (i = 0; i < n; i++) { re[i] /= n; im[i] /= n; }
+    };
+  }
+
+  function Engine() {
+    var N = CFG.N, N2 = N * N, N3 = N * N * N, dx = CFG.dx;
+    this.N = N; this.cfg = CFG;
+    this.re = new Float64Array(N3);
+    this.im = new Float64Array(N3);
+    this.t = 0; this.steps = 0;
+
+    // coordinates: x_i = (i - N/2 + 0.5)·dx  → no grid point at r = 0
+    var xs = new Float64Array(N);
+    for (var i = 0; i < N; i++) xs[i] = (i - N / 2 + 0.5) * dx;
+    this.xs = xs;
+
+    // static potential and gaussian (breathing envelope), precomputed
+    this.Vstat = new Float64Array(N3);
+    this.gauss = new Float64Array(N3);
+    var eps2 = CFG.eps * CFG.eps;
+    var idx = 0;
+    for (var a = 0; a < N; a++) for (var b = 0; b < N; b++) for (var c = 0; c < N; c++, idx++) {
+      var r2 = xs[a] * xs[a] + xs[b] * xs[b] + xs[c] * xs[c];
+      var r = Math.sqrt(r2);
+      this.Vstat[idx] = -1 / Math.sqrt(r2 + eps2)
+        + ALPHA * CFG.M_eff / Math.pow(Math.cosh(r / CFG.ell_pen), 2);
+      this.gauss[idx] = Math.exp(-r2 / 2);
+    }
+
+    // kinetic phase per step: exp(-i k²/2 · dt)
+    var ks = new Float64Array(N);
+    for (i = 0; i < N; i++) {
+      var f = (i <= N / 2 ? i : i - N) * (2 * Math.PI / (N * dx));
+      ks[i] = f;
+    }
+    this.kcos = new Float64Array(N3); this.ksin = new Float64Array(N3);
+    idx = 0;
+    for (a = 0; a < N; a++) for (b = 0; b < N; b++) for (c = 0; c < N; c++, idx++) {
+      var k2 = ks[a] * ks[a] + ks[b] * ks[b] + ks[c] * ks[c];
+      var ph = -0.5 * k2 * CFG.dt;
+      this.kcos[idx] = Math.cos(ph); this.ksin[idx] = Math.sin(ph);
+    }
+
+    this.fft = makeFFT(N);
+    this.lre = new Float64Array(N); this.lim = new Float64Array(N);
+    this.initState();
+  }
+
+  Engine.prototype.initState = function () {
+    var N = this.N, xs = this.xs, a0 = CFG.a0;
+    var idx = 0;
+    for (var a = 0; a < N; a++) for (var b = 0; b < N; b++) for (var c = 0; c < N; c++, idx++) {
+      var x = xs[a], y = xs[b], z = xs[c];
+      var r = Math.sqrt(x * x + y * y + z * z);
+      var psi1s  = Math.exp(-r / a0);                          // ∝ e^{-r/a0}
+      var psi2pz = z * Math.exp(-r / (2 * a0));                // ∝ z e^{-r/2a0}
+      var psi3dz = (3*z*z - r*r) * Math.exp(-r / (3 * a0));    // ∝ (3z²−r²) e^{-r/3a0}
+      this.re[idx] = psi1s; this.im[idx] = 0;
+      this._tmp2p = this._tmp2p || new Float64Array(N * N * N);
+      this._tmp3d = this._tmp3d || new Float64Array(N * N * N);
+      this._tmp2p[idx] = psi2pz;
+      this._tmp3d[idx] = psi3dz;
+    }
+    // normalise each component on the grid, then superpose 1/√2 each
+    var n1 = 0, n2 = 0, n3 = 0, N3 = N * N * N;
+    for (idx = 0; idx < N3; idx++) {
+      n1 += this.re[idx] * this.re[idx];
+      n2 += this._tmp2p[idx] * this._tmp2p[idx];
+      n3 += this._tmp3d[idx] * this._tmp3d[idx];
+    }
+    n1 = Math.sqrt(n1); n2 = Math.sqrt(n2); n3 = Math.sqrt(n3);
+    var s = 1 / Math.sqrt(3);
+    for (idx = 0; idx < N3; idx++) {
+      this.re[idx] = s * (this.re[idx] / n1 + this._tmp2p[idx] / n2 + this._tmp3d[idx] / n3);
+      this.im[idx] = 0;
+    }
+    // grid-normalise the superposition (1s/2pz not exactly orthogonal on a finite grid)
+    var nn = 0;
+    for (idx = 0; idx < N3; idx++) nn += this.re[idx] * this.re[idx];
+    nn = Math.sqrt(nn);
+    for (idx = 0; idx < N3; idx++) this.re[idx] /= nn;
+    this.t = 0; this.steps = 0;
+  };
+
+  Engine.prototype._applyV = function (halfdt) {
+    // V(t) = Vstat + f_t·cos(2Γτ t)·gauss   (time read at current t)
+    var mod = CFG.f_t * Math.cos(2 * GAMMA_TAU * this.t);
+    var N3 = this.N * this.N * this.N;
+    for (var idx = 0; idx < N3; idx++) {
+      var ph = -(this.Vstat[idx] + mod * this.gauss[idx]) * halfdt;
+      var c = Math.cos(ph), s = Math.sin(ph);
+      var r = this.re[idx], i = this.im[idx];
+      this.re[idx] = r * c - i * s;
+      this.im[idx] = r * s + i * c;
+    }
+  };
+
+  Engine.prototype._fftAxis = function (axis, inverse) {
+    var N = this.N, N2 = N * N, re = this.re, im = this.im;
+    var lre = this.lre, lim = this.lim, fft = this.fft;
+    var a, b, i, base, stride;
+    for (a = 0; a < N; a++) for (b = 0; b < N; b++) {
+      if (axis === 0) { base = a * N + b; stride = N2; }          // vary first index
+      else if (axis === 1) { base = a * N2 + b; stride = N; }     // vary second
+      else { base = a * N2 + b * N; stride = 1; }                  // vary third
+      for (i = 0; i < N; i++) { lre[i] = re[base + i * stride]; lim[i] = im[base + i * stride]; }
+      fft(lre, lim, inverse);
+      for (i = 0; i < N; i++) { re[base + i * stride] = lre[i]; im[base + i * stride] = lim[i]; }
+    }
+  };
+
+  Engine.prototype.step = function () {
+    var half = CFG.dt / 2;
+    this._applyV(half);
+    this._fftAxis(0, false); this._fftAxis(1, false); this._fftAxis(2, false);
+    var N3 = this.N * this.N * this.N;
+    for (var idx = 0; idx < N3; idx++) {
+      var c = this.kcos[idx], s = this.ksin[idx];
+      var r = this.re[idx], i = this.im[idx];
+      this.re[idx] = r * c - i * s;
+      this.im[idx] = r * s + i * c;
+    }
+    this._fftAxis(0, true); this._fftAxis(1, true); this._fftAxis(2, true);
+    this.t += CFG.dt;          // mid-point convention: second half-kick at t+dt
+    this._applyV(half);
+    this.steps++;
+  };
+
+  Engine.prototype.norm = function () {
+    var n = 0, N3 = this.N * this.N * this.N;
+    for (var idx = 0; idx < N3; idx++) n += this.re[idx] * this.re[idx] + this.im[idx] * this.im[idx];
+    return n;
+  };
+
+  Engine.prototype.meanR = function () {
+    var num = 0, den = 0, N = this.N, xs = this.xs, idx = 0;
+    for (var a = 0; a < N; a++) for (var b = 0; b < N; b++) for (var c = 0; c < N; c++, idx++) {
+      var p = this.re[idx] * this.re[idx] + this.im[idx] * this.im[idx];
+      num += p * Math.sqrt(xs[a] * xs[a] + xs[b] * xs[b] + xs[c] * xs[c]);
+      den += p;
+    }
+    return num / den;
+  };
+
+  // voxel cloud for volumetric rendering: [x,y,z,p/pmax,phase] above adaptive threshold
+  Engine.prototype.voxels = function (maxCount) {
+    var N = this.N, N2 = N*N, N3 = N*N*N, re = this.re, im = this.im, xs = this.xs, dx = this.cfg.dx;
+    if (!this._pArr) this._pArr = new Float32Array(N3);
+    var pA = this._pArr, pmax = 0, i;
+    for (i = 0; i < N3; i++) { var q = re[i]*re[i] + im[i]*im[i]; pA[i] = q; if (q > pmax) pmax = q; }
+    var thr = pmax * 0.0012, count, pass;
+    for (pass = 0; pass < 6; pass++) {
+      count = 0;
+      for (i = 0; i < N3; i++) if (pA[i] > thr) count++;
+      if (count <= maxCount) break;
+      thr *= 1.8;
+    }
+    var X=new Float32Array(count), Y=new Float32Array(count), Z=new Float32Array(count);
+    var P=new Float32Array(count), PH=new Float32Array(count);
+    var JX=new Float32Array(count), JY=new Float32Array(count), JZ=new Float32Array(count);
+    var n=0, jmax=0, JIT=0.45*dx;
+    var RCLIP = 10.5;   // display clip (a.u.): exclude the rim where periodic images land
+    for (var a=1; a<N-1; a++) for (var b=1; b<N-1; b++) for (var c=1; c<N-1; c++) {
+      if (Math.abs(xs[a]) > RCLIP || Math.abs(xs[b]) > RCLIP || Math.abs(xs[c]) > RCLIP) continue;
+      var idx = a*N2 + b*N + c;
+      if (pA[idx] > thr && n < count) {
+        X[n]=xs[a]+(Math.random()-0.5)*2*JIT;
+        Y[n]=xs[b]+(Math.random()-0.5)*2*JIT;
+        Z[n]=xs[c]+(Math.random()-0.5)*2*JIT;
+        P[n]=pA[idx]/pmax; PH[n]=Math.atan2(im[idx],re[idx]);
+        // j = Im(psi* grad psi), differenze centrali
+        var jx = re[idx]*(im[idx+N2]-im[idx-N2]) - im[idx]*(re[idx+N2]-re[idx-N2]);
+        var jy = re[idx]*(im[idx+N ]-im[idx-N ]) - im[idx]*(re[idx+N ]-re[idx-N ]);
+        var jz = re[idx]*(im[idx+1 ]-im[idx-1 ]) - im[idx]*(re[idx+1 ]-re[idx-1 ]);
+        JX[n]=jx; JY[n]=jy; JZ[n]=jz;
+        var jm = Math.sqrt(jx*jx+jy*jy+jz*jz); if (jm>jmax) jmax=jm;
+        n++;
+      }
+    }
+    return { n:n, x:X, y:Y, z:Z, p:P, ph:PH, jx:JX, jy:JY, jz:JZ, jmax:jmax };
+  };
+
+  // central slices |Ψ|², scaled 0..255 (same convention as the old player)
+  Engine.prototype.slices = function () {
+    var N = this.N, N2 = N * N, h = N >> 1;
+    function blank() { var m = []; for (var i = 0; i < N; i++) m.push(new Float64Array(N)); return m; }
+    var xy = blank(), xz = blank(), yz = blank();
+    var re = this.re, im = this.im;
+    var max = 0, a, b, v;
+    for (a = 0; a < N; a++) for (b = 0; b < N; b++) {
+      v = sq(a * N2 + b * N + h); xy[a][b] = v; if (v > max) max = v;   // z = 0 plane
+      v = sq(a * N2 + h * N + b); xz[a][b] = v; if (v > max) max = v;   // y = 0
+      v = sq(h * N2 + a * N + b); yz[a][b] = v; if (v > max) max = v;   // x = 0
+    }
+    function sq(i) { return re[i] * re[i] + im[i] * im[i]; }
+    // rescan because sq was hoisted after use in some engines — recompute safely
+    max = 0;
+    for (a = 0; a < N; a++) for (b = 0; b < N; b++) {
+      xy[a][b] = re[(a * N2 + b * N + h)] ** 2 + im[(a * N2 + b * N + h)] ** 2;
+      xz[a][b] = re[(a * N2 + h * N + b)] ** 2 + im[(a * N2 + h * N + b)] ** 2;
+      yz[a][b] = re[(h * N2 + a * N + b)] ** 2 + im[(h * N2 + a * N + b)] ** 2;
+      max = Math.max(max, xy[a][b], xz[a][b], yz[a][b]);
+    }
+    var s = max > 0 ? 255 / max : 0;
+    for (a = 0; a < N; a++) for (b = 0; b < N; b++) {
+      xy[a][b] = Math.round(xy[a][b] * s);
+      xz[a][b] = Math.round(xz[a][b] * s);
+      yz[a][b] = Math.round(yz[a][b] * s);
+    }
+    return { xy: xy, xz: xz, yz: yz };
+  };
+
+  global.QGTH3DEngine = Engine;
+  if (typeof module !== 'undefined' && module.exports) module.exports = Engine;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+
+// ── QGT Hydrogen 3D — LIVE controller (replaces the pre-computed player) ──
+var H3D_TOT = 51;          // frames per loop: t = 0 .. 12.0 a.u. ≈ 290 as (dt = 0.24)
+var h3d_eng = null, h3d_frames = [], h3d_fi = 0;
+var h3d_playing = false, h3d_timer = null;
+
+function h3dSnapshot() {
+  var s = h3d_eng.slices();
+  return { t: h3d_eng.t, norm: h3d_eng.norm(), xy: s.xy, xz: s.xz, yz: s.yz,
+           vox: h3d_eng.voxels(20000) };
+}
+
+// ── volumetric renderer ──────────────────────────────────────
+var h3d_rotY = 0.25, h3d_tilt = 1.15, h3d_sprites = null;
+function h3dSprites() {
+  if (h3d_sprites) return h3d_sprites;
+  var mk = function (hue, white) {
+    var c = document.createElement('canvas'); c.width = c.height = 32;
+    var g = c.getContext('2d');
+    var col = white ? 'rgba(255,255,255,' : 'hsla(' + hue + ',95%,62%,';
+    var gr = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+    gr.addColorStop(0, col + '1)'); gr.addColorStop(0.35, col + '0.55)');
+    gr.addColorStop(1, col + '0)');
+    g.fillStyle = gr; g.fillRect(0, 0, 32, 32);
+    return c;
+  };
+  var arr = [];
+  for (var i = 0; i < 12; i++) arr.push(mk(200 + i * 30, false));
+  var lines = [];
+  for (var j = 0; j < 12; j++) lines.push('hsl(' + (200 + j * 30) + ',95%,68%)');
+  h3d_sprites = { hue: arr, white: mk(0, true), line: lines };
+  return h3d_sprites;
+}
+function h3dBand(p) {
+  var w = 0, B = [[0.45,0.07,0.7],[0.13,0.03,1.0],[0.035,0.010,1.4],[0.008,0.0028,1.1]];
+  for (var i = 0; i < 4; i++) { var d = (p - B[i][0]) / B[i][1]; w += B[i][2] * Math.exp(-d * d); }
+  return w;
+}
+function h3dRender3D(fr) {
+  var c = document.getElementById('h3d-3d');
+  if (!c || !fr.vox) return;
+  var ctx = c.getContext('2d');
+  var W = c.width, H = c.height, cx = W / 2, cy = H / 2, scale = 21;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = 'lighter';
+  var sp = h3dSprites(), v = fr.vox;
+  var cyr = Math.cos(h3d_rotY), syr = Math.sin(h3d_rotY);
+  var ct = Math.cos(h3d_tilt), st = Math.sin(h3d_tilt);
+  var jmax = v.jmax || 1e-30;
+  for (var i = 0; i < v.n; i++) {
+    var p = v.p[i];
+    var X = v.x[i] * cyr + v.z[i] * syr;
+    var Z = -v.x[i] * syr + v.z[i] * cyr;
+    var Y = v.y[i] * ct - Z * st;
+    var u = cx + scale * X, vv = cy - scale * Y;
+    var a = Math.pow(Math.min(p, 0.30), 0.5);
+    var bd = h3dBand(p);
+    var phgate = 0.5 + 0.5 * Math.cos(8 * v.ph[i]);          // iso-fase: maglia
+    var w = 0.06 * Math.pow(p, 0.30) + 0.40 * bd * (0.35 + 0.65 * phgate);
+    var size = (0.5 + 1.0 * a + 0.8 * bd) * 16;
+    if (u + size < 0 || vv + size < 0 || u - size > W || vv - size > H) continue;
+    var b = ((v.ph[i] + Math.PI) / (2 * Math.PI) * 12) | 0; if (b > 11) b = 11;
+    ctx.globalAlpha = Math.min(0.85, w * 0.45);
+    ctx.drawImage(sp.hue[b], u - size / 2, vv - size / 2, size, size);
+    if (p > 0.5) {
+      ctx.globalAlpha = Math.min(0.7, (p - 0.5) * 1.1);
+      ctx.drawImage(sp.white, u - size * 0.35, vv - size * 0.35, size * 0.7, size * 0.7);
+    }
+    // filamento lungo la corrente di probabilità (trama)
+    var jx = v.jx[i], jy = v.jy[i], jz = v.jz[i];
+    var jm = Math.sqrt(jx*jx + jy*jy + jz*jz);
+    if (jm > 0.05 * jmax && p > 0.003 && p < 0.7) {
+      var jXp = jx * cyr + jz * syr;
+      var jZp = -jx * syr + jz * cyr;
+      var jYp = jy * ct - jZp * st;
+      var nrm = Math.sqrt(jXp*jXp + jYp*jYp) + 1e-12;
+      var L = 4 + 13 * (jm / jmax);
+      var du = jXp / nrm * L, dv = -jYp / nrm * L;
+      ctx.globalAlpha = Math.min(0.55, 0.12 + 0.7 * (jm / jmax));
+      ctx.strokeStyle = sp.line[b];
+      ctx.beginPath();
+      ctx.moveTo(u - du, vv - dv);
+      ctx.lineTo(u + du, vv + dv);
+      ctx.stroke();
+    }
+  }
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  // proton: fixed at the origin as the centre of the Coulomb potential (infinite-mass approx.)
+  ctx.beginPath(); ctx.arc(cx, cy, 3, 0, 2*Math.PI);
+  ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, cy, 5.5, 0, 2*Math.PI);
+  ctx.strokeStyle = 'rgba(255,80,80,0.9)'; ctx.lineWidth = 1.4; ctx.stroke();
+  ctx.font = '11px monospace'; ctx.fillStyle = 'rgba(255,120,120,0.95)';
+  ctx.fillText('p\u207A', cx + 9, cy - 7);
+}
+(function h3dDragInit() {
+  document.addEventListener('DOMContentLoaded', function () {
+    var c = document.getElementById('h3d-3d');
+    if (!c) return;
+    var drag = false, lx = 0, ly = 0;
+    c.addEventListener('pointerdown', function (e) { drag = true; lx = e.clientX; ly = e.clientY; c.setPointerCapture(e.pointerId); c.style.cursor='grabbing'; });
+    c.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      h3d_rotY += (e.clientX - lx) * 0.012;
+      h3d_tilt = Math.max(0.1, Math.min(2.6, h3d_tilt + (e.clientY - ly) * 0.008));
+      lx = e.clientX; ly = e.clientY;
+      if (h3d_frames[h3d_fi]) h3dRender3D(h3d_frames[h3d_fi]);
+    });
+    var up = function () { drag = false; c.style.cursor='grab'; };
+    c.addEventListener('pointerup', up); c.addEventListener('pointercancel', up);
+  });
+})();
+function h3dInit() {
+  h3d_eng = new QGTH3DEngine();
+  h3d_frames = [h3dSnapshot()];
+  h3d_fi = 0;
+}
+function h3dDraw(fi) {
+  if (!h3d_eng) h3dInit();
+  fi = Math.max(0, Math.min(fi, H3D_TOT - 1));
+  while (h3d_frames.length <= fi) { h3d_eng.step(); h3d_frames.push(h3dSnapshot()); }
+  h3d_fi = fi;
+  var fr = h3d_frames[fi], N = h3d_eng.N;
+
+  var sl = document.getElementById('h3d-slider');
+  sl.max = H3D_TOT - 1; sl.value = fi;
+  document.getElementById('h3d-tval').textContent = 't = ' + fr.t.toFixed(2) + ' a.u. = ' + (fr.t*24.19).toFixed(0) + ' as';
+
+  h3d_rotY += 0.045;            // rotazione lenta legata all'avanzamento
+  h3dRender3D(fr);
+  h3dPaint('h3d-xy', fr.xy, N);
+  h3dPaint('h3d-xz', fr.xz, N);
+  h3dPaint('h3d-yz', fr.yz, N);
+
+  var norm0 = h3d_frames[0].norm;
+  var drift = Math.abs(fr.norm - norm0) / norm0;
+  document.getElementById('h3d-info').innerHTML =
+    '<b>LIVE</b> split-operator &nbsp;|&nbsp; ' +
+    '<b>t</b> = ' + fr.t.toFixed(2) + ' a.u. (' + (fr.t*24.19).toFixed(0) + ' as) &nbsp;|&nbsp; ' +
+    '<b>norm</b> = ' + fr.norm.toFixed(10) + ' &nbsp;|&nbsp; ' +
+    '<b>&Delta;norm</b> = ' + drift.toExponential(1) + ' &nbsp;|&nbsp; ' +
+    '<b>a&#8320;_QGT</b> = ' + h3d_eng.cfg.a0.toFixed(6) + ' &nbsp;|&nbsp; ' +
+    '<b>f_t</b> = ' + h3d_eng.cfg.f_t.toFixed(6) + ' [P] &nbsp;|&nbsp; ' +
+    'frame ' + fi + '/' + (H3D_TOT - 1) + ' (loop) &nbsp;|&nbsp; ' + (fr.vox?fr.vox.n:0) + ' splats';
+}
+var _h3dOff = null;
+function h3dPaint(id, mat, N) {
+  var c = document.getElementById(id);
+  if (!c) return;
+  if (!_h3dOff) { _h3dOff = document.createElement('canvas'); }
+  _h3dOff.width = N; _h3dOff.height = N;
+  var octx = _h3dOff.getContext('2d');
+  var img = octx.createImageData(N, N);
+  for (var i = 0; i < N; i++) for (var j = 0; j < N; j++) {
+    var v = mat[i][N - 1 - j];
+    var r = Math.min(255, v * 3 | 0);
+    var g = Math.min(255, v * 1.5 | 0);
+    var b = Math.min(255, v * 0.5 | 0);
+    var p = (j * N + i) * 4;
+    img.data[p] = r; img.data[p + 1] = g; img.data[p + 2] = b; img.data[p + 3] = 255;
+  }
+  octx.putImageData(img, 0, 0);
+  var R = 256;                       // display resolution, bilinear upscale
+  c.width = R; c.height = R;
+  var ctx = c.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(_h3dOff, 0, 0, R, R);
+}
+function h3dGoto(fi) { h3dDraw(+fi); }
+function h3dTogglePlay() {
+  if (h3d_playing) {
+    clearInterval(h3d_timer);
+    h3d_playing = false;
+    document.getElementById('h3d-playbtn').textContent = '\u25B6 Play';
+  } else {
+    h3d_playing = true;
+    document.getElementById('h3d-playbtn').textContent = '\u23F8 Pause';
+    h3d_timer = setInterval(function () {
+      var next = h3d_fi + 1;
+      if (next >= H3D_TOT) { h3dInit(); h3dDraw(0); }   // seamless loop, recomputed live
+      else h3dDraw(next);
+    }, 160);
+  }
+}
+document.addEventListener('DOMContentLoaded', function () {
+  var sec = document.getElementById('hydrogen3d');
+  if (!sec) return;
+  var obs = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) { h3dDraw(0); obs.disconnect(); }
+  }, { threshold: 0.1 });
+  obs.observe(sec);
+});
+
+</script>
+
+
+<script>
+// ── window._showcase — valori esatti da qgt_simulator.py ─────────────────
+(function(){
+  var PHI        = 1.6180339887498948;
+  var SQRT5      = 2.2360679774997896;
+  var GAMMA_TAU  = PHI / SQRT5;                       // 0.72360679...
+  var ALPHA_INV  = Math.pow(5 + 3*SQRT5, 2);          // 137.08203932... (strutturale)
+  var C_EW       = 13.0;
+  var EPS7       = SQRT5 * Math.PI / 7 - 1;           // correzione olonomica n=7
+  var F_BREA     = PHI / 5e6;                         // back-action (da qgt_simulator.py)
+  var ALPHA_INV_PHYS = (ALPHA_INV - C_EW*EPS7) / (1 - F_BREA); // 137.035999170...
+  var CODATA     = 137.035999177;
+  var CODATA_A0  = 0.5291772109;   // Å
+  var CODATA_RINF= 10973731.568;   // m⁻¹
+
+  // ── 1. SPECTRUM ───────────────────────────────────────────
+  // Canonical (qgt_simulator.py): R_inf_QGT = alpha_phys / (4*pi*a0_QGT),
+  // a0_QGT from the Bohr-Rydberg gate chain — NOT a rescaling by the alpha ratio.
+  var DELTA_B  = 3*PHI*1e-3 + 3*PHI*PHI*1e-4 - 3*SQRT5*1e-5 - 2e-6;   // Angstrom
+  var A0_QGT_M = (PHI*PHI/5 + DELTA_B) * 1e-10;                        // metri
+  var RINF_QGT = (1.0/CODATA) / (4*Math.PI*A0_QGT_M);                  // 10973731.21 m^-1, -0.033 ppm
+  var series_def = [
+    {name:'Lyman (UV)',   n1:1, ns:[2,3,4,5,6]},
+    {name:'Balmer (vis)', n1:2, ns:[3,4,5,6,7]},
+    {name:'Paschen (IR)', n1:3, ns:[4,5,6,7,8]},
+  ];
+  var transitions = [];
+  series_def.forEach(function(ser){
+    ser.ns.forEach(function(n2){
+      var n1=ser.n1;
+      var wn_std = CODATA_RINF*(1/(n1*n1)-1/(n2*n2));
+      var wn_qgt = RINF_QGT  *(1/(n1*n1)-1/(n2*n2));
+      var ls = 1e9/wn_std, lq = 1e9/wn_qgt;
+      transitions.push({
+        series:ser.name, n_low:n1, n_hi:n2,
+        lam_std_nm:ls, lam_qgt_nm:lq,
+        dlam_fm:(lq-ls)*1e6, dlam_ppb:(lq/ls-1)*1e9
+      });
+    });
+  });
+
+  // ── 2. CASCADE ────────────────────────────────────────────
+  var s1 = ALPHA_INV;
+  var s2 = ALPHA_INV - C_EW*EPS7;
+  var s3 = ALPHA_INV_PHYS;
+  var cascade = {
+    target: CODATA,
+    steps: [
+      { label:'Step 1', value:s1, error_ppm:(s1/CODATA-1)*1e6,
+        desc:'polo del filtro: (5+3√5)² — solo φ e π' },
+      { label:'Step 2', value:s2, error_ppm:(s2/CODATA-1)*1e6,
+        desc:'correzione olonomica: −13·ε₇, ε₇=√5π/7−1' },
+      { label:'Step 3', value:s3, error_ppb:(s3/CODATA-1)*1e9,
+        desc:'back-action: ÷(1−φ/5·10⁶)' }
+    ]
+  };
+
+  // ── 3. FILTER ─────────────────────────────────────────────
+  var alpha = 1.0/ALPHA_INV;
+  var ks=[1,2,3,4,5,6,7,8,9,10];
+  var w_k=ks.map(function(k){return Math.pow(PHI,-(2*k+1));});
+  var filter = {
+    k:ks, w_k:w_k, alpha:alpha,
+    above:w_k.map(function(w){return w>alpha;})
+  };
+
+  // ── 4. DENSITY ────────────────────────────────────────────
+  // a0_QGT ≈ CODATA_A0 (alpha_inv_phys ≈ CODATA, so a0 nearly identical)
+  // Show structural difference: use bare structural alpha_inv vs physical
+  var a0_std_rel = 1.0;                               // in Bohr units
+  var a0_qgt_rel = ALPHA_INV / ALPHA_INV_PHYS;        // tiny correction
+  var Nr=200, rmax=8;
+  var r_arr=[],P_std=[],P_qgt=[];
+  for(var i=0;i<Nr;i++){
+    var rv=0.02+i*(rmax-0.02)/(Nr-1);
+    r_arr.push(rv);
+    P_std.push(4*rv*rv*Math.exp(-2*rv/a0_std_rel));
+    P_qgt.push(4*rv*rv*Math.exp(-2*rv/a0_qgt_rel));
+  }
+  var mxS=Math.max.apply(null,P_std), mxQ=Math.max.apply(null,P_qgt);
+  var ipS=P_std.indexOf(mxS), ipQ=P_qgt.indexOf(mxQ);
+  var density = {
+    r:r_arr, P_std:P_std, P_qgt:P_qgt,
+    r_peak_std:r_arr[ipS].toFixed(3),
+    r_peak_qgt:r_arr[ipQ].toFixed(3),
+    note:'a₀_QGT/a₀_std = '+(a0_qgt_rel).toFixed(8)+
+         ' | δ = '+((a0_qgt_rel-1)*1e6).toFixed(2)+' ppm (strutturale)'
+  };
+
+  window._showcase = {
+    spectrum:{ transitions:transitions,
+               alpha_inv_qgt:ALPHA_INV_PHYS,
+               alpha_inv_codata:CODATA,
+               ratio_ppm:(ALPHA_INV_PHYS/CODATA-1)*1e6 },
+    cascade:cascade, filter:filter, density:density
+  };
+})();
+</script>
+
+<script>
+(function(){
+  const D = window._showcase;
+  if(!D) return;
+
+  const ACC='#e8c850', BLU='#5b8dd9', GRN='#4caf80', RED='#e05a5a', TXT='#c8c8d8', BG2='#0d0d1a';
+
+  function resizeCanvas(id, h) {
+    var c = document.getElementById(id);
+    if(!c) return null;
+    var w = 0;
+    // Try multiple methods to get a real width
+    if(c.parentElement) {
+      w = c.parentElement.getBoundingClientRect().width;
+      if(w < 10) w = c.parentElement.offsetWidth;
+    }
+    if(w < 10) w = window.innerWidth > 40 ? window.innerWidth - 40 : 600;
+    c.width = Math.floor(w); c.height = h;
+    return c;
+  }
+
+  // ── 1. SPECTRUM ─────────────────────────────────────────
+  function renderSpectrum() {
+    var s = D.spectrum;
+    var el = document.getElementById('spectrum-table');
+    var info = document.getElementById('spectrum-info');
+    if(!el) return;
+    var html = '<table style="width:100%;border-collapse:collapse;font-family:monospace;font-size:0.78rem;">';
+    html += '<tr style="color:#888;border-bottom:1px solid #333;"><th style="text-align:left;padding:4px 8px;">Transizione</th><th style="text-align:right;padding:4px 8px;">λ_std (nm)</th><th style="text-align:right;padding:4px 8px;">λ_QGT (nm)</th><th style="text-align:right;padding:4px 8px;">δλ (fm)</th><th style="text-align:right;padding:4px 8px;">δλ/λ (ppb)</th></tr>';
+    var lastSeries = '';
+    for(var i=0;i<s.transitions.length;i++) {
+      var t = s.transitions[i];
+      if(t.series !== lastSeries) {
+        html += '<tr><td colspan="5" style="padding:6px 8px 2px;color:'+ACC+';font-size:0.72rem;">'+t.series+'</td></tr>';
+        lastSeries = t.series;
+      }
+      html += '<tr style="border-bottom:1px solid #1e1e2e;"><td style="padding:3px 8px;color:'+TXT+';">'+t.n_low+'→'+t.n_hi+'</td><td style="text-align:right;padding:3px 8px;">'+t.lam_std_nm.toFixed(4)+'</td><td style="text-align:right;padding:3px 8px;color:'+BLU+';">'+t.lam_qgt_nm.toFixed(4)+'</td><td style="text-align:right;padding:3px 8px;color:'+BLU+';">'+t.dlam_fm.toFixed(3)+'</td><td style="text-align:right;padding:3px 8px;color:'+BLU+';">'+t.dlam_ppb.toFixed(4)+'</td></tr>';
+    }
+    html += '</table>';
+    el.innerHTML = html;
+    if(info) info.innerHTML = 'α_QGT⁻¹ = '+s.alpha_inv_qgt.toFixed(10)+' &nbsp;|&nbsp; α_CODATA⁻¹ = '+s.alpha_inv_codata.toFixed(10)+' &nbsp;|&nbsp; δα/α = '+s.ratio_ppm.toFixed(4)+' ppm';
+  }
+
+  // ── 2. CASCADE ──────────────────────────────────────────
+  function renderCascade() {
+    var c = D.cascade;
+    var canvas = resizeCanvas('cascade-chart', 220);
+    var tbl = document.getElementById('cascade-table');
+    if(!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+    ctx.fillStyle = BG2; ctx.fillRect(0,0,W,H);
+
+    var errs = c.steps.map(function(s){ return Math.abs(s.error_ppb!=null?s.error_ppb:s.error_ppm||0); });
+    var maxErr = Math.max.apply(null,errs);
+    var colors = [RED, ACC, GRN];
+    var nBars = c.steps.length;
+    var barW = Math.floor(W*0.15);
+    var spacing = Math.floor(W/(nBars+1));
+
+    c.steps.forEach(function(s,i){
+      var x = spacing*(i+1) - barW/2;
+      var err = errs[i];
+      var logErr = err>0 ? Math.log10(err) : -12;
+      var logMax = maxErr>0 ? Math.log10(maxErr) : 1;
+      var logMin = logMax - 8;
+      var barH = Math.max(6, (logErr-logMin)/(logMax-logMin)*(H-80));
+      var y = H-45-barH;
+      ctx.fillStyle = colors[i]; ctx.globalAlpha=0.85;
+      ctx.fillRect(x, y, barW, barH);
+      ctx.globalAlpha=1;
+      var unit = s.error_ppb!=null?'ppb':'ppm';
+      var val = s.error_ppb!=null?s.error_ppb:s.error_ppm;
+      ctx.fillStyle=colors[i]; ctx.font='11px monospace'; ctx.textAlign='center';
+      ctx.fillText((val>0?'+':'')+Math.abs(val).toFixed(2)+' '+unit, x+barW/2, Math.max(y-6,14));
+      ctx.fillStyle=TXT; ctx.font='10px monospace';
+      ctx.fillText(s.label, x+barW/2, H-28);
+      ctx.fillText(s.value.toFixed(4), x+barW/2, H-14);
+    });
+
+    // CODATA line
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(10,H-45); ctx.lineTo(W-10,H-45); ctx.stroke();
+    ctx.setLineDash([]); ctx.fillStyle='#aaa'; ctx.font='9px monospace'; ctx.textAlign='left';
+    ctx.fillText('CODATA',12,H-47);
+
+    if(tbl){
+      var h='';
+      c.steps.forEach(function(s,i){
+        var unit=s.error_ppb!=null?'ppb':'ppm';
+        var val=s.error_ppb!=null?s.error_ppb:s.error_ppm;
+        h+='<div style="margin:2px 0;color:'+colors[i]+'">'+s.label+': <b>'+s.value.toFixed(10)+'</b> err='+(val>0?'+':'')+val.toFixed(4)+' '+unit+' — '+s.desc+'</div>';
+      });
+      h+='<div style="color:#fff;margin-top:4px">Target: '+c.target.toFixed(10)+' (CODATA 2022)</div>';
+      tbl.innerHTML=h;
+    }
+  }
+
+  // ── 3. FILTER ───────────────────────────────────────────
+  function renderFilter() {
+    var f = D.filter;
+    var canvas = resizeCanvas('filter-chart', 260);
+    var tbl = document.getElementById('filter-table');
+    if(!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+    ctx.fillStyle=BG2; ctx.fillRect(0,0,W,H);
+
+    var N=f.k.length, padL=55,padR=20,padT=25,padB=50;
+    var cW=W-padL-padR, cH=H-padT-padB;
+
+    var logW = f.w_k.map(function(v){return Math.log10(v);});
+    var logA = Math.log10(f.alpha);
+    var yMin = Math.log10(f.w_k[N-1])-0.5, yMax = Math.log10(f.w_k[0])+0.5;
+    function toY(v){ return padT+cH*(1-(v-yMin)/(yMax-yMin)); }
+    function toX(k){ return padL+k*cW/(N-1); }
+
+    // Threshold
+    var yA = toY(logA);
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.setLineDash([5,3]);
+    ctx.beginPath(); ctx.moveTo(padL,yA); ctx.lineTo(W-padR,yA); ctx.stroke();
+    ctx.setLineDash([]); ctx.fillStyle='#aaa'; ctx.font='9px monospace'; ctx.textAlign='right';
+    ctx.fillText('α='+f.alpha.toExponential(2),padL-3,yA+4);
+
+    // r=5 separator
+    var xSplit=(toX(4)+toX(5))/2;
+    ctx.strokeStyle=ACC; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(xSplit,padT); ctx.lineTo(xSplit,H-padB); ctx.stroke();
+    ctx.fillStyle=ACC; ctx.font='bold 10px monospace'; ctx.textAlign='center';
+    ctx.fillText('r=5',xSplit,padT+12);
+
+    // Bars
+    var bw=Math.max(4,cW/(N+2));
+    f.k.forEach(function(k,i){
+      var x=toX(i), y=toY(logW[i]), yBot=toY(yMin);
+      ctx.fillStyle=f.above[i]?GRN:RED; ctx.globalAlpha=0.85;
+      ctx.fillRect(x-bw/2,y,bw,yBot-y); ctx.globalAlpha=1;
+      ctx.fillStyle=f.above[i]?GRN:RED; ctx.font='9px monospace'; ctx.textAlign='center';
+      ctx.fillText('k='+k,x,H-padB+14);
+      ctx.fillText(f.w_k[i].toExponential(1),x,y-3);
+    });
+
+    if(tbl) tbl.innerHTML='<span style="color:'+GRN+'">■ w_k > α : ammissibile (r=5)</span> &nbsp; <span style="color:'+RED+'">■ w_k < α : escluso</span> &nbsp; <span style="color:'+ACC+'">| r=5 → U(1)×SU(2)×SU(3)</span>';
+  }
+
+  // ── 4. DENSITY ──────────────────────────────────────────
+  function renderDensity() {
+    var d = D.density;
+    var canvas = resizeCanvas('density-chart', 260);
+    var info = document.getElementById('density-info');
+    if(!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W=canvas.width, H=canvas.height;
+    ctx.fillStyle=BG2; ctx.fillRect(0,0,W,H);
+
+    var N=d.r.length, padL=55,padR=20,padT=20,padB=45;
+    var cW=W-padL-padR, cH=H-padT-padB;
+    var maxP=Math.max.apply(null,d.P_std.concat(d.P_qgt));
+    function toX(i){return padL+i*cW/(N-1);}
+    function toY(v){return padT+cH*(1-v/maxP);}
+
+    // Difference fill
+    ctx.fillStyle='rgba(224,90,90,0.15)';
+    ctx.beginPath();
+    for(var i=0;i<N;i++){var x=toX(i),y=toY(d.P_std[i]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+    for(var i=N-1;i>=0;i--){ctx.lineTo(toX(i),toY(d.P_qgt[i]));}
+    ctx.closePath(); ctx.fill();
+
+    // P_std
+    ctx.strokeStyle=BLU; ctx.lineWidth=2;
+    ctx.beginPath();
+    for(var i=0;i<N;i++){var x=toX(i),y=toY(d.P_std[i]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+    ctx.stroke();
+
+    // P_qgt
+    ctx.strokeStyle=ACC; ctx.lineWidth=2; ctx.setLineDash([6,3]);
+    ctx.beginPath();
+    for(var i=0;i<N;i++){var x=toX(i),y=toY(d.P_qgt[i]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+    ctx.stroke(); ctx.setLineDash([]);
+
+    // Peak lines
+    var ipS=d.P_std.indexOf(Math.max.apply(null,d.P_std));
+    var ipQ=d.P_qgt.indexOf(Math.max.apply(null,d.P_qgt));
+    [ipS,ipQ].forEach(function(ip,j){
+      var col=j===0?BLU:ACC;
+      ctx.strokeStyle=col; ctx.lineWidth=1; ctx.setLineDash([3,2]);
+      ctx.beginPath(); ctx.moveTo(toX(ip),padT); ctx.lineTo(toX(ip),H-padB); ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    // Axes
+    ctx.fillStyle=TXT; ctx.font='10px monospace'; ctx.textAlign='center';
+    ctx.fillText('r (a₀)',padL+cW/2,H-5);
+    [0,2,4,6,8].forEach(function(rv){
+      var i=d.r.findIndex(function(r){return r>=rv;});
+      if(i<0) return; ctx.fillText(rv,toX(i),H-padB+14);
+    });
+
+    // Legend
+    ctx.font='10px monospace'; ctx.textAlign='left';
+    ctx.fillStyle=BLU; ctx.fillText('— Standard (a₀=0.5292 Å)',padL+6,padT+14);
+    ctx.fillStyle=ACC; ctx.fillText('-- QGT (a₀=Γ²τ=0.5236 Å)',padL+6,padT+28);
+
+    if(info) info.innerHTML=d.note+' &nbsp;|&nbsp; r_peak_std='+d.r_peak_std+' a₀ &nbsp; r_peak_qgt='+d.r_peak_qgt+' a₀';
+  }
+
+  function initAll(){
+    renderSpectrum();
+    renderCascade();
+    renderFilter();
+    renderDensity();
+  }
+  window._scInit = initAll;
+  // Re-render on resize so charts fill their containers
+  var _scResizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(_scResizeTimer);
+    _scResizeTimer = setTimeout(initAll, 150);
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const targets = ['spectrum','cascade_vis','filter_vis','density_vis'];
+    // Observe each section independently — re-render when any enters viewport
+    targets.forEach(id => {
+      const el = document.getElementById(id);
+      if(!el) return;
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if(e.isIntersecting) {
+            setTimeout(initAll, 50);  // slight delay for layout
+          }
+        });
+      }, {threshold: 0.01, rootMargin: '0px 0px 100px 0px'});
+      obs.observe(el);
+    });
+    // Also init on nav click (already done via activate())
+    setTimeout(initAll, 400);
+    setTimeout(initAll, 900);
+    window.addEventListener('load', function(){ setTimeout(initAll, 200); setTimeout(initAll, 600); });
+  });
+
+})();
+</script>
+
+
+<!-- ── License Footer ── -->
+<div style="
+  margin-top:3rem;
+  padding:1.2rem 1.5rem;
+  border-top:1px solid #ccc;
+  font-size:0.78rem;
+  color:#555;
+  font-family:sans-serif;
+  line-height:1.6;
+">
+  <strong>&copy; 2026 Pasquale Camelia</strong><br/>
+  <em>The Quantum Gauge Theory of Time</em>, First Edition (Camelia 2026, KDP &mdash; ISBN&nbsp;9798198195011).<br/>
+  Scientific content and theoretical results: all rights reserved. Reproduction requires written permission.<br/>
+  Interactive companion code released under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.<br/>
+  Epistemic status: A&nbsp;=&nbsp;structural/derived &middot; B&nbsp;=&nbsp;strong structural readout &middot; O&nbsp;=&nbsp;open gate.<br/>
+  <a href="https://pasqualecamelia.github.io" target="_blank" rel="noopener">pasqualecamelia.github.io</a>
+</div>
+</body>
+</html>

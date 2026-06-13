@@ -1,0 +1,78 @@
+{
+  "description": "QGT Gate-3 diagnostic metrics -- CamCMB adapted to QGT Monograph v176",
+  "monograph_version": "QGT Monograph v176 (KDP 2026)",
+  "camb_version": "1.6.6",
+  "as_variable_note": "As_qgt: structurally derived via Gate Transfer, A_s^QGT=(sqrt(5)/2)*A_s^SW=2.101e-9",
+  "chi2_note": "Diagnostic chi^2_nu with diagonal Planck errors \u2014 not the official Planck likelihood.",
+  "structural_parameters": {
+    "alpha_inv": 137.0820393249937,
+    "alpha_inv_formula": "20*phi^4 = (5+3*sqrt5)^2",
+    "n_s": 0.9648171767694598,
+    "Omega_ch2": 0.12360679774997897,
+    "tau": 0.05384615384615385,
+    "H0_kms_Mpc": 67.9,
+    "H0_status": "Proposition P (structural effective CMB readout); H(z): external test",
+    "Omega_bh2": 0.022360679774997897,
+    "A_s_derived": 2.101e-09,
+    "A_s_note": "Gate Transfer: F_A=sqrt(5)/2, Proposition P, Monograph v176 Appendix I"
+  },
+  "vs_planck_2018_PR3": {
+    "gate3_chi2nu": 1.1789080977866322,
+    "lcdm_chi2nu": 1.0414487352335533,
+    "ell_range": "100-1800",
+    "ndof": 1701,
+    "gate3_RMS_6peaks_pct": 1.6083912010770756,
+    "lcdm_RMS_6peaks_pct": 0.5085324907009678
+  },
+  "vs_planck_2021_PR4": {
+    "reference": "Tristram+2021, A&A 647, A128, doi:10.1051/0004-6361/202039585",
+    "gate3_chi2nu": 0.12930452181787352,
+    "lcdm_chi2nu": 1.9209182503215246e-09,
+    "ell_range": "100-1800",
+    "ndof": 1701
+  },
+  "parametric_comparison": {
+    "n_s": {
+      "QGT": 0.9648171767694598,
+      "Planck2018": 0.9649,
+      "sigma18": 0.02,
+      "Planck2021": 0.9665,
+      "sigma21": 0.443
+    },
+    "\u03a9bh\u00b2": {
+      "QGT": 0.022360679774997897,
+      "Planck2018": 0.02237,
+      "sigma18": 0.062,
+      "Planck2021": 0.02242,
+      "sigma21": 0.424
+    },
+    "\u03a9ch\u00b2": {
+      "QGT": 0.12360679774997897,
+      "Planck2018": 0.12,
+      "sigma18": 3.006,
+      "Planck2021": 0.11933,
+      "sigma21": 3.888
+    },
+    "\u03c4": {
+      "QGT": 0.05384615384615385,
+      "Planck2018": 0.054,
+      "sigma18": 0.022,
+      "Planck2021": 0.0561,
+      "sigma21": 0.309
+    },
+    "A_s/1e9": {
+      "QGT": 2.101,
+      "Planck2018": 2.101,
+      "sigma18": 0.0,
+      "Planck2021": 2.105,
+      "sigma21": 0.125
+    },
+    "H\u2080": {
+      "QGT": 67.9,
+      "Planck2018": 67.4,
+      "sigma18": 1.0,
+      "Planck2021": 67.92,
+      "sigma21": 0.029
+    }
+  }
+}

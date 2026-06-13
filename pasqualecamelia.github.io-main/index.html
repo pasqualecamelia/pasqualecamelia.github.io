@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MTVYWSLES3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'analytics_storage': 'granted',
+    'ad_storage': 'denied',
+    'wait_for_update': 500
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-MTVYWSLES3', {'anonymize_ip': true});
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>QGT Companion — The Quantum Gauge Theory of Time</title>
+<meta name="description" content="Interactive companion to the monograph 'The Quantum Gauge Theory of Time' (Camelia 2026): the six-layer qubit, the breathing flow, phase-locking gluing, and the structural validators for hydrogen and the CMB."/>
+<meta name="author" content="Pasquale Camelia"/>
+<meta name="google-site-verification" content="22bceb53bd55a8a5"/>
+<meta name="robots" content="index, follow"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="The Quantum Gauge Theory of Time — Pasquale Camelia"/>
+<meta property="og:description" content="Time as the residual of a non-invertible projection. English and Italian editions on Amazon — and a real-time 3D hydrogen simulator in your browser."/>
+<meta property="og:image" content="https://pasqualecamelia.github.io/assets/og_image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:url" content="https://pasqualecamelia.github.io/"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://pasqualecamelia.github.io/assets/og_image.png"/>
+<link rel="icon" type="image/png" sizes="48x48" href="favicon.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafaf8; --bg2:#f2f0eb; --bg3:#e8e5de;
+  --text:#1a1916; --text2:#5a5852; --text3:#8a8880;
+  --blue:#1a3a6b; --blue2:#2554a0; --blue3:#e8eef8;
+  --gold:#7a5a10; --gold2:#f5edda;
+  --green:#1a5a3a; --green2:#e0f0e8;
+  --red:#7a1a1a; --red2:#f5e0e0;
+  --xi:#1a5a3a; --eta:#a0560a;
+  --border:#d8d4c8; --radius:8px;
+  --mono:'JetBrains Mono','Fira Mono','Courier New',monospace;
+  --serif:'Georgia','Times New Roman',serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#181714; --bg2:#221f1b; --bg3:#2c2924;
+    --text:#e8e4dc; --text2:#a09890; --text3:#706860;
+    --blue:#8ab4f8; --blue2:#5090e0; --blue3:#1a2840;
+    --gold:#e0b860; --gold2:#2a2010;
+    --green:#60c090; --green2:#102820;
+    --red:#f09090; --red2:#280808;
+    --xi:#60c090; --eta:#e0a860;
+    --border:#383430;
+  }
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);
+  font-size:16px;line-height:1.72;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 1.6rem}
+code,.mono{font-family:var(--mono)}
+a{color:var(--blue2);text-decoration:none}
+a:hover{text-decoration:underline}
+header.top{border-bottom:1px solid var(--border);background:var(--bg);padding:2.4rem 0 1.6rem}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3)}
+h1.title{font-size:2.3rem;line-height:1.15;margin:.5rem 0 .3rem;font-weight:600}
+.subtitle{font-size:1.05rem;color:var(--text2);max-width:60ch}
+.byline{font-family:var(--mono);font-size:.8rem;color:var(--text3);margin-top:1rem}
+nav.toc{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);padding:.55rem 0;overflow-x:auto}
+nav.toc .wrap{display:flex;gap:.3rem;flex-wrap:nowrap}
+nav.toc a{font-family:var(--mono);font-size:.72rem;color:var(--text2);padding:.3rem .6rem;border-radius:5px;white-space:nowrap}
+nav.toc a:hover{background:var(--bg2);color:var(--text);text-decoration:none}
+section{padding:2.6rem 0;border-bottom:1px solid var(--border)}
+h2{font-size:1.55rem;font-weight:600;margin-bottom:.4rem;display:flex;align-items:baseline;gap:.6rem}
+h2 .num{font-family:var(--mono);font-size:.85rem;color:var(--text3);font-weight:400}
+h3{font-size:1.12rem;font-weight:600;margin:1.4rem 0 .4rem;color:var(--text)}
+.lead{font-size:1.05rem;color:var(--text2);margin-bottom:1rem;max-width:68ch}
+p{margin:.7rem 0;max-width:72ch}
+.eq{font-family:var(--mono);font-size:.9rem;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.7rem 1rem;margin:1rem 0;overflow-x:auto;color:var(--text)}
+.eq .c{color:var(--text3)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1.4rem 0}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem}
+.card h4{font-size:1rem;font-weight:600;margin-bottom:.3rem}
+.card p{font-size:.9rem;color:var(--text2);margin:.3rem 0;max-width:none}
+.card .layer{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.card a.go{display:inline-block;margin-top:.7rem;font-family:var(--mono);font-size:.76rem;padding:.35rem .7rem;border:1px solid var(--border);border-radius:5px;color:var(--blue2)}
+.card a.go:hover{background:var(--blue3);text-decoration:none}
+.layers{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem}
+.layers th,.layers td{text-align:left;padding:.5rem .7rem;border-bottom:1px solid var(--border);vertical-align:top}
+.layers th{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.layers td.n{font-family:var(--mono);color:var(--gold);width:2.2rem}
+.layers td.m{font-family:var(--mono);font-size:.8rem;color:var(--text2)}
+.badge{display:inline-block;font-family:var(--mono);font-size:.66rem;padding:.12rem .5rem;border-radius:4px;letter-spacing:.05em}
+.badge.A{background:var(--green2);color:var(--green)}
+.badge.B{background:var(--gold2);color:var(--gold)}
+.badge.O{background:var(--red2);color:var(--red)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;margin:1.2rem 0}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.8rem .9rem;text-align:center}
+.metric .v{font-family:var(--mono);font-size:1.15rem;color:var(--blue2);font-weight:600}
+.metric .l{font-size:.72rem;color:var(--text2);margin-top:.2rem}
+.viz{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin:1.3rem 0}
+.viz canvas{width:100%;display:block;border-radius:5px}
+.viz .cap{font-family:var(--mono);font-size:.72rem;color:var(--text3);margin-top:.6rem;text-align:center}
+.ctrl{display:flex;align-items:center;gap:.7rem;margin:.6rem 0;flex-wrap:wrap;font-family:var(--mono);font-size:.76rem;color:var(--text2)}
+.ctrl input[type=range]{flex:1;min-width:120px;accent-color:var(--blue2)}
+.ctrl .val{color:var(--blue2);min-width:3.5rem;text-align:right}
+
+.hero-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.25rem}
+.btn-main{display:inline-block;font-family:var(--mono);font-size:.78rem;
+  padding:.55rem .95rem;border:1px solid var(--border);border-radius:6px;color:var(--blue2);
+  background:var(--bg2);text-decoration:none}
+.btn-main:hover{background:var(--blue3);text-decoration:none}
+.btn-main.amazon{background:#ff9900;border-color:#e68a00;color:#17120a;font-weight:600}
+.btn-main.amazon:hover{background:#ffb02e;color:#17120a}
+.book-spotlight{display:grid;grid-template-columns:minmax(170px,230px) 1fr;gap:1.4rem;
+  align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem;margin:1.2rem 0}
+.book-cover{width:100%;border-radius:8px;display:block;box-shadow:0 18px 40px rgba(0,0,0,.22);
+  background:#000}
+.book-kicker{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.25rem}
+.book-title{font-size:1.45rem;line-height:1.18;margin:.15rem 0 .6rem;font-weight:600}
+.book-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
+.book-small{font-family:var(--mono);font-size:.74rem;color:var(--text3);margin-top:.75rem}
+@media(max-width:700px){.book-spotlight{grid-template-columns:1fr}.book-cover{max-width:230px;margin:0 auto}}
+footer{padding:2.4rem 0 3rem;font-family:var(--mono);font-size:.78rem;color:var(--text3)}
+footer p{max-width:none;margin:.3rem 0}
+.note{font-size:.85rem;color:var(--text3);font-style:italic}
+.inlinecard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem 1.1rem;display:inline-block;margin-top:.6rem}
+/* ── launch additions ───────────────────────────────────── */
+section,#validators{scroll-margin-top:3.4rem}
+/* accordion sezioni tecniche */
+details.acc{border-bottom:1px solid var(--border);scroll-margin-top:3.4rem}
+details.acc>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:.6rem;
+  padding:1.45rem 0;font-size:1.45rem;font-weight:600;color:var(--text);user-select:none}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:'+';margin-left:auto;color:var(--text3);font-weight:400;
+  font-size:1.35rem;line-height:1;transition:transform .15s}
+details.acc[open]>summary::after{content:'\2212'}
+details.acc>summary:hover{color:var(--blue,#1a3a6b)}
+details.acc>.acc-body{padding:0 0 2.4rem}
+@media(max-width:640px){details.acc>summary{font-size:1.15rem;padding:1.1rem 0}}
+
+.tagline{font-family:var(--serif);font-style:italic;font-size:1.12rem;color:var(--gold);margin:.9rem 0 .2rem}
+.btn-main.watch{background:var(--blue3);border-color:var(--blue2);color:var(--blue2);font-weight:600}
+.btn-main.watch:hover{background:var(--blue2);color:var(--bg)}
+.watch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:1.2rem}
+.watch-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+.watch-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#000}
+.watch-card .wc-body{padding:.85rem 1rem 1rem}
+.watch-card h4{font-size:1.02rem;margin:0 0 .3rem}
+.watch-card p{font-size:.85rem;color:var(--text2);margin:0 0 .6rem}
+.watch-card .go{font-family:var(--mono);font-size:.76rem}
+.watch-card .wc-badge{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem}
+@media(max-width:760px){.watch-grid{grid-template-columns:1fr}}
+.editions{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1.2rem 0}
+.edition{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;display:grid;grid-template-columns:minmax(110px,150px) 1fr;gap:1rem;align-items:start}
+.edition img{width:100%;border-radius:6px;display:block;box-shadow:0 12px 28px rgba(0,0,0,.22);background:#000}
+.edition .ed-meta{font-family:var(--mono);font-size:.72rem;color:var(--text3);margin:.4rem 0 .7rem;line-height:1.6}
+.edition h4{font-size:1.05rem;line-height:1.25;margin:0}
+@media(max-width:860px){.editions{grid-template-columns:1fr}}
+@media(max-width:480px){.edition{grid-template-columns:1fr}.edition img{max-width:180px;margin:0 auto}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow">Interactive Companion</div>
+    <h1 class="title">The Quantum Gauge Theory of Time</h1>
+    <p class="subtitle">A companion to the monograph. Physics as the topology of a
+      finite-rank, non-invertible projection: how a single conservation law
+      <code>&part;<sub>I</sub>J<sup>I</sup>=0</code> unfolds into a six-layer qubit,
+      and how the gluing of those qubits &mdash; by phase synchronisation &mdash; builds
+      matter and spacetime.</p>
+    <div class="byline">Pasquale Camelia &middot; 2026 &middot; companion to the First Edition &nbsp;&middot;&nbsp; <a href="https://orcid.org/0009-0006-4779-4647" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:.35rem;font-family:var(--mono);font-size:.76rem;color:var(--text3);text-decoration:none;" title="ORCID profile"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID" width="16" height="16" style="vertical-align:middle"/>&nbsp;0009-0006-4779-4647</a></div>
+    <p class="tagline">Time is what the boundary reads when the kernel remembers.</p>
+    <div class="hero-actions">
+      <a class="btn-main amazon" href="https://www.amazon.com/dp/B0H4NWW5J4" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'EN_B0H4NWW5J4'});">Buy the English edition &rarr;</a>
+      <a class="btn-main amazon" href="https://www.amazon.it/dp/B0H4YXQHQT" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'IT_edition'});">Edizione italiana &rarr;</a>
+      <a class="btn-main watch" href="qgt_companion.html#hydrogen3d" onclick="gtag('event','watch_hydrogen_click',{'event_category':'engagement','event_label':'hero'});">Watch the hydrogen atom &mdash; 3D, real time &rarr;</a>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#book">Book</a>
+    <a href="#watch">Watch</a>
+    <a href="#thread">Thread</a>
+    <a href="#validators">Validators</a>
+    <a href="papers.html">Papers</a>
+    <a href="#tools">Tools</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="start">
+  <h2><span class="num">00</span>What this companion is</h2>
+  <p class="lead">The monograph derives physics from one structural fact. This site
+    lets you <em>run</em> that derivation: turn the dials, watch the breathing
+    flow, and check the validators against real data.</p>
+  <p>The starting point is a single conserved current on a bulk that the boundary
+    can only read through a projection <code>&Pi;</code> of rank five. Because
+    <code>&Pi;</code> is non-invertible, reading the bulk destroys information.
+    Everything observable &mdash; the metric, time, the gauge fields, the
+    fine-structure constant &mdash; is a necessary residual of that loss, not an
+    added ingredient.</p>
+  <div class="eq">
+    &part;<sub>I</sub>J<sup>I</sup> = 0
+    &nbsp;&rarr;&nbsp; non-invertible projection &Pi; (rank 5)
+    &nbsp;&rarr;&nbsp; projective cells
+    &nbsp;&rarr;&nbsp; coherent gluing
+    &nbsp;&rarr;&nbsp; &#8477;<sup>4</sup><sub>eff</sub> + GR + QED
+  </div>
+  <p class="note">No pre-existing spacetime. Holography is micro-local (each cell),
+    not global &mdash; the distinction from LQG and AdS/CFT is drawn in the
+    monograph's related-work appendix.</p>
+</section>
+
+<section id="book">
+  <h2><span class="num">00B</span>The book &mdash; two editions</h2>
+  <p class="lead">The monograph is the complete printed entry point to the QGT programme; the website remains the companion, the validator hub, and the public archive of papers and tools.</p>
+  <p><strong>The Standard Model describes the boundary. QGT asks why the boundary has that structure.</strong>
+    The book develops the programme from one Noetherian balance and one non-invertible projection:
+    the bulk conserves, the projection loses, the kernel remembers, and the boundary measures.</p>
+  <div class="editions">
+    <div class="edition">
+      <img src="assets/cover_en_front.jpg" alt="The Quantum Gauge Theory of Time — English edition cover" loading="lazy"/>
+      <div>
+        <div class="book-kicker">First Edition &middot; 2026 &middot; original</div>
+        <h4>The Quantum Gauge Theory of Time</h4>
+        <div class="ed-meta">The Majorana Qubit and the Structure of Physical Time<br>
+          648 pp &middot; print + Kindle<br>ISBN 9798198195011 &middot; ASIN B0H4NWW5J4</div>
+        <a class="btn-main amazon" href="https://www.amazon.com/dp/B0H4NWW5J4" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'EN_B0H4NWW5J4'});">Buy on Amazon &rarr;</a>
+      </div>
+    </div>
+    <div class="edition">
+      <img src="assets/cover_it_front.jpg" alt="La Teoria Quantistica di Gauge del Tempo — copertina edizione italiana" loading="lazy"/>
+      <div>
+        <div class="book-kicker">Prima edizione &middot; 2026 &middot; italiano</div>
+        <h4>La Teoria Quantistica di Gauge del Tempo</h4>
+        <div class="ed-meta">Il qubit di Majorana e la struttura del tempo fisico<br>
+          432 pp &middot; cartaceo + Kindle Print Replica a colori<br>ISBN 9798181307070</div>
+        <a class="btn-main amazon" href="https://www.amazon.it/dp/B0H4YXQHQT" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'IT_edition'});">Compra su Amazon.it &rarr;</a>
+      </div>
+    </div>
+  </div>
+  <p class="note">Twin editions: the English text is the original; the Italian edition is an
+    autonomous voice of the same monograph &mdash; same structural chain, independently typeset,
+    with its own plates and synoptic table.</p>
+  <div class="book-actions">
+    <a class="btn-main" href="papers.html">Read the research papers</a>
+  </div>
+</section>
+
+<section id="watch">
+  <h2><span class="num">00C</span>Watch</h2>
+  <p class="lead">Three animations, straight from the structural chain. No installation:
+    they run in this browser.</p>
+  <div class="watch-grid">
+    <div class="watch-card">
+      <a href="qgt_companion.html#hydrogen3d" onclick="gtag('event','watch_hydrogen_click',{'event_category':'engagement','event_label':'watch_section'});"><img src="assets/thumb_hydrogen3d.jpg" alt="Hydrogen 3D — real-time dynamics" loading="lazy"/></a>
+      <div class="wc-body">
+        <div class="wc-badge">demonstrated &middot; real time</div>
+        <h4>Hydrogen 3D</h4>
+        <p>Split-operator Schr&ouml;dinger evolution on a 32&sup3; grid: |1s&#10217;+|2p<sub>z</sub>&#10217; under the QGT potential with sech&sup2; back-action and breathing modulation. One loop = 290 attoseconds of real electron dynamics &mdash; a full charge-migration stroke, computed live.</p>
+        <a class="go" href="qgt_companion.html#hydrogen3d">Open Hydrogen 3D &rarr;</a>
+      </div>
+    </div>
+    <div class="watch-card">
+      <a href="qgt_breathing_3d.html"><img src="assets/thumb_breathing3d.jpg" alt="Breathing flow in 3D on the Majorana sphere" loading="lazy"/></a>
+      <div class="wc-body">
+        <div class="wc-badge">layer 3</div>
+        <h4>Breathing 3D</h4>
+        <p>The shell oscillating between the two domain walls on S&sup2;<sub>&chi;</sub> &mdash; the phase &theta;=gd(&Gamma;<sub>&tau;</sub>t) that every cell carries.</p>
+        <a class="go" href="qgt_breathing_3d.html">Open Breathing 3D &rarr;</a>
+      </div>
+    </div>
+    <div class="watch-card">
+      <a href="qgt_animation_v4.html"><img src="assets/thumb_lissajous.jpg" alt="Lissajous classes of the temporal fibre" loading="lazy"/></a>
+      <div class="wc-body">
+        <div class="wc-badge">layers 1&ndash;4</div>
+        <h4>Temporal fibre &amp; Lissajous</h4>
+        <p>The chiral doublet winding on the lock-in surface; the four admissible anyon classes of TL&#8324;(&phi;).</p>
+        <a class="go" href="qgt_animation_v4.html">Open animation &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <h2><span class="num">01</span>The qubit — visualised</h2>
+  <p class="lead">The self-similar hierarchy of the QGT elementary qubit. Each luminous node is a
+    topological attractor O_top (the B₃-protected palindromic centre). The filaments are
+    Fibonacci worldlines; the dark internode regions are the kernel — gravitationally active,
+    metrologically invisible. These images are in colour for the companion; the monograph
+    prints them in greyscale.</p>
+  <div style="display:flex;flex-direction:column;gap:1.2rem;margin-top:1.4rem;">
+    <div style="display:flex;flex-wrap:wrap;gap:1.2rem;justify-content:center;align-items:flex-start;">
+      <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
+        <img src="qubit_cover_hires.jpg" alt="QGT elementary qubit — cover" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;">
+        <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+          The elementary qubit Q_x — cover image of the monograph.
+          DW₁ (equator, θ=π/2): the white ring — the present, t=0.
+          DW₂ (lower pole, θ=π/11): the pink node — far boundary of the observable slab.
+          Gold filament: S¹_χ(τ), the compact internal chiral fibre.
+          Blue rings: five admissible modes of the rank-5 projection.
+        </figcaption>
+      </figure>
+      <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
+        <img src="copertina_quibit2.png" alt="QGT Majorana qubit — spinorial structure" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;">
+        <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+          The Majorana qubit on S²_χ. The kernel (dark centre) is what Π cannot see;
+          the luminous equatorial ring is the boundary — the present.
+          The filaments are Fibonacci worldlines carrying the five admissible modes.
+        </figcaption>
+      </figure>
+      
+    <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
+        <a href="G1_qubit_color.png" target="_blank" rel="noopener" title="Open full image"><img src="G1_qubit_color.png" alt="QGT qubit spacetime G1" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;"></a>
+      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+        G1 — The gluing network. Observable slab: five Lyapunov basins connected by coherent Noether flux.
+        Blue filaments = boundary channels; dark voids = ker Π.
+      </figcaption>
+    </figure>
+    <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
+        <a href="G2_qubit_color.png" target="_blank" rel="noopener" title="Open full image"><img src="G2_qubit_color.png" alt="QGT qubit spacetime G2" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;"></a>
+      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+        G2 — The palindromic hierarchy. Golden filaments = Fibonacci tower N_int(k) = F_{2k+5}.
+        Warm nodes = PLL cascade α_k = α·10^k, k = 0…4. The kernel internode is gravitationally active.
+      </figcaption>
+    </figure>
+    <figure style="margin:0;text-align:center;flex:1;min-width:260px;max-width:380px;">
+        <a href="G3_qubit_color.png" target="_blank" rel="noopener" title="Open full image"><img src="G3_qubit_color.png" alt="QGT qubit spacetime G3" style="width:100%;height:380px;object-fit:cover;border-radius:8px;display:block;"></a>
+      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+        G3 — The topological attractor O_top at the centre: the B₃-protected spinorial fixed point
+        of the breathing recursion, B★ = 8. Violet rings = Lyapunov basin boundary.
+        This is what every elementary qubit carries at its core.
+      </figcaption>
+    </figure>
+    </div>
+    <figure style="margin:0;text-align:center;">
+      <img src="fig_phasor_geometry.png" alt="Heegner partition — phasor geometry" style="width:100%;border-radius:8px;display:block;">
+      <figcaption style="font-size:.78rem;color:var(--text2);margin-top:.5rem;font-family:var(--mono);">
+        The Heegner partition H = H_bdy ∪ H_ker ∪ {163} realised geometrically.
+        Left: the nine class-number-one phasors on S¹_χ. Fields with N_d² ≤ 3 (d ∈ {1,2,3,7,11})
+        close their holonomy on the circle — pure boundary phasors.
+        Right: fields with N_d² &gt; 5 (d ∈ {19,43,67}) require a Majorana lift to S²_χ —
+        the three matter generations. The field d=163 (N²=41) admits no admissible lift:
+        Baker–Stark terminus, arithmetic boundary of the kernel.
+        Bottom bar: collapse threshold r=5 · lift window · terminus.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<details class="acc" id="thread"><summary><span class="num">02</span>The thread, in one read</summary><div class="acc-body">
+  
+  <p class="lead">Five steps take you from the conservation law to a hydrogen atom.
+    Each is a chapter; each has a tool here.</p>
+  <table class="layers">
+    <tr><th>step</th><th>what happens</th><th>structural object</th></tr>
+    <tr><td class="n">1</td><td>The boundary reads the bulk through a rank-five projection; information is lost.</td><td class="m">&Pi;, ker&Pi; &ne; 0</td></tr>
+    <tr><td class="n">2</td><td>The two surviving channels breathe on a locked surface, conserving one product.</td><td class="m">&xi;&eta; = &alpha;<sup>&minus;1</sup></td></tr>
+    <tr><td class="n">3</td><td>Each cell becomes a shell with a single phase that advances at the tick rate.</td><td class="m">&theta; = gd(&Gamma;<sub>&tau;</sub>t)</td></tr>
+    <tr><td class="n">4</td><td>Two cells glue when their shell phases lock &mdash; the boundary current cancels.</td><td class="m">|&delta;&omega;| &le; K</td></tr>
+    <tr><td class="n">5</td><td>The first stable lock is a bound proton&ndash;electron pair: hydrogen.</td><td class="m">B&#8902; = 8</td></tr>
+  </table>
+</div></details>
+
+<details class="acc" id="qubit"><summary><span class="num">03</span>The six-layer qubit</summary><div class="acc-body">
+  
+  <p class="lead">The elementary object is not a point. It is a layered structure,
+    each layer carrying its own algebra, symmetry, and physical readout.</p>
+  <table class="layers">
+    <tr><th>#</th><th>layer</th><th>algebra</th><th>symmetry</th><th>reads out</th></tr>
+    <tr><td class="n">1</td><td>core S&sup1;<sub>&chi;</sub>(&tau;)</td><td class="m">Heegner</td><td class="m">U(1)<sub>&tau;</sub></td><td>pre-physical phase</td></tr>
+    <tr><td class="n">2</td><td>kernel ker&Pi;</td><td class="m">Eichler / Ramanujan</td><td class="m">SU(3)<sub>c</sub></td><td>matter / memory</td></tr>
+    <tr><td class="n">3</td><td>sphere S&sup2;<sub>&chi;</sub></td><td class="m">Majorana / Clifford</td><td class="m">SU(2)<sub>&xi;</sub></td><td>spin / CPT</td></tr>
+    <tr><td class="n">4</td><td>shell DW&#8321;+DW&#8322;</td><td class="m">Fibonacci / TL / B&#8323;</td><td class="m">rank 5</td><td>zero mode</td></tr>
+    <tr><td class="n">5</td><td>slab DW&#8321;&minus;DW&#8322;</td><td class="m">SVD / Hardy / Pincherle</td><td class="m">U(1)<sub>&eta;</sub></td><td>QM / QED / GR / &alpha;</td></tr>
+    <tr><td class="n">6</td><td>gluing</td><td class="m">Mellin / FMT</td><td class="m">SM gauge</td><td>&#8477;<sup>4</sup><sub>eff</sub> / EPR=ER</td></tr>
+  </table>
+  <p>Layer 5 is the only one where the projection actually discretises; layer 6 is
+    where many cells synchronise. The interactive Lissajous / temporal-fibre view
+    shows layers 1&ndash;4 in motion.</p>
+  <div class="cards">
+    <div class="card">
+      <div class="layer">layers 1&ndash;4</div>
+      <h4>Temporal fibre &amp; Lissajous</h4>
+      <p>The chiral doublet winding on the lock-in surface; the four admissible
+        anyon classes of TL&#8324;(&phi;).</p>
+      <a class="go" href="qgt_animation_v4.html">Open animation &rarr;</a>
+    </div>
+    <div class="card">
+      <div class="layer">layer 3</div>
+      <h4>Breathing in 3D</h4>
+      <p>The shell oscillating between the two domain walls on S&sup2;<sub>&chi;</sub>.</p>
+      <a class="go" href="qgt_breathing_3d.html">Open 3D view &rarr;</a>
+    </div>
+    <div class="card">
+      <div class="layer">layer 6</div>
+      <h4>Coherent gluing</h4>
+      <p>ℳ⁵ = 𝒳_bdy × S¹_χ(τ): the projection structure, domain walls, and emergence of ℝ⁴_eff.</p>
+      <a class="go" href="M5_toroide_QGT.svg">Open diagram &rarr;</a>
+    </div>
+  </div>
+</div></details>
+
+<details class="acc" id="breathing"><summary><span class="num">04</span>The breathing flow</summary><div class="acc-body">
+  
+  <p class="lead">On the lock-in surface the two channels rotate hyperbolically. Their
+    product never changes; their ratio does. That conserved product is
+    &alpha;<sup>&minus;1</sup>.</p>
+  <div class="eq">
+    &xi;&#775; = &minus;&Gamma;<sub>&tau;</sub>&xi;,&nbsp;&nbsp;
+    &eta;&#775; = +&Gamma;<sub>&tau;</sub>&eta;,&nbsp;&nbsp;
+    &xi;&eta; = &alpha;<sup>&minus;1</sup>,&nbsp;&nbsp;
+    &Gamma;<sub>&tau;</sub> = &phi;/&radic;5
+    <span class="c">&nbsp;&nbsp;// the tick rate</span>
+  </div>
+  <p>Written as a single angle, the breathing <em>is</em> a phase:
+    <code>&theta;(t)=gd(&Gamma;<sub>&tau;</sub>t)</code>, with
+    <code>sech&sup2;&theta; + tanh&sup2;&theta; = 1</code>. This is what makes each
+    cell a phase oscillator &mdash; the fact the gluing needs.</p>
+  <div class="viz">
+    <div class="ctrl">
+      <span>t&middot;&Gamma;<sub>&tau;</sub> range</span>
+      <input id="brT" type="range" min="3" max="9" step="0.5" value="6">
+      <span class="val" id="brTv">6.0</span>
+    </div>
+    <canvas id="brCanvas" height="300"></canvas>
+    <div class="cap">&xi; (green) decays, &eta; (gold) grows, product &xi;&eta;=&alpha;<sup>&minus;1</sup> stays flat; &theta;=gd(&Gamma;<sub>&tau;</sub>t) is the shell phase.</div>
+  </div>
+  <p class="inlinecard">For the full interactive verifier (constants, soliton,
+    cascade, spectrum) open the
+    <a href="qgt_companion.html"><strong>QGT Companion simulator &rarr;</strong></a></p>
+</div></details>
+
+<details class="acc" id="gluing"><summary><span class="num">05</span>Gluing is phase synchronisation</summary><div class="acc-body">
+  
+  <p class="lead">Two cells glue when their shell phases lock. The boundary current
+    that must cancel is the imaginary overlap of the two shell amplitudes read in the
+    quantum Fibonacci&ndash;Mellin basis &mdash; so the sine is a current, not an
+    assumed force.</p>
+  <div class="eq">
+    &Phi;<sub>xy</sub> = Im&#10216;&#8497;<sub>&phi;</sub>&psi;<sub>x</sub>, &#8497;<sub>&phi;</sub>&psi;<sub>y</sub>&#10217; = sin(&theta;<sub>y</sub>&minus;&theta;<sub>x</sub>)
+    <br>&Delta;&#775; = &delta;&omega; &minus; K&middot;sin&Delta;,&nbsp;&nbsp; &Delta;=&theta;<sub>y</sub>&minus;&theta;<sub>x</sub>
+    <span class="c">&nbsp;&nbsp;// gluing &hArr; |&delta;&omega;| &le; K</span>
+  </div>
+  <p>If <code>|&delta;&omega;| &le; K</code> the phase difference settles at a fixed
+    point <code>sin&Delta;&#8902;=&delta;&omega;/K</code>, the normal flux cancels
+    dynamically, and the lock-in invariant is transported across the pair. Above
+    threshold the phase drifts and the cells never glue. This turns gluing-condition 5
+    of the monograph from a static constraint into a dynamical transition.</p>
+  <div class="viz">
+    <div class="ctrl">
+      <span>&delta;&omega;/K</span>
+      <input id="glR" type="range" min="0" max="1.6" step="0.02" value="0.3">
+      <span class="val" id="glRv">0.30</span>
+    </div>
+    <canvas id="glCanvas" height="280"></canvas>
+    <div class="cap">Below threshold &Delta; locks to &Delta;&#8902; (blue line); above 1.0 it drifts forever (no gluing).</div>
+  </div>
+  <p class="note">The reduced equation belongs to the known class of phase-locking
+    equations; in QGT the phases, oscillators and coupling are <em>fixed by the
+    projection</em>, not postulated.</p>
+</div></details>
+
+<div id="validators" aria-hidden="true"></div>
+<details class="acc" id="hydrogen"><summary><span class="num">06</span>Hydrogen &mdash; the first lock</summary><div class="acc-body">
+  
+  <p class="lead">Hydrogen is the first place the whole chain closes into a stable,
+    neutral, measurable object: a proton (k=0) and electron (k=2) whose shells
+    phase-lock at the breathing fixed point B&#8902;=8.</p>
+  <p>Both inputs are fixed, nothing is tuned. The detuning is the irreducible margin
+    <code>&delta;&omega;=&Gamma;<sub>&tau;</sub>&delta;<sub>F</sub></code>; the coupling
+    is the shared kernel-ribbon measure
+    <code>K=&Gamma;<sub>&tau;</sub>&middot;dim(T&#8328;)/dim(B&#8321;&#8323;)=&Gamma;<sub>&tau;</sub>&middot;8/13</code>.
+    The result is a deep sub-threshold lock with a tiny but non-zero residual phase
+    &mdash; the arrow of time.</p>
+  <div class="metrics">
+    <div class="metric"><div class="v">5.6&times;10<sup>&minus;3</sup></div><div class="l">&delta;&omega;/K (sub-threshold)</div></div>
+    <div class="metric"><div class="v">13/8</div><div class="l">sin&Delta;&#8902;/&delta;<sub>F</sub> = dim B&#8321;&#8323;/dim T&#8328; (exact)</div></div>
+    <div class="metric"><div class="v">+0.032 ppm</div><div class="l">a&#8320; vs CODATA</div></div>
+    <div class="metric"><div class="v">&minus;0.033 ppm</div><div class="l">R<sub>&infin;</sub> vs CODATA</div></div>
+  </div>
+  <p>The residual margin satisfies
+    <code>sin&Delta;&#8902;=(13/8)&middot;&delta;<sub>F</sub></code> exactly
+    (so <code>&Delta;&#8902;&asymp;(13/8)&delta;<sub>F</sub></code> to first order) &mdash; the
+    irreducible gap amplified by the ribbon ratio. It is not imposed; it falls out of
+    the kernel structure. <span class="badge A">P</span> for the structural lock
+    and the metrology; the coupling normalisation is closed by the ribbon measure.</p>
+  <p class="note">Scope: this validates the <em>gluing mechanism</em> on the hydrogen
+    channel &mdash; the dynamical phase lock of the first closed boundary composite.
+    The Bohr&ndash;Rydberg figures are a metrological cross-check, not a derivation of
+    the standard Coulomb bond.</p>
+  <div class="cards">
+    <div class="card">
+      <div class="layer">dynamic</div>
+      <h4>Hydrogen in 3D</h4>
+      <p>Split-operator evolution of the 1s state under the QGT potential
+        (Coulomb + sech&sup2; kernel back-action + breathing modulation).</p>
+      <a class="go" href="qgt_companion.html#hydrogen">Open simulator &rarr;</a>
+    </div>
+    <div class="card">
+      <div class="layer">validator</div>
+      <h4>The lock test (CamH)</h4>
+      <p>Three checks: convergence to &Delta;&#8902;, loss of lock above threshold,
+        residual margin &prop; &delta;<sub>F</sub>.</p>
+      <a class="go" href="qgt_companion.html#spectrum">H spectrum vs CODATA &rarr;</a>
+    </div>
+  </div>
+</div></details>
+
+<details class="acc" id="cmb"><summary><span class="num">07</span>CMB &mdash; the cosmological lock</summary><div class="acc-body">
+  
+  <p class="lead">The same gluing, read at cosmological scale, fixes the acoustic peak
+    ladder and the cosmological parameters from structural numbers alone &mdash; no
+    cosmological fit.</p>
+  <div class="eq">
+    &ell;<sub>k</sub> = &sigma;&middot;(k&phi; + (k&minus;1)/&phi;),&nbsp;&nbsp;
+    &sigma; = &alpha;<sub>phys</sub><sup>&minus;1</sup> = 137.036
+    <span class="c">&nbsp;&nbsp;// peak ladder</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="v">1.6%</div><div class="l">RMS, 6 acoustic peaks</div></div>
+    <div class="metric"><div class="v">1.179</div><div class="l">&chi;&sup2;/&nu; vs Planck PR3</div></div>
+    <div class="metric"><div class="v">0.02&sigma;</div><div class="l">n<sub>s</sub> = 1&minus;4&pi;&epsilon;&#8321;&#8326;&#8323;</div></div>
+    <div class="metric"><div class="v">&radic;5/100</div><div class="l">&Omega;<sub>b</sub>h&sup2; (exact)</div></div>
+  </div>
+  <p>Structural inputs: <code>n<sub>s</sub>=0.96482</code>,
+    <code>&Omega;<sub>b</sub>h&sup2;=&radic;5/100</code>,
+    <code>&Omega;<sub>c</sub>h&sup2;=1/(5&phi;)</code>, <code>&tau;=7/130</code>,
+    <code>A<sub>s</sub>=2.101&times;10<sup>&minus;9</sup></code>. H&#8320;&#8771;67.9 is
+    a strong <span class="badge B">B&#x207A;</span> readout; the rest are
+    <span class="badge A">P</span>. The diagnostic &chi;&sup2; uses diagonal
+    Planck errors &mdash; not the official likelihood.</p>
+  <div class="viz">
+    <canvas id="cmbCanvas" height="300"></canvas>
+    <div class="cap">Structural peak ladder &ell;<sub>k</sub> against the six Planck Table-5 positions (markers).</div>
+  </div>
+</div></details>
+
+
+
+
+<details class="acc" id="alpha"><summary><span class="num">08</span>Alpha module</summary><div class="acc-body">
+  
+  <p class="lead">The public entry point for the α verification block is the companion-site module:</p>
+  <div class="cards">
+    <div class="card">
+      <h4>Alpha module</h4>
+      <p><a class="go" href="qgt_companion.html#alpha-module">https://pasqualecamelia.github.io/qgt_companion.html#alpha-module</a></p>
+    </div>
+  </div>
+</div></details>
+
+<section id="tools">
+  <h2><span class="num">09</span>Run it yourself</h2>
+  <p class="lead">Everything here is reproducible. The Python companion verifies all
+    structural identities and runs the dynamic hydrogen simulation.</p>
+  <div class="cards">
+    <div class="card">
+      <h4>QGT Companion (web)</h4>
+      <p>Interactive verifier: constants, breathing, soliton, hydrogen, spectrum,
+        the &alpha;<sup>&minus;1</sup> cascade, the filter.</p>
+      <a class="go" href="qgt_companion.html">Open &rarr;</a>
+    </div>
+    <div class="card">
+      <h4>Alpha validator</h4>
+      <p>Standalone verification of the self-consistent α-chain and sensitivity table.</p>
+      <a class="go" href="alpha_check.py">View source →</a>
+    </div>
+    <div class="card">
+      <h4>qgt_simulator.py</h4>
+      <p>Command-line: <code>verify</code>, <code>hydrogen</code>, <code>all --plot</code>.
+        Real CMB validation via CAMB or pre-computed curves.</p>
+      <a class="go" href="qgt_simulator.py">View source &rarr;</a>
+    </div>
+    <div class="card">
+      <h4>Animations</h4>
+      <p>Temporal fibre &amp; Lissajous solitons, breathing in 2D/3D.</p>
+      <a class="go" href="qgt_animation_v4.html">Lissajous &rarr;</a>
+      <a class="go" href="qgt_breathing_3d.html">Breathing 3D &rarr;</a>
+    </div>
+  </div>
+  <p class="note">Install: <code>pip install numpy scipy matplotlib</code> (and
+    <code>camb</code> for live CMB spectra). Tested on Python 3.10&ndash;3.12.</p>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; 2026 Pasquale Camelia &mdash; <em>The Quantum Gauge Theory of Time</em>, First Edition (Camelia 2026, KDP &mdash; ISBN&nbsp;9798198195011).</p>
+    <p>Scientific content and theoretical results: all rights reserved. Reproduction requires written permission.</p>
+    <p>Interactive companion code released under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.</p>
+    <p class="note">Epistemic status follows the monograph: A&nbsp;=&nbsp;structural/derived &middot; B&nbsp;=&nbsp;strong structural readout &middot; O&nbsp;=&nbsp;open gate. Diagnostic comparisons are stated as such.</p>
+  </div>
+</footer>
+
+<script>
+const PHI = (1+Math.sqrt(5))/2, GT = PHI/Math.sqrt(5);
+const ALPHA_INV_PHYS = 137.036, DELTA_F = 1 - 3*Math.PI/Math.pow(2*Math.sqrt(5),1.5);
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function fit(c){const d=Math.max(c.parentElement.clientWidth-32,0); if(d>0)c.width=d; return d;}
+
+function drawBreathing(){
+  const c=document.getElementById('brCanvas'), W=fit(c); if(!W)return; const H=300, ctx=c.getContext('2d');
+  c.height=H; ctx.clearRect(0,0,W,H);
+  const T=parseFloat(document.getElementById('brT').value);
+  document.getElementById('brTv').textContent=T.toFixed(1);
+  const ai=137.082, x0=Math.sqrt(ai), pad=44;
+  const tx=t=>pad+(t/T)*(W-pad-12), ymax=x0*Math.exp(GT*T)*1.05;
+  const ty=y=>H-30-(y/ymax)*(H-50);
+  ctx.strokeStyle=css('--border'); ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(pad,ty(0)); ctx.lineTo(W-12,ty(0)); ctx.stroke();
+  ctx.strokeStyle=css('--text3'); ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(pad,ty(ai)); ctx.lineTo(W-12,ty(ai)); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle=css('--text3'); ctx.font='10px '+css('--mono');
+  ctx.fillText('xi.eta=a^-1',W-90,ty(ai)-5);
+  const draw=(f,col)=>{ctx.strokeStyle=col;ctx.lineWidth=2;ctx.beginPath();
+    for(let i=0;i<=200;i++){const t=T*i/200,y=f(t);i?ctx.lineTo(tx(t),ty(y)):ctx.moveTo(tx(t),ty(y));}ctx.stroke();};
+  draw(t=>x0*Math.exp(-GT*t),css('--xi'));
+  draw(t=>x0*Math.exp(+GT*t),css('--eta'));
+  ctx.strokeStyle=css('--blue2');ctx.lineWidth=1.5;ctx.setLineDash([5,3]);ctx.beginPath();
+  for(let i=0;i<=200;i++){const t=T*i/200,th=2*Math.atan(Math.tanh(GT*t/2));
+    const yy=H-30-((th/(Math.PI/2))*0.5)*(H-50);
+    i?ctx.lineTo(tx(t),yy):ctx.moveTo(tx(t),yy);}ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=css('--xi');ctx.fillText('xi',tx(T*0.5),ty(x0*Math.exp(-GT*T*0.5))-6);
+  ctx.fillStyle=css('--eta');ctx.fillText('eta',tx(T*0.85),ty(x0*Math.exp(GT*T*0.85))-6);
+  ctx.fillStyle=css('--blue2');ctx.fillText('theta=gd(Gt t)',tx(T*0.52),H-52);
+}
+
+function drawGluing(){
+  const c=document.getElementById('glCanvas'),W=fit(c); if(!W)return; const H=280,ctx=c.getContext('2d');
+  c.height=H;ctx.clearRect(0,0,W,H);
+  const ratio=parseFloat(document.getElementById('glR').value);
+  document.getElementById('glRv').textContent=ratio.toFixed(2);
+  const K=1.0, dw=ratio*K, pad=40, Tmax=20, dt=0.01;
+  const tx=t=>pad+(t/Tmax)*(W-pad-12);
+  const ty=d=>H-26-((d+Math.PI)/(2.2*Math.PI))*(H-46);
+  ctx.strokeStyle=css('--border');ctx.beginPath();ctx.moveTo(pad,ty(0));ctx.lineTo(W-12,ty(0));ctx.stroke();
+  if(ratio<=1){const ds=Math.asin(dw/K);
+    ctx.strokeStyle=css('--blue2');ctx.setLineDash([4,4]);ctx.beginPath();
+    ctx.moveTo(pad,ty(ds));ctx.lineTo(W-12,ty(ds));ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=css('--blue2');ctx.font='10px '+css('--mono');
+    ctx.fillText('D*='+ds.toFixed(3),W-86,ty(ds)-5);}
+  [[2.5,'--xi'],[-2.0,'--eta'],[0.6,'--gold']].forEach(p=>{
+    const D0=p[0],col=p[1];
+    ctx.strokeStyle=css(col);ctx.lineWidth=1.6;ctx.beginPath();
+    let D=D0;for(let t=0;t<=Tmax;t+=dt){const wD=((D+Math.PI)%(2*Math.PI))-Math.PI;
+      (t===0)?ctx.moveTo(tx(t),ty(wD)):ctx.lineTo(tx(t),ty(wD));
+      D+=dt*(dw-K*Math.sin(D));}ctx.stroke();});
+  ctx.fillStyle=ratio<=1?css('--green'):css('--red');
+  ctx.font='11px '+css('--mono');
+  ctx.fillText(ratio<=1?'LOCK (gluing)':'DRIFT (no gluing)',pad+4,18);
+}
+
+function drawCMB(){
+  const c=document.getElementById('cmbCanvas'),W=fit(c); if(!W)return; const H=300,ctx=c.getContext('2d');
+  c.height=H;ctx.clearRect(0,0,W,H);
+  const planck=[220.6,538.1,809.8,1147.8,1446.8,1779.0];
+  const amp=[5733,2586,2518,1227,799,378], pad=46, Lmax=2000, Amax=6200;
+  const tx=l=>pad+(l/Lmax)*(W-pad-14), ty=a=>H-28-(a/Amax)*(H-48);
+  ctx.strokeStyle=css('--border');ctx.beginPath();ctx.moveTo(pad,ty(0));ctx.lineTo(W-14,ty(0));ctx.stroke();
+  ctx.font='10px '+css('--mono');ctx.fillStyle=css('--text3');
+  ctx.fillText('l',W-20,ty(0)+16);ctx.fillText('Dl',6,ty(Amax)+4);
+  for(let k=1;k<=6;k++){const lk=ALPHA_INV_PHYS*(k*PHI+(k-1)/PHI);
+    ctx.strokeStyle=css('--blue2');ctx.setLineDash([3,3]);ctx.beginPath();
+    ctx.moveTo(tx(lk),ty(0));ctx.lineTo(tx(lk),ty(Amax*0.96));ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=css('--blue2');ctx.fillText('l'+k,tx(lk)-7,ty(Amax*0.99));}
+  planck.forEach((l,i)=>{ctx.fillStyle=css('--gold');
+    ctx.beginPath();ctx.arc(tx(l),ty(amp[i]),4,0,2*Math.PI);ctx.fill();});
+  ctx.fillStyle=css('--gold');ctx.font='10px '+css('--mono');
+  ctx.fillText('o Planck Table-5 peaks',pad+4,18);
+  ctx.fillStyle=css('--blue2');ctx.fillText('| structural lk',pad+180,18);
+}
+
+function redraw(){drawBreathing();drawGluing();drawCMB();}
+document.getElementById('brT').addEventListener('input',drawBreathing);
+document.getElementById('glR').addEventListener('input',drawGluing);
+window.addEventListener('resize',redraw);
+// accordion: apri su navigazione, ridisegna i canvas quando si apre
+function openAcc(id){
+  var map={validators:'hydrogen'}; id=map[id]||id;
+  var d=document.getElementById(id);
+  if(d&&d.tagName==='DETAILS'&&!d.open){d.open=true; setTimeout(redraw,30);}
+}
+window.addEventListener('hashchange',function(){openAcc(location.hash.slice(1));});
+if(location.hash) openAcc(location.hash.slice(1));
+document.querySelectorAll('details.acc').forEach(function(d){
+  d.addEventListener('toggle',function(){ if(d.open) setTimeout(redraw,30); });
+});
+
+redraw();
+</script>
+</body>
+</html>
