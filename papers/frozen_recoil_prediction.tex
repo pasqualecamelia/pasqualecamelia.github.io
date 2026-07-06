@@ -1,0 +1,214 @@
+\documentclass[11pt]{article}
+
+% -------------------------------------------------------------------
+% Standalone preregistration note. Self-contained: no dependency on the
+% Second-Edition macros, so it preregisters on its own. It EXTRACTS and
+% QUOTES the frozen register (rd:s:frozen) and Appendix G of QGT r26.9;
+% it does not alter the frozen record.
+% -------------------------------------------------------------------
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\newcommand{\vp}{\varphi}
+\newcommand{\ainv}{\alpha^{-1}}
+
+\title{\bfseries A Frozen Recoil--Branch Prediction\\ for the Fine-Structure Constant}
+\author{Pasquale Camelia\\
+\normalsize ORCID: 0009-0006-4779-4647}
+\date{Frozen 4 July 2026 --- preregistration extract from QGT Second Edition r26.9}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent This note isolates, for preregistration, a single quantitative
+prediction of Quantum Gauge Theory (QGT): the values a photon-recoil
+determination of the fine-structure constant must return. The prediction is
+signed, dated ahead of the data that will test it, and falsifiable. It is
+extracted verbatim from the frozen section of the Second Edition (r26.9,
+\texttt{rd:s:frozen}) and from Register~B of that volume's Prediction Ledger
+(Appendix~G); the underlying theory is not re-derived here, and none of it needs
+to hold for this note to be tested. What is claimed, what is admitted as input,
+what would confirm it, and what falls if it fails are all stated on this page. Its
+register, in the language of the volume, is a \emph{conditional frozen forecast}:
+prospective and dated, but conditional on one discrete choice made \emph{a
+posteriori} on existing data, and declared as such. It is not offered as an
+operatorially derived prediction, and it is not offered as proof of the theory.
+\end{abstract}
+
+\section{The frozen values}
+
+Against the parameter-free fixed point $\ainv_{\rm fp}=137.0359991703$, the
+frozen prediction for the two improved recoil determinations is
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lll}
+\toprule
+Determination & frozen prediction (4 July 2026) & current value\\
+\midrule
+$^{87}$Rb recoil, improved & $\ainv=137.035999215$ & $137.035999206(11)$\ \ [Morel 2020]\\
+$^{133}$Cs recoil, improved & $\ainv=137.035999053$ & $137.035999046(27)$\ \ [Parker 2018]\\
+any new recoil species (Sr, Yb,\ldots) & $w\in\{-0.7236,\,0,\,+0.2764\}$ & ---\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The recoil weight $w_A$ of a species is defined by the apparatus
+contraction $\ainv_A=\ainv_{\rm fp}+w_A\,f_1$, with the single-channel rate
+$f_1=\vp\cdot10^{-7}=1.618\times10^{-7}$. The blind content of the third row is
+its \emph{discreteness}: a species not yet measured is forced onto three signed
+weights, not a continuum. No atomic datum enters the construction of the lattice
+itself.
+
+\section{Construction and admitted inputs}
+
+The values rest on three theorems of the volume meeting one hypothesis; the note
+states them only to expose the inputs, not to prove them.
+
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+\item \textbf{Theorems (fixed structure, no atomic input).} The apparatus
+contraction $\ainv_A=\ainv_{\rm fp}+w_A f_1$; the branch complementarity of the
+Schur return, giving the visible weight $Z_\vp=\vp/\sqrt5\approx0.7236$ and the
+hidden weight $1-Z_\vp=1/(\sqrt5\,\vp)\approx0.2764$; and the residue reading of
+couplings. From these the branch displacements have exact closed forms in the
+golden ring,
+\[
+\Delta_{\rm hidden}=+\frac{10^{-7}}{\sqrt5},\qquad
+\Delta_{\rm visible}=-\frac{\vp^2\,10^{-7}}{\sqrt5},\qquad
+\Delta_{\rm hidden}-\Delta_{\rm visible}=\vp\cdot10^{-7}=f_1 .
+\]
+
+\item \textbf{Hypothesis.} A channel-weighted readout couples to \emph{one}
+branch of the return, so admissible weights are the discrete lattice
+$w_A\in\{-Z_\vp,\,0,\,1-Z_\vp\}$, with self-readouts at $w=0$.
+
+\item \textbf{The one a-posteriori choice, declared.} Which measured channel
+reads which branch was assigned using the two existing recoil data: rubidium on
+the hidden branch, caesium on the visible branch with opposite orientation.
+Because that selection used the data, the $0.06\,\sigma$ agreement of the
+measured splitting with $f_1$ is part of the selection, \emph{not} an independent
+check on past data. This is why the register is conditional, and it is the sharp
+line between this note and a derived prediction.
+\end{itemize}
+
+\noindent What is prospective, fixed with no further parameter once the branch
+pair is chosen: the splitting equals $f_1$ exactly (the branch weights differ by
+one), and the asymmetry is
+$|w_{\rm Cs}|/|w_{\rm Rb}|=Z_\vp/(1-Z_\vp)=\vp^2$. These stand as predictions on
+data yet to come.
+
+\section{Current status: survival, not confirmation}
+
+With the branch assignment above, both existing determinations fit: rubidium at
+$0.82\,\sigma$ on the hidden branch, caesium at $0.27\,\sigma$ on the visible
+branch. Among the golden assignments considered, each rival is dead beyond
+$2.3\,\sigma$ on at least one face --- equipartition $\pm\tfrac12$ at
+$4.1\,\sigma$, the pair $(\vp^{-2},-\vp^{-1})$ at $2.4\,\sigma$, the pair
+$(0,-1)$ at $3.3\,\sigma$, all on the rubidium face. Two disciplines are kept:
+the rival list is the list \emph{considered}, not a predefined exhaustive space,
+so no global exclusion and no look-elsewhere correction is claimed; and, as
+above, the splitting agreement is inherited from the a-posteriori selection. The
+recoil pair therefore \emph{survives}. Survival is not confirmation; the blind
+test is the next improved determination.
+
+\section{The decisive test, with thresholds}
+
+The prediction is signed, and the signs are its exposure. The true rubidium value
+is predicted to sit \emph{above} the current central value, by
+$+9\times10^{-9}$ on $\ainv$; the true caesium value likewise slightly above its
+current central value, by $+7\times10^{-9}$. The test becomes decisive at three
+standard deviations once a recoil determination reaches an uncertainty near
+$3\times10^{-9}$ on $\ainv$ --- a relative precision of $2\times10^{-11}$, one
+further factor of four beyond the 2020 rubidium measurement, on the trajectory
+that programme is already on. No new apparatus class is required; the test is a
+precision improvement on an existing measurement.
+
+\section{Negative controls and the competing null}
+
+The competing null explanation is retained explicitly and is not treated as
+excluded: a conventional unrecognised systematic in one interferometer would
+reproduce a Rb--Cs offset without any of the present structure, and the
+metrological community holds exactly this possibility open. The reading here is
+\emph{not} a spacetime variation of $\alpha$: the invariant does not drift and
+only the channel contraction depends on the apparatus, so existing atomic-clock
+limits on a temporal drift of $\alpha$ are consistent with it and do not test it.
+The negative control for the branch structure is convergence: if improved
+determinations move together toward one value, the structure that this note
+predicts is absent. A $^{229}$Th nuclear clock is deliberately \emph{excluded}
+from the recoil lattice: it reads a sensitivity $\delta\nu/\nu=K_\alpha\,
+\delta\alpha/\alpha+\cdots$, not an absolute $h/M$ recoil comparison, and placing
+it on the lattice would compare inhomogeneous observables. It enters elsewhere as
+a distinct, doubly conditional target ($K_{\rm Th}$ and $w_{\rm Th}$ to be
+derived first), named as a target and \emph{not} predicted here.
+
+\section{Falsifiers, and what falls}
+
+The falsifiers are enumerated so that no retreat is available afterwards.
+
+\begin{enumerate}[leftmargin=1.6em,itemsep=2pt]
+\item \textbf{Convergence.} If improved recoil determinations converge to a single
+common value well inside $10^{-7}$, the channel-weighted class collapses and the
+tensorial reading of the coupling fails.
+\item \textbf{Off-lattice weight.} If any new recoil weight lands off the lattice
+$\{-0.7236,\,0,\,+0.2764\}$ at three standard deviations, the branch hypothesis
+fails even if the tensorial reading survives.
+\item \textbf{Sign failure.} If the improved rubidium value drifts \emph{away}
+from $137.035999215$ at three standard deviations, the assignment fails in sign
+--- the same death.
+\end{enumerate}
+
+\noindent What falls if it fails is bounded and stated: a failure of (2) or (3)
+kills the branch assignment and this note, and leaves the rest of the volume
+standing; a failure of (1) is heavier --- it removes the channel-weighted reading
+of $\alpha$ on which this note and the readout spectrum both rest. Neither outcome
+requires, or refutes, the remainder of QGT. That containment is the point of
+preregistering the recoil claim on its own.
+
+\section*{Promotion path}
+
+One open step would turn this conditional forecast into a derived prediction: the
+channel-to-branch map from the measurement operator --- a demonstration, from the
+contraction an $h/M$-against-$R_\infty$ comparison actually performs, of
+\emph{why} one recoil protocol reads the hidden branch and the other the visible
+branch with opposite orientation, sign included. That map is the single missing
+piece; the frozen numbers above do not wait for it.
+
+\section*{Freeze and reproducibility}
+
+The values were constructed on 4~July~2026, ahead of any atomic-recoil or
+nuclear-clock determination of $\alpha$ published after that date, and are frozen.
+The machine-checkable record recomputes every frozen number from the volume's own
+formulas (never hard-coded) and recomputes the current-data distances and rival
+exclusions from the primary 2018/2020 inputs.
+
+\begin{center}
+\small
+\begin{tabular}{ll}
+\toprule
+Frozen record & \texttt{tools/qgt\_branch\_prediction\_frozen.py}\\
+Record SHA-256 (unchanged since r24.1) & \texttt{fb68dbbb869f5ade\ldots56ce36c1}\\
+r26.x source-tree SHA-256 & \texttt{14a7a68be8aac900\ldots b8220e08}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent After deposit in an immutable archive with a DOI, the frozen register
+may change only to record a \textsc{pass}, \textsc{fail}, or \textsc{inconclusive}
+verdict of the data --- never its numerical content.
+
+\bigskip
+\footnotesize\sloppy
+\noindent\textit{Sources (QGT Second Edition r26.9):} \S\,``The frozen
+prediction: the branch lattice of the recoil weights'' (\texttt{rd:s:frozen},
+ch.~08); ``The Prediction Ledger,'' Register~A and Register~B (Appendix~G);
+\texttt{FREEZE\_MANIFEST.txt}. \textit{Data:} Morel et al., \textit{Nature}
+\textbf{588}, 61 (2020) [Rb]; Parker et al., \textit{Science} \textbf{360}, 191
+(2018) [Cs].
+
+\end{document}
