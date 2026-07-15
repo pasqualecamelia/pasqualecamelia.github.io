@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Videolibro — Il nome che non può dirsi</title>
+<meta name="description" content="Il videolibro di 'Il nome che non può dirsi' (Pasquale Camelia): i tredici movimenti, in riproduzione continua o singola."/>
+<meta name="author" content="Pasquale Camelia"/>
+<meta property="og:title" content="Videolibro — Il nome che non può dirsi"/>
+<meta property="og:type" content="video.other"/>
+<link rel="icon" type="image/png" sizes="48x48" href="favicon.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafaf8; --bg2:#f2f0eb; --bg3:#e8e5de;
+  --text:#1a1916; --text2:#5a5852; --text3:#8a8880;
+  --blue:#1a3a6b; --blue2:#2554a0;
+  --gold:#7a5a10; --gold2:#f5edda;
+  --red:#7a1a1a; --red2:#f5e0e0;
+  --border:#d8d4c8; --radius:8px;
+  --mono:'JetBrains Mono','Fira Mono','Courier New',monospace;
+  --serif:'Georgia','Times New Roman',serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#181714; --bg2:#221f1b; --bg3:#2c2924;
+    --text:#e8e4dc; --text2:#a09890; --text3:#706860;
+    --blue:#8ab4f8; --blue2:#5090e0;
+    --gold:#e0b860; --gold2:#2a2010;
+    --red:#f09090; --red2:#280808;
+    --border:#383430;
+  }
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);
+  font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 1.6rem}
+a{color:var(--blue2);text-decoration:none}
+a:hover{text-decoration:underline}
+header.top{border-bottom:1px solid var(--border);padding:2rem 0 1.4rem}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--text3)}
+h1.title{font-size:2rem;line-height:1.15;margin:.4rem 0 .3rem;font-weight:600}
+.subtitle{font-size:1rem;color:var(--text2);max-width:60ch}
+.back{font-family:var(--mono);font-size:.75rem;color:var(--text3)}
+
+main{padding:1.8rem 0 3rem}
+.player{display:grid;grid-template-columns:1fr 340px;gap:1.4rem;align-items:start}
+@media (max-width:860px){.player{grid-template-columns:1fr}}
+
+.stage{background:#000;border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;position:relative}
+video{display:block;width:100%;height:auto;background:#000;aspect-ratio:16/9}
+.nowbar{display:flex;align-items:baseline;gap:.6rem;margin:.7rem .2rem 0}
+.nowbar .idx{font-family:var(--mono);font-size:.72rem;color:var(--text3)}
+.nowbar .now{font-size:1.05rem;font-weight:600}
+
+.side{border:1px solid var(--border);border-radius:var(--radius);
+  background:var(--bg2);overflow:hidden}
+.side .head{display:flex;align-items:center;justify-content:space-between;
+  gap:.6rem;padding:.7rem .9rem;border-bottom:1px solid var(--border)}
+.side .head h2{font-size:.82rem;font-family:var(--mono);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text2);font-weight:600}
+.toggle{display:flex;align-items:center;gap:.4rem;font-family:var(--mono);
+  font-size:.7rem;color:var(--text3);cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--gold)}
+
+ol.list{list-style:none;max-height:60vh;overflow-y:auto}
+ol.list li{border-bottom:1px solid var(--border)}
+ol.list li:last-child{border-bottom:none}
+.item{display:flex;align-items:center;gap:.7rem;width:100%;
+  padding:.6rem .9rem;background:none;border:none;text-align:left;
+  cursor:pointer;color:var(--text);font-family:var(--serif);font-size:.95rem}
+.item:hover{background:var(--bg3)}
+.item .n{font-family:var(--mono);font-size:.72rem;color:var(--text3);
+  min-width:1.6rem;text-align:right}
+.item .t{flex:1}
+.item .dl{font-family:var(--mono);font-size:.9rem;color:var(--text3);
+  padding:.1rem .35rem;border-radius:4px;text-decoration:none;line-height:1}
+.item .dl:hover{color:var(--gold);background:var(--gold2);text-decoration:none}
+li.active .item{background:var(--gold2)}
+li.active .item .t{font-weight:600;color:var(--gold)}
+li.active .item .n{color:var(--gold)}
+li.played .item .t{color:var(--text2)}
+
+.controls{display:flex;gap:.5rem;flex-wrap:wrap;margin:1.1rem .2rem 0}
+.btn{font-family:var(--mono);font-size:.76rem;padding:.45rem .9rem;
+  border:1px solid var(--border);border-radius:6px;background:var(--bg2);
+  color:var(--text);cursor:pointer}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.note{font-size:.82rem;color:var(--text3);margin:1.4rem .2rem 0;max-width:70ch}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="index.html">← pasqualecamelia.github.io</a>
+    <div class="eyebrow">Videolibro</div>
+    <h1 class="title">Il nome che non può dirsi</h1>
+    <p class="subtitle">I tredici movimenti, in riproduzione continua o singola.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="player">
+      <div>
+        <div class="stage">
+          <video id="v" controls preload="metadata" playsinline></video>
+        </div>
+        <div class="nowbar">
+          <span class="idx" id="idx"></span>
+          <span class="now" id="now"></span>
+        </div>
+        <div class="controls">
+          <button class="btn" id="playAll">▶ Riproduci tutto dall'inizio</button>
+          <button class="btn" id="prev">↑ Precedente</button>
+          <button class="btn" id="next">↓ Successivo</button>
+        </div>
+        <p class="note">
+          In riproduzione continua, alla fine di un movimento parte il successivo.
+          Puoi anche scegliere un singolo movimento dall'elenco, o scaricarlo con l'icona ↓.
+        </p>
+      </div>
+
+      <aside class="side">
+        <div class="head">
+          <h2>Movimenti</h2>
+          <label class="toggle" title="Passa automaticamente al movimento successivo">
+            <input type="checkbox" id="continuous" checked/> continuo
+          </label>
+        </div>
+        <ol class="list" id="list"></ol>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<script>
+// ── Cartella e file dei movimenti ────────────────────────────────
+// Metti i 13 file MP4 in una sottocartella "video/" accanto a questa pagina,
+// con questi nomi. Se cambi cartella o nomi, modifica solo qui sotto.
+const DIR = "video/";
+const MOVIMENTI = [
+  ["00_front_matter",          "Frontespizio"],
+  ["01_Tabula_locorum",        "Tabula locorum — il cammino"],
+  ["02_Introitus",             "Introitus"],
+  ["03_Kyrie",                 "Kyrie"],
+  ["04_Gloria",                "Gloria"],
+  ["05_Credo",                 "Credo"],
+  ["06_Sanctus",               "Sanctus"],
+  ["07_Agnus_Dei",             "Agnus Dei"],
+  ["08_Rosarium_meditationis", "Rosarium meditationis"],
+  ["09_Postcommunio",          "Postcommunio"],
+  ["10_Tabula_personarum",     "Tabula personarum"],
+  ["11_Exitus",                "Exitus"],
+  ["12_Respiratio",            "Respiratio"],
+];
+const KEY = "videolibro-ilnome"; // per ricordare a che punto eri
+
+const v = document.getElementById("v");
+const listEl = document.getElementById("list");
+const nowEl = document.getElementById("now");
+const idxEl = document.getElementById("idx");
+const continuous = document.getElementById("continuous");
+let cur = -1;
+
+// costruisci l'elenco
+MOVIMENTI.forEach(([stem, titolo], i) => {
+  const src = DIR + stem + ".mp4";
+  const li = document.createElement("li");
+  li.dataset.i = i;
+  li.innerHTML =
+    '<button class="item" data-i="' + i + '">' +
+      '<span class="n">' + String(i).padStart(2, "0") + '</span>' +
+      '<span class="t">' + titolo + '</span>' +
+    '</button>';
+  const dl = document.createElement("a");
+  dl.className = "dl"; dl.href = src; dl.download = "";
+  dl.title = "Scarica questo movimento"; dl.textContent = "↓";
+  dl.addEventListener("click", e => e.stopPropagation());
+  li.querySelector(".item").appendChild(dl);
+  li.querySelector(".item").addEventListener("click", () => carica(i, true));
+  listEl.appendChild(li);
+});
+
+function carica(i, autoplay){
+  if (i < 0 || i >= MOVIMENTI.length) return;
+  cur = i;
+  const [stem, titolo] = MOVIMENTI[i];
+  v.src = DIR + stem + ".mp4";
+  v.load();
+  nowEl.textContent = titolo;
+  idxEl.textContent = "Movimento " + String(i).padStart(2, "0") + " / " +
+                      String(MOVIMENTI.length - 1).padStart(2, "0");
+  [...listEl.children].forEach((li, k) => {
+    li.classList.toggle("active", k === i);
+    if (k < i) li.classList.add("played");
+  });
+  document.title = titolo + " — Il nome che non può dirsi";
+  if (autoplay) v.play().catch(() => {});
+  salva();
+}
+
+// catena: alla fine, se "continuo" è attivo, passa al successivo
+v.addEventListener("ended", () => {
+  if (continuous.checked && cur < MOVIMENTI.length - 1) carica(cur + 1, true);
+});
+
+document.getElementById("next").addEventListener("click", () => carica(cur + 1, true));
+document.getElementById("prev").addEventListener("click", () => carica(cur - 1, true));
+document.getElementById("playAll").addEventListener("click", () => carica(0, true));
+
+// ricorda punto (movimento + secondo) senza disturbare
+function salva(){
+  try { localStorage.setItem(KEY, JSON.stringify({i: cur, t: v.currentTime || 0})); } catch(e){}
+}
+let tick = 0;
+v.addEventListener("timeupdate", () => { if (++tick % 20 === 0) salva(); });
+v.addEventListener("pause", salva);
+window.addEventListener("beforeunload", salva);
+
+// avvio: riprendi dove eri, altrimenti dal primo movimento (senza autoplay)
+(function init(){
+  let start = 0, seek = 0;
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (s && Number.isInteger(s.i) && s.i >= 0 && s.i < MOVIMENTI.length){
+      start = s.i; seek = s.t || 0;
+    }
+  } catch(e){}
+  carica(start, false);
+  if (seek > 0){
+    v.addEventListener("loadedmetadata", function once(){
+      if (seek < v.duration - 1) v.currentTime = seek;
+      v.removeEventListener("loadedmetadata", once);
+    });
+  }
+})();
+</script>
+</body>
+</html>
