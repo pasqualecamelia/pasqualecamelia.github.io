@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>A frozen prediction for α — QGT</title>
+<meta name="description" content="A dated, parameter-free value for the inverse fine-structure constant from the Quantum Gauge Theory of Time: 137.0359991703, no atomic input, and a falsifiable photon-recoil forecast."/>
+<meta name="author" content="Pasquale Camelia"/>
+<link rel="icon" type="image/png" sizes="48x48" href="favicon.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafaf8; --bg2:#f2f0eb; --bg3:#e8e5de;
+  --text:#1a1916; --text2:#5a5852; --text3:#8a8880;
+  --blue:#1a3a6b; --blue2:#2554a0;
+  --gold:#7a5a10; --gold2:#f5edda;
+  --green:#1a5a3a; --green2:#e0f0e8;
+  --red:#7a1a1a; --red2:#f5e0e0;
+  --border:#d8d4c8; --radius:8px;
+  --mono:'JetBrains Mono','Fira Mono','Courier New',monospace;
+  --serif:'Georgia','Times New Roman',serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#181714; --bg2:#221f1b; --bg3:#2c2924;
+    --text:#e8e4dc; --text2:#a09890; --text3:#706860;
+    --blue:#8ab4f8; --blue2:#5090e0;
+    --gold:#e0b860; --gold2:#2a2010;
+    --green:#60c090; --green2:#102820;
+    --red:#f09090; --red2:#280808;
+    --border:#383430;
+  }
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);
+  font-size:16px;line-height:1.72;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 1.6rem}
+a{color:var(--blue2);text-decoration:none}
+a:hover{text-decoration:underline}
+code,.mono{font-family:var(--mono)}
+header.top{border-bottom:1px solid var(--border);padding:2.2rem 0 1.5rem}
+.back{font-family:var(--mono);font-size:.75rem;color:var(--text3)}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--text3);margin-top:.6rem}
+h1.title{font-size:1.9rem;line-height:1.15;margin:.4rem 0 .3rem;font-weight:600}
+.frozen{font-family:var(--mono);font-size:.78rem;color:var(--gold)}
+main{padding:1.6rem 0 3rem}
+section{padding:1.6rem 0;border-bottom:1px solid var(--border)}
+h2{font-size:1.25rem;font-weight:600;margin-bottom:.5rem}
+p{margin:.7rem 0}
+.eq{font-family:var(--mono);font-size:.92rem;background:var(--bg2);
+  border:1px solid var(--border);border-radius:6px;padding:.9rem 1.1rem;
+  margin:1.1rem 0;overflow-x:auto;line-height:1.9}
+.big{font-size:1.15rem;color:var(--gold);font-weight:600}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-family:var(--mono);
+  font-size:.82rem}
+th,td{border:1px solid var(--border);padding:.45rem .7rem;text-align:left}
+th{background:var(--bg2);font-weight:600;color:var(--text2)}
+.tag{font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.05em;
+  padding:.08rem .4rem;border-radius:4px;vertical-align:middle}
+.t-T{background:var(--green2);color:var(--green)}
+.t-C{background:var(--gold2);color:var(--gold)}
+.t-O{background:var(--red2);color:var(--red)}
+.legend{font-size:.86rem;color:var(--text2)}
+.links{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.2rem 0}
+.links a{font-family:var(--mono);font-size:.78rem;padding:.45rem .9rem;
+  border:1px solid var(--border);border-radius:6px;color:var(--blue2)}
+.links a:hover{border-color:var(--gold);color:var(--gold);text-decoration:none}
+.note{font-size:.86rem;color:var(--text3)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="index.html">← pasqualecamelia.github.io</a>
+    <div class="eyebrow">Quantum Gauge Theory of Time — α sector</div>
+    <h1 class="title">A frozen, falsifiable value for the fine-structure constant</h1>
+    <div class="frozen">Frozen 4 July 2026 · DOI 10.17605/OSF.IO/DRTJZ · machine-checked, 36/36</div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <section>
+      <h2>The claim, in one line</h2>
+      <p>From pure constants — the golden ratio φ, √5, π and fixed integers — with
+      <strong>no measured value of α used anywhere</strong>, the theory returns a single
+      inverse fine-structure constant:</p>
+      <div class="eq">
+        α⁻¹ = (20φ⁴ − 13·ε₇) / (1 − 2φ×10⁻⁷)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;= <span class="big">137.0359991703</span><br>
+        <span style="color:var(--text3)">with ε₇ = √5·π/7 − 1 = 0.003544961577…,&nbsp; 20φ⁴ = 70 + 30√5</span>
+      </div>
+      <p>This sits <strong>−0.32σ from CODATA 2022</strong> (137.035999177(21)). The comparison
+      to data enters only here, after the value is built; the value itself is a parameter-free
+      forward cascade. Every identity above is re-derived from the formulas, not hard-coded, by a
+      deterministic audit that passes 36/36.</p>
+    </section>
+
+    <section>
+      <h2>What is robust, and what is not — stated plainly</h2>
+      <p>The honesty is the point, so nothing here is dressed up. The value is assembled from
+      arrows of different strength, and the chain is exactly as strong as its weakest one:</p>
+      <table>
+        <tr><th>Arrow</th><th>Register</th></tr>
+        <tr><td>Rank-locking Fₙ = n ⇒ r = 5; the pole 20φ⁴ = (70+30√5)</td><td><span class="tag t-T">T</span> theorem</td></tr>
+        <tr><td>Holonomy residue ε₇ of the confined mode</td><td><span class="tag t-C">C</span> structural</td></tr>
+        <tr><td>Breathing back-action fbr = 2φ×10⁻⁷ (filter hierarchy S⁶ = 10⁶)</td><td><span class="tag t-C">C</span> structural</td></tr>
+        <tr><td>The two open promotion gates (operator matrix elements; channel→branch)</td><td><span class="tag t-O">O</span> open</td></tr>
+      </table>
+      <p class="legend"><span class="tag t-T">T</span> verified exactly &nbsp;·&nbsp;
+      <span class="tag t-C">C</span> parameter-free within the class, but not yet exhibited as a
+      matrix element of the action &nbsp;·&nbsp;
+      <span class="tag t-O">O</span> open.</p>
+      <p>The golden core 20φ⁴ − 13ε₇ already lands at 137.0360 with no base-10 input at all. The
+      last digits — and the −0.32σ agreement — are sharpened by the base-10 filter hierarchy,
+      which is stamped <span class="tag t-C">C</span>, not proven. That is the one arrow a
+      referee should press on, and it is marked as such rather than hidden.</p>
+    </section>
+
+    <section>
+      <h2>Derivation status: what is closed, what is open</h2>
+      <p>Two structural lemmas are now closed in the model, and three dynamical gates remain open.
+      Nothing here is smoothed over: the value α⁻¹ stays <span class="tag t-C">C</span> until the
+      gate that reaches it is closed.</p>
+      <table>
+        <tr><th>component</th><th>status</th></tr>
+        <tr><td>Spinorial–Hopf lift &nbsp;S¹<sub>χ</sub> → S³/U(1) ≃ S²</td><td><span class="tag t-T">T</span> closed</td></tr>
+        <tr><td>Icosahedral closure &nbsp;S² → A₅ → 12 = 8+4 → β = 2/3 → 𝓑⋆ = 8</td><td><span class="tag t-T">T</span> closed in the model</td></tr>
+        <tr><td>fbr from R₀ &nbsp;(R₀⁻¹ − R₀ = 2φ ⇒ fbr = 2φ×10⁻⁷)</td><td><span class="tag t-T">T</span> geometric–spectral / <span class="tag t-O">O</span> dynamical origin</td></tr>
+        <tr><td>[O1] &nbsp;δS<sub>red</sub> = 0 ⟹ 𝓡̂, with R₀ ∈ spec 𝓡̂</td><td><span class="tag t-O">O</span> open</td></tr>
+        <tr><td>[O2] &nbsp;δS<sub>red</sub> = 0 ⟹ Ĥ₇, eigenvalue λ₇ = √5·π/7 ⟹ ε₇</td><td><span class="tag t-O">O</span> open</td></tr>
+        <tr><td>[O3] &nbsp;species → branch: ⁸⁷Rb ↦ +q_R, ¹³³Cs ↦ −p_R, data-blind</td><td><span class="tag t-O">O</span> open</td></tr>
+      </table>
+      <p>The reciprocal defect R₀⁻¹ − R₀ = 2φ places the two branches at exactly opposite Bloch
+      latitudes, n_z(R₀) = φ/√(1+φ²) — the icosahedral vertex latitude, an exact identity — so the
+      two signed weights +0.2764 and −0.7236 (ratio φ²) now follow before any atomic data are
+      seen. What the geometry does <em>not</em> yet fix is which species reads which branch [O3],
+      the spectral origin of 𝓡̂ from the reduced action [O1], and the π/7 holonomy of the seventh
+      sector [O2]. The three open gates share one form — δS<sub>red</sub> ⟹ operator — so they are
+      one problem in three faces, not three.</p>
+      <p>Only <strong>[O2]</strong> touches the value itself: it is the single step that would
+      promote α⁻¹ = 137.0359991703 from <span class="tag t-C">C</span> to <span class="tag t-T">T</span>.
+      Until then the number stands as a dated, parameter-free, reproducible forward cascade — not a
+      first-principles derivation, and not claimed as one.</p>
+    </section>
+
+    <section>
+      <h2>The falsifiable part: a signed forecast for photon recoil</h2>
+      <p>Beyond the value, the theory predicts that a photon-recoil determination of α⁻¹ may not
+      return an arbitrary number, but one of a small discrete set — a fixed reference plus a step
+      f₁ = φ×10⁻⁷ times one of three allowed weights {−0.7236, 0, +0.2764}:</p>
+      <table>
+        <tr><th>species</th><th>current best</th><th>predicted</th></tr>
+        <tr><td>⁸⁷Rb (Morel 2020)</td><td>137.035999206(11)</td><td>137.035999215</td></tr>
+        <tr><td>¹³³Cs (Parker 2018)</td><td>137.035999046(27)</td><td>137.035999053</td></tr>
+      </table>
+      <p>The exposure — what makes this a bet and not a fit — is the <strong>sign</strong>: the
+      true rubidium value is predicted to move <em>up</em> by +9×10⁻⁹, caesium <em>up</em> by
+      +7×10⁻⁹, as precision improves. The test turns decisive at 3σ once a recoil measurement
+      reaches ~3×10⁻⁹ on α⁻¹ — about four times better than the 2020 result, on a trajectory the
+      programme is already on. No new apparatus is required.</p>
+      <p class="note">Honest caveat: which species was assigned to which weight was chosen using
+      the same 2018/2020 numbers, so the agreement of the two known points is partly built in.
+      Genuinely blind and untested are (i) the discreteness for any new species and (ii) the
+      direction the two known values move as they sharpen. This is a dated conditional forecast,
+      not yet a derived one.</p>
+    </section>
+
+    <section>
+      <h2>What would kill it</h2>
+      <p>If improved recoil values converge on a single common number instead of sorting onto
+      discrete steps; or if any new species lands off the set at 3σ; or if the rubidium value
+      drifts <em>away</em> from 137.035999215 at 3σ — the prediction is dead. It is meant to be
+      wrong if it is wrong.</p>
+    </section>
+
+    <section style="border-bottom:none">
+      <h2>Record and reproducibility</h2>
+      <div class="links">
+        <a href="https://doi.org/10.17605/OSF.IO/DRTJZ">Frozen note — DOI (OSF)</a>
+        <a href="papers.html">QGT papers</a>
+        <a href="index.html">QGT companion</a>
+      </div>
+      <p class="note">The frozen numbers were constructed on 4 July 2026, ahead of any recoil or
+      nuclear-clock determination of α published after that date. After deposit the content may
+      change only to register a pass, fail, or inconclusive verdict of the data — never its
+      numerical value. Extracted from Quantum Gauge Theory, Second Edition (r26.10); the test
+      above stands on its own and does not require that theory to hold.</p>
+    </section>
+
+  </div>
+</main>
+</body>
+</html>
