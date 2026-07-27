@@ -110,8 +110,9 @@ li.played .item .t{color:var(--text2)}
           <div id="yt"></div>
         </div>
         <p class="note" id="ytfallback" style="display:none">
-          Il player non si è caricato. Puoi guardare il videolibro direttamente su
-          <a id="ytlink" href="#" target="_blank" rel="noopener">YouTube</a>.
+          Il player incorporato non è disponibile per questo video.
+          I movimenti qui a fianco aprono YouTube al minuto giusto, oppure
+          <a id="ytlink" href="#" target="_blank" rel="noopener">guarda il videolibro dall'inizio</a>.
         </p>
         <div class="nowbar">
           <span class="idx" id="idx"></span>
@@ -217,7 +218,7 @@ listEl.addEventListener("click", e => {
 /* API YouTube */
 const tag = document.createElement("script");
 tag.src = "https://www.youtube.com/iframe_api";
-tag.onerror = () => { document.getElementById("ytfallback").style.display = "block"; };
+tag.onerror = () => passaAiLink();
 document.head.appendChild(tag);
 
 window.onYouTubeIframeAPIReady = function(){
@@ -228,10 +229,40 @@ window.onYouTubeIframeAPIReady = function(){
     events: {
       onReady: onReady,
       onStateChange: e => { if (e.data === YT.PlayerState.PLAYING) avvia(); },
-      onError: () => { document.getElementById("ytfallback").style.display = "block"; }
+      onError: () => passaAiLink()
     }
   });
 };
+
+/* ── modalita' link: se l'incorporamento non e' possibile, i movimenti
+      diventano collegamenti a YouTube al minutaggio esatto ──────────── */
+let modoLink = false;
+function passaAiLink(){
+  if (modoLink) return;
+  modoLink = true;
+  if (timer){ clearInterval(timer); timer = null; }
+  const stage = document.querySelector(".stage");
+  if (stage) stage.style.display = "none";
+  const fb = document.getElementById("ytfallback");
+  if (fb) fb.style.display = "block";
+  document.querySelectorAll(".controls .btn").forEach(b => b.style.display = "none");
+  [...listEl.children].forEach((li, i) => {
+    const c = capitoli[i];
+    const url = c.id
+      ? "https://www.youtube.com/watch?v=" + c.id
+      : "https://www.youtube.com/watch?v=" + VIDEO_ID + "&t=" + Math.round(c.start) + "s";
+    const a = document.createElement("a");
+    a.className = "item"; a.href = url; a.target = "_blank"; a.rel = "noopener";
+    a.style.textDecoration = "none";
+    a.innerHTML = '<span class="n">' + String(i).padStart(2, "0") + '</span>' +
+                  '<span class="t">' + c.titolo + '</span>' +
+                  '<span class="dl">&#8599;</span>';
+    li.innerHTML = ""; li.appendChild(a);
+  });
+}
+/* se entro 6 secondi il player non e' pronto, l'API e' bloccata o assente */
+setTimeout(() => { if (!pronto) passaAiLink(); }, 6000);
+if (new URLSearchParams(location.search).get("link") === "1") passaAiLink();
 
 function onReady(){
   pronto = true;
