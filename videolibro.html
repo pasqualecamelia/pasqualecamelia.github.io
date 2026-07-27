@@ -50,7 +50,8 @@ main{padding:1.8rem 0 3rem}
 
 .stage{background:#000;border:1px solid var(--border);border-radius:var(--radius);
   overflow:hidden;position:relative}
-video{display:block;width:100%;height:auto;background:#000;aspect-ratio:16/9}
+video,#yt,#yt iframe{display:block;width:100%;height:auto;background:#000;aspect-ratio:16/9}
+#yt iframe{border:0}
 .nowbar{display:flex;align-items:baseline;gap:.6rem;margin:.7rem .2rem 0}
 .nowbar .idx{font-family:var(--mono);font-size:.72rem;color:var(--text3)}
 .nowbar .now{font-size:1.05rem;font-weight:600}
@@ -106,8 +107,12 @@ li.played .item .t{color:var(--text2)}
     <div class="player">
       <div>
         <div class="stage">
-          <video id="v" controls preload="metadata" playsinline></video>
+          <div id="yt"></div>
         </div>
+        <p class="note" id="ytfallback" style="display:none">
+          Il player non si è caricato. Puoi guardare il videolibro direttamente su
+          <a id="ytlink" href="#" target="_blank" rel="noopener">YouTube</a>.
+        </p>
         <div class="nowbar">
           <span class="idx" id="idx"></span>
           <span class="now" id="now"></span>
@@ -119,7 +124,8 @@ li.played .item .t{color:var(--text2)}
         </div>
         <p class="note">
           In riproduzione continua, alla fine di un movimento parte il successivo.
-          Puoi anche scegliere un singolo movimento dall'elenco, o scaricarlo con l'icona ↓.
+          Puoi anche scegliere un singolo movimento dall'elenco: il player salta
+          al punto corrispondente. La posizione raggiunta viene ricordata.
         </p>
       </div>
 
@@ -137,106 +143,158 @@ li.played .item .t{color:var(--text2)}
 </main>
 
 <script>
-// ── Cartella e file dei movimenti ────────────────────────────────
-// Metti i 13 file MP4 in una sottocartella "video/" accanto a questa pagina,
-// con questi nomi. Se cambi cartella o nomi, modifica solo qui sotto.
-const DIR = "video/";
+/* ═══════════════════════════════════════════════════════════════════
+   VIDEOLIBRO — sorgente YouTube
+   ═══════════════════════════════════════════════════════════════════
+
+   DA COMPILARE: i tempi di inizio dei movimenti nel video.
+   Formato ammesso: "m:ss", "h:mm:ss" oppure un numero di secondi.
+   Finché restano tutti a "0:00" la pagina funziona lo stesso: parte
+   dall'inizio e i movimenti non saltano.
+
+   SE INVECE hai caricato 13 video separati, al posto del tempo metti
+   l'id del video, così:   ["Kyrie", {v:"AbCdEfGhIjK"}]
+   ═══════════════════════════════════════════════════════════════════ */
+
+const VIDEO_ID  = "-fhSEBxwH-M";        // id del videolibro su YouTube
 const MOVIMENTI = [
-  ["00_front_matter",          "Frontespizio"],
-  ["01_Tabula_locorum",        "Tabula locorum — il cammino"],
-  ["02_Introitus",             "Introitus"],
-  ["03_Kyrie",                 "Kyrie"],
-  ["04_Gloria",                "Gloria"],
-  ["05_Credo",                 "Credo"],
-  ["06_Sanctus",               "Sanctus"],
-  ["07_Agnus_Dei",             "Agnus Dei"],
-  ["08_Rosarium_meditationis", "Rosarium meditationis"],
-  ["09_Postcommunio",          "Postcommunio"],
-  ["10_Tabula_personarum",     "Tabula personarum"],
-  ["11_Exitus",                "Exitus"],
-  ["12_Respiratio",            "Respiratio"],
+  ["Frontespizio",                "0:00"],
+  ["Tabula locorum — il cammino", "0:22"],
+  ["Introitus",                   "1:57"],
+  ["Kyrie",                       "4:56"],
+  ["Gloria",                      "17:58"],
+  ["Credo",                       "58:13"],
+  ["Sanctus",                     "1:30:36"],
+  ["Agnus Dei",                   "2:03:16"],
+  ["Rosarium meditationis",       "2:52:56"],
+  ["Postcommunio",                "3:09:07"],
+  ["Tabula personarum",           "3:16:29"],
+  ["Exitus",                      "3:20:24"],
+  ["Respiratio",                  "3:29:10"],
 ];
-const KEY = "videolibro-ilnome"; // per ricordare a che punto eri
+const KEY = "videolibro-ilnome-yt";     // ricorda dove eri arrivato
 
-const v = document.getElementById("v");
+/* ── da qui in giù non serve modificare nulla ────────────────────── */
+
+function secondi(t){
+  if (typeof t === "number") return t;
+  if (typeof t !== "string") return 0;
+  const p = t.trim().split(":").map(Number);
+  if (p.some(isNaN)) return 0;
+  return p.length === 3 ? p[0]*3600 + p[1]*60 + p[2]
+       : p.length === 2 ? p[0]*60 + p[1]
+       : p[0] || 0;
+}
+const capitoli = MOVIMENTI.map(([titolo, t]) => ({
+  titolo,
+  id:    (t && typeof t === "object" && t.v) ? t.v : null,
+  start: (t && typeof t === "object") ? 0 : secondi(t),
+}));
+
 const listEl = document.getElementById("list");
-const nowEl = document.getElementById("now");
-const idxEl = document.getElementById("idx");
+const nowEl  = document.getElementById("now");
+const idxEl  = document.getElementById("idx");
 const continuous = document.getElementById("continuous");
-let cur = -1;
+const ytlink = document.getElementById("ytlink");
+if (ytlink) ytlink.href = "https://www.youtube.com/watch?v=" + VIDEO_ID;
 
-// costruisci l'elenco
-MOVIMENTI.forEach(([stem, titolo], i) => {
-  const src = DIR + stem + ".mp4";
+let player = null, cur = -1, timer = null, pronto = false;
+
+/* elenco dei movimenti */
+capitoli.forEach((c, i) => {
   const li = document.createElement("li");
   li.dataset.i = i;
-  li.innerHTML =
-    '<button class="item" data-i="' + i + '">' +
+  li.innerHTML = '<button class="item" data-i="' + i + '">' +
       '<span class="n">' + String(i).padStart(2, "0") + '</span>' +
-      '<span class="t">' + titolo + '</span>' +
-    '</button>';
-  const dl = document.createElement("a");
-  dl.className = "dl"; dl.href = src; dl.download = "";
-  dl.title = "Scarica questo movimento"; dl.textContent = "↓";
-  dl.addEventListener("click", e => e.stopPropagation());
-  li.querySelector(".item").appendChild(dl);
-  li.querySelector(".item").addEventListener("click", () => carica(i, true));
+      '<span class="t">' + c.titolo + '</span></button>';
   listEl.appendChild(li);
 });
-
-function carica(i, autoplay){
-  if (i < 0 || i >= MOVIMENTI.length) return;
-  cur = i;
-  const [stem, titolo] = MOVIMENTI[i];
-  v.src = DIR + stem + ".mp4";
-  v.load();
-  nowEl.textContent = titolo;
-  idxEl.textContent = "Movimento " + String(i).padStart(2, "0") + " / " +
-                      String(MOVIMENTI.length - 1).padStart(2, "0");
-  [...listEl.children].forEach((li, k) => {
-    li.classList.toggle("active", k === i);
-    if (k < i) li.classList.add("played");
-  });
-  document.title = titolo + " — Il nome che non può dirsi";
-  if (autoplay) v.play().catch(() => {});
-  salva();
-}
-
-// catena: alla fine, se "continuo" è attivo, passa al successivo
-v.addEventListener("ended", () => {
-  if (continuous.checked && cur < MOVIMENTI.length - 1) carica(cur + 1, true);
+listEl.addEventListener("click", e => {
+  const b = e.target.closest(".item");
+  if (b) vai(+b.dataset.i, true);
 });
 
-document.getElementById("next").addEventListener("click", () => carica(cur + 1, true));
-document.getElementById("prev").addEventListener("click", () => carica(cur - 1, true));
-document.getElementById("playAll").addEventListener("click", () => carica(0, true));
+/* API YouTube */
+const tag = document.createElement("script");
+tag.src = "https://www.youtube.com/iframe_api";
+tag.onerror = () => { document.getElementById("ytfallback").style.display = "block"; };
+document.head.appendChild(tag);
 
-// ricorda punto (movimento + secondo) senza disturbare
-function salva(){
-  try { localStorage.setItem(KEY, JSON.stringify({i: cur, t: v.currentTime || 0})); } catch(e){}
-}
-let tick = 0;
-v.addEventListener("timeupdate", () => { if (++tick % 20 === 0) salva(); });
-v.addEventListener("pause", salva);
-window.addEventListener("beforeunload", salva);
-
-// avvio: riprendi dove eri, altrimenti dal primo movimento (senza autoplay)
-(function init(){
-  let start = 0, seek = 0;
-  try {
-    const s = JSON.parse(localStorage.getItem(KEY) || "null");
-    if (s && Number.isInteger(s.i) && s.i >= 0 && s.i < MOVIMENTI.length){
-      start = s.i; seek = s.t || 0;
+window.onYouTubeIframeAPIReady = function(){
+  player = new YT.Player("yt", {
+    videoId: VIDEO_ID,
+    host: "https://www.youtube-nocookie.com",
+    playerVars: { rel:0, modestbranding:1, playsinline:1, origin:location.origin },
+    events: {
+      onReady: onReady,
+      onStateChange: e => { if (e.data === YT.PlayerState.PLAYING) avvia(); },
+      onError: () => { document.getElementById("ytfallback").style.display = "block"; }
     }
-  } catch(e){}
-  carica(start, false);
-  if (seek > 0){
-    v.addEventListener("loadedmetadata", function once(){
-      if (seek < v.duration - 1) v.currentTime = seek;
-      v.removeEventListener("loadedmetadata", once);
-    });
+  });
+};
+
+function onReady(){
+  pronto = true;
+  let ripresa = 0;
+  try { ripresa = parseFloat(localStorage.getItem(KEY)) || 0; } catch(e){}
+  if (ripresa > 1) player.seekTo(ripresa, true);
+  aggiorna();
+  avvia();
+}
+
+function vai(i, riproduci){
+  if (!pronto || i < 0 || i >= capitoli.length) return;
+  const c = capitoli[i];
+  cur = i;
+  if (c.id){ player.loadVideoById({videoId: c.id}); }
+  else if (riproduci){ player.seekTo(c.start, true); player.playVideo(); }
+  else { player.seekTo(c.start, true); }
+  marca(i);
+}
+
+/* quale movimento è in corso, in base al tempo */
+function indiceDaTempo(t){
+  let k = 0;
+  for (let i = 0; i < capitoli.length; i++) if (t + 0.25 >= capitoli[i].start) k = i;
+  return k;
+}
+function marca(i){
+  [...listEl.children].forEach((li, k) => {
+    li.classList.toggle("active", k === i);
+    li.classList.toggle("played", k < i);
+  });
+  idxEl.textContent = String(i).padStart(2, "0") + " / " +
+                      String(capitoli.length - 1).padStart(2, "0");
+  nowEl.textContent = capitoli[i] ? capitoli[i].titolo : "";
+}
+function aggiorna(){
+  if (!pronto) return;
+  const t = player.getCurrentTime() || 0;
+  const i = indiceDaTempo(t);
+  if (i !== cur){
+    /* fine di un movimento: se "continuo" è spento, fermati qui */
+    if (cur >= 0 && i === cur + 1 && !continuous.checked){
+      player.pauseVideo();
+      player.seekTo(capitoli[i].start, true);
+    }
+    cur = i;
+    marca(i);
   }
-})();
+  try { localStorage.setItem(KEY, String(t)); } catch(e){}
+}
+function avvia(){ if (!timer) timer = setInterval(aggiorna, 250); }
+
+/* comandi */
+document.getElementById("playAll").onclick = () => vai(0, true);
+document.getElementById("prev").onclick    = () => vai(Math.max(0, cur - 1), true);
+document.getElementById("next").onclick    = () => vai(Math.min(capitoli.length - 1, cur + 1), true);
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") return;
+  if (e.key === "ArrowDown"){ e.preventDefault(); vai(cur + 1, true); }
+  if (e.key === "ArrowUp"){   e.preventDefault(); vai(cur - 1, true); }
+});
+
+marca(0);
 </script>
 </body>
 </html>
