@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {'analytics_storage':'granted','ad_storage':'denied','wait_for_update':500});
+  gtag('js', new Date());
+  gtag('config', 'G-MTVYWSLES3', {'anonymize_ip': true});
+</script>
+<script defer src="https://www.googletagmanager.com/gtag/js?id=G-MTVYWSLES3"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>QFMT environment — the finite Fibonacci–Mellin transform</title>
+<meta name="description" content="In-browser environment for the finite Fibonacci–Mellin transform: scale readout, exact algebraic identities, and the certified multiprecision record next to what double precision actually returns."/>
+<meta name="author" content="Pasquale Camelia"/>
+<meta name="robots" content="index, follow"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="QFMT environment — Pasquale Camelia"/>
+<meta property="og:description" content="The finite Fibonacci–Mellin transform in your browser, with the multiprecision certification of what double precision cannot resolve."/>
+<meta property="og:image" content="https://pasqualecamelia.github.io/assets/og_image.png"/>
+<meta property="og:url" content="https://pasqualecamelia.github.io/qfmt/"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="icon" type="image/png" sizes="48x48" href="../favicon.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafaf8; --bg2:#f2f0eb; --bg3:#e8e5de;
+  --text:#1a1916; --text2:#5a5852; --text3:#8a8880;
+  --blue:#1a3a6b; --blue2:#2554a0; --blue3:#e8eef8;
+  --gold:#7a5a10; --gold2:#f5edda;
+  --green:#1a5a3a; --green2:#e0f0e8;
+  --red:#7a1a1a; --red2:#f5e0e0;
+  --border:#d8d4c8; --radius:8px;
+  --mono:'JetBrains Mono','Fira Mono','Courier New',monospace;
+  --serif:'Georgia','Times New Roman',serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#181714; --bg2:#221f1b; --bg3:#2c2924;
+    --text:#e8e4dc; --text2:#a09890; --text3:#706860;
+    --blue:#8ab4f8; --blue2:#5090e0; --blue3:#1a2840;
+    --gold:#e0b860; --gold2:#2a2010;
+    --green:#60c090; --green2:#102820;
+    --red:#f09090; --red2:#280808;
+    --border:#383430;
+  }
+}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px}
+header{background:var(--bg2);border-bottom:1px solid var(--border);padding:44px 0 34px}
+header h1{font-size:31px;line-height:1.25;letter-spacing:-.01em;font-weight:600}
+header .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+header p{color:var(--text2);margin-top:14px;max-width:60ch}
+nav.toc{background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+nav.toc .wrap{display:flex;gap:20px;overflow-x:auto;padding-top:11px;padding-bottom:11px}
+nav.toc a{font-family:var(--mono);font-size:12px;color:var(--text2);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--blue2)}
+main{padding:40px 0 10px}
+section{margin-bottom:46px}
+h2{font-size:22px;margin-bottom:14px;font-weight:600;display:flex;align-items:baseline;gap:12px}
+h2 .num{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:.1em}
+h3{font-size:17px;margin:22px 0 8px;font-weight:600}
+p{margin-bottom:14px}
+p.lead{color:var(--text2)}
+a{color:var(--blue2)}
+code,.mono{font-family:var(--mono);font-size:.87em}
+pre{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.55;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;margin-bottom:16px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:400}
+td.n{font-family:var(--mono);font-size:13px;white-space:nowrap}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:20px 0}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.card h4{font-size:15.5px;margin-bottom:7px;font-weight:600}
+.card p{font-size:14.5px;color:var(--text2);margin-bottom:12px}
+.card .go{font-family:var(--mono);font-size:12px;text-decoration:none;display:inline-block;margin-right:14px}
+.callout{border-left:3px solid var(--gold);background:var(--gold2);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:18px 0}
+.callout.ok{border-left-color:var(--green);background:var(--green2)}
+.callout p:last-child{margin-bottom:0}
+.note{font-size:14px;color:var(--text2)}
+footer{border-top:1px solid var(--border);background:var(--bg2);padding:28px 0;margin-top:40px;font-size:13.5px;color:var(--text2)}
+footer p{margin-bottom:7px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">Quantum Gauge Theory of Time · numerical environment</div>
+    <h1>QFMT — the finite Fibonacci–Mellin transform, in your browser</h1>
+    <p>Two interactive tools, the certified numerical record, and the source that
+      produces it. The interesting part is not that the transform runs here: it is
+      that this page runs in double precision, and double precision is not enough
+      for this frame — which you can watch happen.</p>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="../">← Companion</a>
+    <a href="#tools">Tools</a>
+    <a href="#what">What the FMT is</a>
+    <a href="#certified">Certified numbers</a>
+    <a href="#float64">What float64 cannot do</a>
+    <a href="#run">Run it locally</a>
+    <a href="../papers.html">Papers</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="tools">
+  <h2><span class="num">01</span>The two tools</h2>
+  <div class="cards">
+    <div class="card">
+      <h4>QFMT Console</h4>
+      <p>Load or generate a signal, run the transform, read the scale balance over
+        windows, and check the exact algebraic identities — computed in the browser,
+        no server, no upload.</p>
+      <a class="go" href="console.html">Open console →</a>
+    </div>
+    <div class="card">
+      <h4>QFMT Dashboard</h4>
+      <p>Compare several signals at once on the gain-invariant scale ratio, with the
+        LOW/HIGH sheet decomposition and the log-balance map.</p>
+      <a class="go" href="dashboard.html">Open dashboard →</a>
+    </div>
+  </div>
+  <p class="note">Both are self-contained HTML: nothing is transmitted, the signals
+    you drop in stay in your browser.</p>
+</section>
+
+<section id="what">
+  <h2><span class="num">02</span>What the transform is, and what it is not</h2>
+  <p>The FMT is a 10 × 10 Vandermonde frame sampled on the golden scale lattice:
+    frequencies ω<sub>j</sub> = φ<sup>(j−5)/5</sup> against log-coordinates
+    u<sub>k</sub> = (k/5)·log φ. It is not unitary, and Parseval fails on it.</p>
+  <p><strong>The non-unitarity is not inherited from the Mellin transform.</strong>
+    The continuous Mellin–Plancherel transform is unitary: with
+    (𝒲f)(u) = f(e<sup>u</sup>) one has ‖𝒲f‖<sub>L²(ℝ,du)</sub> = ‖f‖<sub>L²(ℝ₊,dx/x)</sub>,
+    so ℳ = ℱ<sub>c</sub>𝒲 is a composition of two unitaries, and it conjugates the
+    dilation generator −i·x d/dx into −i·d/du. Multiplicative structure by itself
+    loses nothing.</p>
+  <div class="callout">
+    <p>The deficit comes from the <em>finite</em> construction, and from three features
+      of it: the sampling is finite (N = 10), the frequencies are geometric rather than
+      equispaced, and the resulting Vandermonde nodes are non-orthogonal — they sit in
+      an arc of 4.70° on the unit circle.</p>
+  </div>
+  <p>What the frame does give is a gain-invariant readout: under f ↦ λf the ratio
+    between the two frequency sheets is unchanged, because both scale by |λ|. That
+    ratio, not the energy, is the quantity the tools report. No claim of superiority
+    over Fourier is made anywhere — the two answer different questions.</p>
+</section>
+
+<section id="certified">
+  <h2><span class="num">03</span>The certified record</h2>
+  <p class="lead">Computed with <code>mpmath</code> and identical at every working
+    precision from 40 to 120 decimal digits.</p>
+  <table>
+    <tr><th>Quantity</th><th>Certified value</th></tr>
+    <tr><td>σ<sub>max</sub></td><td class="n">3.153410735732771285…</td></tr>
+    <tr><td>σ<sub>min</sub></td><td class="n">6.70707500649 × 10<sup>−19</sup></td></tr>
+    <tr><td>condition number κ</td><td class="n">4.70161841441 × 10<sup>18</sup></td></tr>
+    <tr><td>‖FF* − I‖<sub>F</sub></td><td class="n">9.42795</td></tr>
+    <tr><td>exact rank</td><td class="n">10</td></tr>
+    <tr><td>effective rank at absolute tolerance 10<sup>−4</sup> / 10<sup>−6</sup> / 10<sup>−8</sup> / 10<sup>−12</sup></td><td class="n">4 / 5 / 6 / 7</td></tr>
+    <tr><td>coisometry defect ‖RR* − I₂‖ at 120 digits</td><td class="n">≈ 10<sup>−120</sup></td></tr>
+  </table>
+  <p class="note">Reproduce all of it with one command from the repository:
+    <code>python tools/certify_precision.py --digits 40 60 80 100 120</code></p>
+</section>
+
+<section id="float64">
+  <h2><span class="num">04</span>What double precision cannot do — and what it still can</h2>
+  <p>With κ ≈ 4.7 × 10<sup>18</sup>, sixteen significant digits are not enough to
+    resolve the bottom of the spectrum. Double precision returns
+    σ<sub>min</sub> of order 10<sup>−17</sup> and κ of order 10<sup>17</sup>: wrong by
+    one to two orders of magnitude, and the exact figures differ between machines
+    because they depend on the linear-algebra library.</p>
+  <p>The same conditioning governs the polar factor. For a non-singular matrix the
+    unitary polar factor is unique and obeys</p>
+  <pre>‖U(A+E) − U(A)‖_F  ≤  2‖E‖_F / (σ_min(A) + σ_min(A+E))</pre>
+  <p>Building the matrix in double precision perturbs it by ‖E‖<sub>F</sub> ≈ 4 × 10<sup>−16</sup>,
+    so the bound is of order 10<sup>3</sup>: no control at all. Measured against the
+    120-digit factor, three admissible float64 constructions of the same matrix, on two
+    independent machines, give deviations spread over</p>
+  <pre>0.5  ≤  ‖ΔU_φ‖_F   ≤  3
+0.05 ≤  ‖ΔP_χ‖_F   ≤  1</pre>
+  <p>— O(1), and not reproducible. That is why neither the paper nor this page pins a
+    single value: the spread <em>is</em> the phenomenon. Restricted to the five retained
+    singular directions the two factors agree to ≤ 10<sup>−10</sup>: what double
+    precision loses is the orientation of the ill-conditioned complement, not the block
+    the readout actually uses.</p>
+  <div class="callout ok">
+    <p><strong>What survives at any precision.</strong> The coisometry identities
+      RR* = I₂, rank P<sub>χ</sub> = 2, dim ker R<sub>χ</sub> = 8 hold for
+      <em>any</em> unitary, so they are satisfied by whichever factor your machine
+      computes: the measured defect is ≈ 5 × 10<sup>−16</sup> in double precision and
+      ≈ 10<sup>−120</sup> at 120 digits. A theorem about all unitaries and a certified
+      statement about one specific matrix are different objects, and only the second
+      needs multiprecision.</p>
+  </div>
+  <p class="note">The Console reports both columns side by side: what it computed here,
+    and what the certified record says. Any disagreement you see in the last digits is
+    the point being made, not a malfunction.</p>
+</section>
+
+<section id="run">
+  <h2><span class="num">05</span>Run it locally</h2>
+  <pre>git clone https://github.com/pasqualecamelia/qfmt-research-simulator
+cd qfmt-research-simulator
+make dev        # editable install with test extras
+make test       # 25 tests
+make certify    # multiprecision certification, 40–120 digits, JSON output
+make quick      # full quick profile into outputs/quick</pre>
+  <p>The package separates three levels that should not be conflated: the reproducible
+    FMT core, the quantum numerical constructions built on the polar factor, and the
+    exploratory benchmarks. Each carries its own status in the documentation; the
+    validation report states which numbers are certified and which are illustrative.</p>
+  <div class="cards">
+    <div class="card">
+      <h4>Repository</h4>
+      <p>Source, tests, CI, the certifier, and the release archives with SHA-256.</p>
+      <a class="go" href="https://github.com/pasqualecamelia/qfmt-research-simulator" target="_blank" rel="noopener">GitHub →</a>
+    </div>
+    <div class="card">
+      <h4>Papers</h4>
+      <p>The FMT paper and the projection-SVD paper that supplies the rank-five
+        structure upstream of it.</p>
+      <a class="go" href="../papers.html">Read →</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 Pasquale Camelia — <em>The Quantum Gauge Theory of Time</em>, First Edition
+      (KDP — ISBN 9798198195011).</p>
+    <p>Scientific content and theoretical results: all rights reserved.
+      Interactive companion code released under the
+      <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>;
+      the QFMT research package carries its own licence in the repository.</p>
+    <p><a href="../">← back to the QGT Companion</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
