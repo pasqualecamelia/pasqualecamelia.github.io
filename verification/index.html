@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {'analytics_storage':'granted','ad_storage':'denied','wait_for_update':500});
+  gtag('js', new Date());
+  gtag('config', 'G-MTVYWSLES3', {'anonymize_ip': true});
+</script>
+<script defer src="https://www.googletagmanager.com/gtag/js?id=G-MTVYWSLES3"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Verification — executable and kernel-checked certificates for QGT</title>
+<meta name="description" content="Two independent certificates for the projection constant of the QGT First Edition: a symbolic-executable verifier in Python and a kernel-checked formalization pilot in Lean 4."/>
+<meta name="author" content="Pasquale Camelia"/>
+<meta name="robots" content="index, follow"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="QGT verification — Pasquale Camelia"/>
+<meta property="og:description" content="Exact cross-representation coherence of the projection invariant, verified symbolically and re-proved by the Lean 4 kernel."/>
+<meta property="og:url" content="https://pasqualecamelia.github.io/verification/"/>
+<link rel="icon" type="image/png" sizes="48x48" href="../favicon.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafaf8; --bg2:#f2f0eb; --bg3:#e8e5de;
+  --text:#1a1916; --text2:#5a5852; --text3:#8a8880;
+  --blue:#1a3a6b; --blue2:#2554a0; --blue3:#e8eef8;
+  --gold:#7a5a10; --gold2:#f5edda;
+  --green:#1a5a3a; --green2:#e0f0e8;
+  --border:#d8d4c8; --radius:8px;
+  --mono:'JetBrains Mono','Fira Mono','Courier New',monospace;
+  --serif:'Georgia','Times New Roman',serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#16151a;--bg2:#1e1d23;--bg3:#28272e;--text:#eceae4;
+        --text2:#b0aca4;--text3:#807c74;--blue3:#1b2740;--gold2:#2e2716;
+        --green2:#16281f;--border:#35333c}
+}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);
+     line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+a{color:var(--blue2)}
+header{border-bottom:1px solid var(--border);padding-bottom:1.5rem;margin-bottom:2rem}
+.kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;
+        text-transform:uppercase;color:var(--text3)}
+h1{font-size:2rem;line-height:1.2;margin:.5rem 0 .75rem;font-weight:600}
+h2{font-size:1.3rem;margin:2.5rem 0 .75rem;font-weight:600}
+h3{font-size:1.02rem;margin:1.5rem 0 .5rem;font-weight:600}
+p{margin:.75rem 0;color:var(--text2)}
+p.lead{color:var(--text);font-size:1.05rem}
+code{font-family:var(--mono);font-size:.86em;background:var(--bg3);
+     padding:.1em .35em;border-radius:3px}
+pre{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+    padding:.9rem 1rem;overflow-x:auto;margin:1rem 0}
+pre code{background:none;padding:0;font-size:.8rem;line-height:1.55}
+.card{background:var(--bg2);border:1px solid var(--border);
+      border-radius:var(--radius);padding:1.25rem 1.4rem;margin:1.25rem 0}
+.badge{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;
+       padding:.18em .5em;border-radius:3px;text-transform:uppercase}
+.badge.pass{background:var(--green2);color:var(--green)}
+.badge.kernel{background:var(--blue3);color:var(--blue2)}
+.badge.scope{background:var(--gold2);color:var(--gold)}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+th,td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--border)}
+th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;
+   text-transform:uppercase;color:var(--text3);font-weight:500}
+td code{font-size:.82em}
+.files{display:grid;gap:.6rem;margin:1rem 0}
+.file{display:flex;justify-content:space-between;align-items:center;gap:1rem;
+      padding:.7rem .9rem;background:var(--bg2);border:1px solid var(--border);
+      border-radius:var(--radius)}
+.file .n{font-family:var(--mono);font-size:.84rem}
+.file .d{font-size:.8rem;color:var(--text3)}
+.note{font-size:.88rem;color:var(--text3);border-left:2px solid var(--border);
+      padding-left:.9rem;margin:1.25rem 0}
+footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);
+       font-size:.82rem;color:var(--text3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Companion &middot; verification</div>
+  <h1>Two certificates for the projection constant</h1>
+  <p class="lead">Appendix L of the First Edition reads the projection constant
+  nine times, on three structural levels. These are the machine-checkable
+  counterparts of that appendix: one executable, one kernel-checked.</p>
+</header>
+
+<p>They answer a narrow question, and it is worth stating the question before
+the answer. <em>Given the structural inputs declared by the monograph, are the
+representations of the projection invariant algebraically coherent?</em> Not
+whether QGT is true, not whether the invariant is the measured fine-structure
+constant. Those are different questions, and no amount of computation settles
+them.</p>
+
+<h2>1. B1 &mdash; symbolic-executable verifier <span class="badge pass">pass</span></h2>
+
+<p>A Python harness built on exact symbolic algebra. It constructs the objects
+Appendix L describes &mdash; a bilinear form, a singular value decomposition, a
+transfer function, a dilatation residue, a quadratic form in
+<code>Z[&radic;5]</code>, a regular matrix representation &mdash; and checks the
+declared identities on them. Nine typed checks, twenty-eight lemmas.</p>
+
+<p>Three of the nine directly produce the invariant, and they agree
+<em>symbolically</em>, not to a number of decimals:</p>
+
+<pre><code>I.4   Pincherle residue        30*sqrt(5) + 70
+II.1  Fibonacci norm           30*sqrt(5) + 70
+II.2  regular representation   30*sqrt(5) + 70
+      reference 20*phi**4  ->  137.08203932499369089227...</code></pre>
+
+<p>The right name for this is <strong>exact cross-representation
+coherence</strong>. It is not independent numerical convergence: the three are
+representations of one algebraic element, and their agreement certifies that
+the representations cohere, not that nine separate experiments concurred.</p>
+
+<h3>Finite negative controls</h3>
+<p>Keeping everything else fixed and replacing the imported rank by its
+neighbours, the downstream arithmetic stops closing:</p>
+
+<table>
+<tr><th>rank</th><th>c<sub>r</sub></th><th>det</th><th>readout</th><th></th></tr>
+<tr><td>3</td><td><code>(2,1)</code></td><td>&minus;1</td><td><code>9 + 4&radic;5</code></td><td>does not close</td></tr>
+<tr><td>4</td><td><code>(3,2)</code></td><td>&minus;11</td><td><code>29 + 12&radic;5</code></td><td>does not close</td></tr>
+<tr><td><strong>5</strong></td><td><code>(5,3)</code></td><td>&minus;20</td><td><code>70 + 30&radic;5</code></td><td><strong>closes</strong></td></tr>
+<tr><td>6</td><td><code>(8,5)</code></td><td>&minus;61</td><td><code>(8+5&radic;5)&sup2;</code></td><td>does not close</td></tr>
+<tr><td>7</td><td><code>(13,8)</code></td><td>&minus;151</td><td><code>(13+8&radic;5)&sup2;</code></td><td>does not close</td></tr>
+</table>
+
+<p class="note">This is a sensitivity test over a finite declared set. It shows
+the arithmetic is sensitive to the rank input. It is <em>not</em> a proof that
+five is the only possible rank: that theorem is upstream and is not re-proved
+here.</p>
+
+<h2>2. Formal pilot &mdash; Lean 4 <span class="badge kernel">kernel-checked</span></h2>
+
+<p>The arithmetic core of the same appendix, re-proved inside a proof
+assistant. Here the certificate is not a boolean returned by a program: it is a
+proof term the Lean kernel has accepted.</p>
+
+<pre><code>lake build                    Build completed successfully
+sorry 0    admit 0    unsafe 0    native_decide 0
+
+QGT.pincherleReadout          does not depend on any axioms
+QGT.fibonacciNormReadout      does not depend on any axioms
+QGT.regularMatrixReadout      does not depend on any axioms
+QGT.crossRepresentation       does not depend on any axioms
+QGT.finiteRankSensitivity     does not depend on any axioms</code></pre>
+
+<p>Ten of the twelve exported theorems depend on <strong>no axioms at
+all</strong>. The other two use <code>propext</code> and <code>Quot.sound</code>,
+standard logical axioms of Lean. No custom axiom exists in the project, and none
+carries a QGT conclusion.</p>
+
+<p>The carrier is the ring of integers of <code>Q(&radic;5)</code> in the basis
+<code>{1, &phi;}</code>, built from pairs of integers. Multiplication is induced
+by <code>&phi;&sup2; = &phi; + 1</code>, so that identity is a <em>theorem of the
+representation</em>, not an axiom. The project has no external dependency: it
+builds from Lean core alone, so a referee reproduces it with the toolchain and
+nothing else.</p>
+
+<h3>What is imported, and what is proved</h3>
+<table>
+<tr><th>role</th><th>content</th></tr>
+<tr><td>imported</td><td>rank five; the coefficient vector is the Fibonacci pair</td></tr>
+<tr><td>proved</td><td><code>&phi;&sup2;=&phi;+1</code>, <code>(&radic;5)&sup2;=5</code>, <code>&Lambda;&sup2;=20&phi;&#8308;</code>, <code>c&#7488;Gc=20&phi;&#8308;</code>, <code>eval(M&sup2;)=20&phi;&#8308;</code>, their mutual equality, and the finite rank sensitivity</td></tr>
+</table>
+
+<p>The imported inputs are a named structure whose fields appear in the
+signature of every theorem that uses them. <strong>B1 consumes the rank-five
+selection; it does not re-prove its uniqueness.</strong></p>
+
+<h2>Downloads</h2>
+<div class="files">
+  <div class="file"><span class="n"><a href="qgt_block_alpha.py">qgt_block_alpha.py</a></span><span class="d">the executable verifier</span></div>
+  <div class="file"><span class="n"><a href="b1.json">b1.json</a></span><span class="d">machine-readable certificate</span></div>
+  <div class="file"><span class="n"><a href="QGT_Formal_Pilot_B0_B1_rel1.zip">QGT_Formal_Pilot_B0_B1_rel1.zip</a></span><span class="d">the Lean 4 project</span></div>
+  <div class="file"><span class="n"><a href="CITATION.cff">CITATION.cff</a></span><span class="d">how to cite</span></div>
+</div>
+
+<pre><code>python3 qgt_block_alpha.py --json b1.json     # exit 0 on pass
+
+unzip QGT_Formal_Pilot_B0_B1_rel1.zip &amp;&amp; cd QGTFormal
+lake build &amp;&amp; bash scripts/audit.sh</code></pre>
+
+<h2 id="scope">Scope <span class="badge scope">read this before citing</span></h2>
+
+<p>Neither artefact establishes the physical truth of QGT, nor the empirical
+identity of the invariant with the measured fine-structure constant. No measured
+value of &alpha;, no CODATA figure and no fitted parameter enters either of them
+at any point. Rank five is an imported input in both, not a result. The negative
+controls are finite. Readings I.2, I.3, III.1 and III.3 are covered only by the
+Python harness, at its lower level of assurance; they need real or analytic
+structure and are deliberately left out of the formal pilot rather than
+approximated.</p>
+
+<p>The authority is the monograph. These are derived from it, and each declares
+the frozen version it was built against. What the kernel guarantees is that the
+Lean statements are proved; that they are the statements the monograph makes is
+human work, and <code>SOURCE_MAP.md</code> inside the project exists so a referee
+can check that correspondence line by line.</p>
+
+<footer>
+  <p>Pasquale Camelia &middot; companion to <em>The Quantum Gauge Theory of
+  Time</em>, First Edition &middot; <a href="../">back to the site</a></p>
+</footer>
+
+</div>
+</body>
+</html>

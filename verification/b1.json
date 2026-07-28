@@ -1,0 +1,557 @@
+{
+  "schema_version": "1.0",
+  "block_id": "B1",
+  "block_version": "1.1.0",
+  "title": "Projection constant",
+  "authority": {
+    "work": "QGT First Edition v7.6.6 (frozen)",
+    "source_label": "app:alpha_structure \u2014 Appendix L, The Projection Constant, pp. 529-537",
+    "tags": [
+      "I.1",
+      "I.2",
+      "I.3",
+      "I.4",
+      "II.1",
+      "II.2",
+      "III.1",
+      "III.2",
+      "III.3"
+    ]
+  },
+  "primitives": [
+    "integers",
+    "rationals",
+    "sqrt5",
+    "phi",
+    "pi",
+    "Fibonacci numbers"
+  ],
+  "upstream_inputs": {
+    "rank_five": {
+      "symbol": "r = 5",
+      "status": "imported upstream theorem, not proved here",
+      "source": "rank-five selection theorem (block B0)",
+      "used_by": [
+        "I.2",
+        "II.1",
+        "II.2",
+        "III.1",
+        "III.2"
+      ]
+    },
+    "golden_ladder": {
+      "symbol": "sigma_k = phi^(-k), k = 0..r-1",
+      "status": "imported upstream selection, not derived here",
+      "source": "SVD of the rank-five Majorana projection",
+      "used_by": [
+        "I.2"
+      ]
+    },
+    "fibonacci_pair": {
+      "symbol": "c_F = (F_5, F_4)",
+      "status": "fixed by the rank-five selection",
+      "source": "Reading II.1",
+      "used_by": [
+        "II.1",
+        "II.2"
+      ]
+    },
+    "golden_norm_form": {
+      "symbol": "G_sqrt5 = [[1, sqrt5], [sqrt5, 5]]",
+      "status": "definition",
+      "source": "Reading II.1",
+      "used_by": [
+        "II.1"
+      ]
+    },
+    "filter_form": {
+      "symbol": "H_Pi(z) = P_4(z) / (1 - a_Pi z)",
+      "status": "imported structural form",
+      "source": "Reading I.3",
+      "used_by": [
+        "I.3"
+      ]
+    }
+  },
+  "forbidden_empirical_inputs": [
+    "measured alpha",
+    "CODATA value",
+    "fitted parameter",
+    "experimental recoil datum",
+    "decimal literal of the invariant"
+  ],
+  "checks": [
+    {
+      "id": "I.1",
+      "level": "I \u2014 local qubit",
+      "kind": "structural_compatibility",
+      "name": "Chiral contraction",
+      "dependencies": [],
+      "constructs": "q^T C_chi q with symbolic q",
+      "exact_output": "eta*xi",
+      "canonical_output": null,
+      "extra_outputs": {},
+      "lemmas": [
+        {
+          "claim": "q^T C_chi q == xi*eta for symbolic q",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        }
+      ],
+      "status": "PASS",
+      "proves": "the chiral form extracts exactly the product xi*eta for every q: the invariant is a contraction, not a definition",
+      "does_not_prove": "the value of xi*eta, fixed by the lock-in surface",
+      "failure_mode": "C_chi mis-transcribed, or contraction != product for symbolic q",
+      "theorem_dependency": null,
+      "error": null
+    },
+    {
+      "id": "I.2",
+      "level": "I \u2014 local qubit",
+      "kind": "structural_compatibility",
+      "name": "Boundary metric from the SVD",
+      "dependencies": [
+        "rank_five",
+        "golden_ladder"
+      ],
+      "constructs": "spec(P^dag P), P = Sigma V^T with V orthogonal",
+      "exact_output": "[1, 3/2 - sqrt(5)/2, 7/2 - 3*sqrt(5)/2, 9 - 4*sqrt(5), 47/2 - 21*sqrt(5)/2]",
+      "canonical_output": null,
+      "extra_outputs": {},
+      "lemmas": [
+        {
+          "claim": "spec(K_Pi) == {phi^-2k}, independent of the basis V",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "adjacent scale ratio == phi",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        }
+      ],
+      "status": "PASS",
+      "proves": "K_Pi = P^dag P has the squared ladder as spectrum, and that spectrum does not depend on the basis V",
+      "does_not_prove": "that the singular values ARE the golden ladder: that is the upstream selection theorem",
+      "failure_mode": "spectrum depending on V, or differing from {phi^-2k}",
+      "theorem_dependency": null,
+      "error": null
+    },
+    {
+      "id": "I.3",
+      "level": "I \u2014 local qubit",
+      "kind": "structural_compatibility",
+      "name": "Boundary filter and all-pass cell",
+      "dependencies": [
+        "filter_form"
+      ],
+      "constructs": "pole(H_Pi), P_4(pole), U_eta = M_eta D M_eta^-1",
+      "exact_output": "30*sqrt(5) + 70",
+      "canonical_output": null,
+      "extra_outputs": {},
+      "lemmas": [
+        {
+          "claim": "denominator root == 20 phi^4",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "numerator P_4 != 0 at the pole (no cancellation)",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "deg P_4 == rank - 1",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "U_eta explicitly constructed via M_eta^-1",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "char poly of U_eta == char poly of D_alpha (isospectral)",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "|D_alpha|^2 == 1 on the real axis (all-pass)",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        }
+      ],
+      "status": "PASS",
+      "proves": "the denominator vanishes at 20 phi^4 and the numerator does NOT vanish there, so the pole is not cancelled; the cell U_eta = M_eta D_alpha M_eta^-1 is explicitly constructed and isospectral to D_alpha",
+      "does_not_prove": "that a single-pole completion is physically necessary. Note also that with the monograph's scalar D_alpha the conjugation is trivially equal, so the content here is the explicit construction and the absence of pole-zero cancellation, not a non-trivial similarity",
+      "failure_mode": "pole-zero cancellation, or a similarity asserted without constructing the conjugate",
+      "theorem_dependency": null,
+      "error": null
+    },
+    {
+      "id": "I.4",
+      "level": "I \u2014 local qubit",
+      "kind": "scalar_readout",
+      "name": "Pincherle dilatation residue",
+      "dependencies": [],
+      "constructs": "Lambda_Pi = 2 phi^2 sqrt5, then its square",
+      "exact_output": "30*sqrt(5) + 70",
+      "canonical_output": "20*phi**4",
+      "extra_outputs": {},
+      "lemmas": [
+        {
+          "claim": "kappa = phi + 1/phi == sqrt5",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "2 phi^2 sqrt5 == 4 phi^2 (phi - 1/2)",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "== 5 + 3 sqrt5",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "Lambda_Pi^2 == 20 phi^4",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        }
+      ],
+      "status": "PASS",
+      "proves": "kappa == sqrt5, the three forms of Lambda_Pi coincide, and its square equals 20 phi^4",
+      "does_not_prove": "that the dilatation invariant must be squared: that is the boundary-observable argument",
+      "failure_mode": "Lambda_Pi mis-transcribed, or the square not closing",
+      "theorem_dependency": null,
+      "error": null
+    },
+    {
+      "id": "II.1",
+      "level": "II \u2014 kernel arithmetic",
+      "kind": "scalar_readout",
+      "name": "Fibonacci norm in Z[sqrt5]",
+      "dependencies": [
+        "rank_five",
+        "fibonacci_pair",
+        "golden_norm_form"
+      ],
+      "constructs": "c_F^T G_sqrt5 c_F",
+      "exact_output": "30*sqrt(5) + 70",
+      "canonical_output": "20*phi**4",
+      "extra_outputs": {},
+      "lemmas": [
+        {
+          "claim": "c^T G c == a^2 + 5b^2 + 2ab sqrt5 for symbolic (a,b)",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "(F5,F4) == (5,3) from the Fibonacci recursion",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "value == 70 + 30 sqrt5",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "== 20 phi^4",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        }
+      ],
+      "status": "PASS",
+      "proves": "the quadratic form expands as declared for symbolic (a,b), and on the Fibonacci pair evaluates to 70 + 30 sqrt5 == 20 phi^4",
+      "does_not_prove": "why the coefficient vector is the Fibonacci pair: that is fixed upstream by the rank-five selection",
+      "failure_mode": "G mis-transcribed, or the pair not closing",
+      "theorem_dependency": null,
+      "error": null
+    },
+    {
+      "id": "II.2",
+      "level": "II \u2014 kernel arithmetic",
+      "kind": "scalar_readout",
+      "name": "Regular matrix representation",
+      "dependencies": [
+        "rank_five",
+        "fibonacci_pair"
+      ],
+      "constructs": "M_Pi, then M_Pi^2 and eval_sqrt5 of it",
+      "exact_output": "30*sqrt(5) + 70",
+      "canonical_output": "20*phi**4",
+      "extra_outputs": {
+        "M_Pi": [
+          [
+            5,
+            15
+          ],
+          [
+            3,
+            5
+          ]
+        ],
+        "M_Pi_squared": [
+          [
+            70,
+            150
+          ],
+          [
+            30,
+            70
+          ]
+        ]
+      },
+      "lemmas": [
+        {
+          "claim": "M_Pi integral",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "tr M_Pi == 2r == 10",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "det M_Pi == F5^2 - 5F4^2 == -20",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "M_Pi^2 is reg(a + b sqrt5)",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "eval_sqrt5(M_Pi^2) == 20 phi^4",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        }
+      ],
+      "status": "PASS",
+      "proves": "M_Pi is integral with tr = 2r and det = F5^2 - 5F4^2 = -20; M_Pi^2 is the regular representation of an element of Z[sqrt5] whose evaluation is 20 phi^4",
+      "does_not_prove": "uniqueness of the representation",
+      "failure_mode": "M_Pi^2 not of the form [[a,5b],[b,a]], or eval not closing",
+      "theorem_dependency": null,
+      "error": null
+    },
+    {
+      "id": "III.1",
+      "level": "III \u2014 gluing",
+      "kind": "structural_compatibility",
+      "name": "Chiral tensor anisotropy",
+      "dependencies": [
+        "rank_five"
+      ],
+      "constructs": "xi* = 11 sqrt(a_Pi/55), eta* = 5 sqrt(a_Pi/55)",
+      "exact_output": "11/5",
+      "canonical_output": null,
+      "extra_outputs": {},
+      "lemmas": [
+        {
+          "claim": "constructed point lies on the lock-in surface: xi* eta* == a_Pi",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "xi*/eta* == 11/5, derived from the construction",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        }
+      ],
+      "status": "PASS",
+      "proves": "the lock-in point built FROM the invariant satisfies xi* eta* == a_Pi and reproduces the anisotropy 11/5: the ratio is derived from the construction, not asserted",
+      "does_not_prove": "the multiplicities 11 and 5 themselves, which come from the B13 decomposition upstream",
+      "failure_mode": "the constructed point off the lock-in surface, or the ratio differing from 11/5",
+      "theorem_dependency": null,
+      "error": null
+    },
+    {
+      "id": "III.2",
+      "level": "III \u2014 gluing",
+      "kind": "structural_compatibility",
+      "name": "Filter decomposition B13 = S5 + T8",
+      "dependencies": [
+        "rank_five"
+      ],
+      "constructs": "S = F_r, T = F_(r+1), B = S + T",
+      "exact_output": "5 + 8 = 13",
+      "canonical_output": null,
+      "extra_outputs": {},
+      "lemmas": [
+        {
+          "claim": "F_r + F_(r+1) == F_(r+2)",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "5 + 8 == 13",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        }
+      ],
+      "status": "PASS",
+      "proves": "the decomposition is dimensionally consistent and its summands are the consecutive Fibonacci numbers straddling the rank",
+      "does_not_prove": "that the boundary algebra must decompose this way",
+      "failure_mode": "summands failing to be F_r and F_{r+1}",
+      "theorem_dependency": null,
+      "error": null
+    },
+    {
+      "id": "III.3",
+      "level": "III \u2014 gluing",
+      "kind": "structural_compatibility",
+      "name": "FMT zero mode: non-closure",
+      "dependencies": [],
+      "constructs": "f_gain and delta_F from the FMT closure condition",
+      "exact_output": "-3*sqrt(2)*5**(1/4)*pi/20 + 1",
+      "canonical_output": null,
+      "extra_outputs": {
+        "decimal": "0.00345106199744975145141004999574"
+      },
+      "lemmas": [
+        {
+          "claim": "f_gain == 1/(1 - delta_F)",
+          "pass": true,
+          "test_type": "exact_symbolic_identity"
+        },
+        {
+          "claim": "delta_F != 0 at 50 dps",
+          "pass": true,
+          "test_type": "high_precision_numerical_witness"
+        }
+      ],
+      "status": "PASS",
+      "proves": "the loop-gain identity f_gain == 1/(1 - delta_F) exactly, and gives a high-precision numerical witness that delta_F != 0",
+      "does_not_prove": "the transcendence theorem. Rigorous non-vanishing of delta_F rests on Lindemann-Weierstrass, cited and not re-proved here; the numerical test is a witness at the declared precision, not a proof",
+      "failure_mode": "the gain identity failing, or delta_F vanishing at the declared precision",
+      "theorem_dependency": "Lindemann-Weierstrass",
+      "error": null
+    }
+  ],
+  "convergence_groups": [
+    {
+      "name": "cross_representation_coherence",
+      "members": [
+        "I.4",
+        "II.1",
+        "II.2"
+      ],
+      "certificate": "exact_symbolic_equality",
+      "note": "representations of one algebraic element, not independent evidence",
+      "rows": [
+        {
+          "tag": "I.4",
+          "exact": "30*sqrt(5) + 70",
+          "canonical": "20*phi**4",
+          "exact_match": true,
+          "decimal": "137.082039324993690892275210062"
+        },
+        {
+          "tag": "II.1",
+          "exact": "30*sqrt(5) + 70",
+          "canonical": "20*phi**4",
+          "exact_match": true,
+          "decimal": "137.082039324993690892275210062"
+        },
+        {
+          "tag": "II.2",
+          "exact": "30*sqrt(5) + 70",
+          "canonical": "20*phi**4",
+          "exact_match": true,
+          "decimal": "137.082039324993690892275210062"
+        }
+      ],
+      "reference_decimal": "137.082039324993690892275210062"
+    }
+  ],
+  "negative_controls": {
+    "name": "finite_rank_sensitivity",
+    "domain": "r in {3,4,5,6,7}",
+    "claim": "the downstream arithmetic is sensitive to the imported rank",
+    "not_a_claim": "uniqueness of rank five",
+    "rows": [
+      {
+        "r": 3,
+        "c_r": [
+          2,
+          1
+        ],
+        "exact": "4*sqrt(5) + 9",
+        "det": -1,
+        "matches_invariant": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "r": 4,
+        "c_r": [
+          3,
+          2
+        ],
+        "exact": "12*sqrt(5) + 29",
+        "det": -11,
+        "matches_invariant": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "r": 5,
+        "c_r": [
+          5,
+          3
+        ],
+        "exact": "30*sqrt(5) + 70",
+        "det": -20,
+        "matches_invariant": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "r": 6,
+        "c_r": [
+          8,
+          5
+        ],
+        "exact": "(8 + 5*sqrt(5))**2",
+        "det": -61,
+        "matches_invariant": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "r": 7,
+        "c_r": [
+          13,
+          8
+        ],
+        "exact": "(13 + 8*sqrt(5))**2",
+        "det": -151,
+        "matches_invariant": false,
+        "expected": false,
+        "pass": true
+      }
+    ]
+  },
+  "environment": {
+    "python": "3.12.3",
+    "sympy": "1.14.0",
+    "mpmath": "1.3.0",
+    "dps": 50,
+    "platform": "Linux-6.18.5-x86_64-with-glibc2.39"
+  },
+  "hashes": {
+    "source_sha256": "6e5ab34d9520e2284c19d5f46e99a3aa9acd453f1d6cc3d4e3cc6a73e3c8bfbe",
+    "canonical_payload_sha256": "8bdc7e9ae7c85662ae625b0946136a6ce5e9fa8fd3e992973311375b1ee70159",
+    "note": "canonical_payload_sha256 is the hash of the payload WITHOUT that field. It is not the hash of the final file, which cannot be embedded in itself and must be recorded externally."
+  },
+  "summary": {
+    "status": "PASS",
+    "scientific_failures": 0,
+    "infrastructural_failures": 0,
+    "scientific_scope": "conditional on declared upstream inputs; exact cross-representation coherence; no empirical input for alpha"
+  }
+}

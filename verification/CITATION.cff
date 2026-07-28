@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use these certificates, cite the monograph as the authority and the artefact you actually ran."
+title: "QGT verification certificates: B1 symbolic verifier and B0+B1 Lean 4 formal pilot"
+abstract: >-
+  Two machine-checkable counterparts to Appendix E of The Quantum Gauge Theory
+  of Time, First Edition. B1 is a symbolic-executable coherence verifier in
+  Python/SymPy; the formal pilot re-proves the arithmetic core in Lean 4, with
+  no external dependency and no custom axiom. Neither establishes the physical
+  truth of the theory nor the empirical identity of the projection invariant
+  with the measured fine-structure constant.
+type: software
+authors:
+  - family-names: Camelia
+    given-names: Pasquale
+    orcid: "https://orcid.org/0009-0006-4779-4647"
+version: "1.1.0"
+date-released: "2026-07-28"
+license: CC-BY-NC-4.0
+url: "https://pasqualecamelia.github.io/verification/"
+keywords:
+  - quantum gauge theory of time
+  - projection constant
+  - formal verification
+  - Lean 4
+  - symbolic computation
+references:
+  - type: book
+    title: "The Quantum Gauge Theory of Time"
+    authors:
+      - family-names: Camelia
+        given-names: Pasquale
+    edition: "First Edition, v7.6.6"
+    year: 2026
+    notes: "Frozen authority. Appendix E, Seven Readings of the Projection Constant."
