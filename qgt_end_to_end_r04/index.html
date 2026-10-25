@@ -1,1 +1,136 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QGT r04 — Integrated Cinematic Hydrogen</title>
+<style>
+:root{--bg:#070c12;--bg2:#111925;--bg3:#172333;--text:#edf3f8;--text2:#a9b8c7;--text3:#738295;--gold:#e6c35a;--border:#26384a;--radius:14px;--mono:Consolas,Menlo,monospace;--accent:#82d4ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -10%,#17283a,#070c12 58%);color:var(--text);font-family:Inter,Arial,sans-serif;line-height:1.5}a{color:var(--accent);text-decoration:none}button{font:inherit}.wrap{max-width:1240px;margin:auto;padding:0 22px}.hero{padding:56px 0 30px}.kicker,.live-kicker{font:700 12px/1 var(--mono);letter-spacing:.12em;color:var(--gold);text-transform:uppercase}h1{font-size:clamp(38px,6vw,76px);line-height:.98;margin:16px 0 16px;max-width:1040px}.hero p{font-size:19px;color:var(--text2);max-width:850px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}.btn{border:1px solid var(--border);background:var(--bg3);color:var(--text);border-radius:12px;padding:12px 17px;cursor:pointer;font-weight:700}.btn.primary{background:linear-gradient(#f3d978,#c9a94a);color:#101010;border:0}.stage{margin:18px 0 34px;background:#05080c;border:1px solid var(--border);border-radius:20px;overflow:hidden;position:relative;aspect-ratio:16/9;display:grid;place-items:center}.stage img{width:100%;height:100%;object-fit:cover;opacity:.9;transition:opacity .35s ease}.stage::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 56%,rgba(2,5,8,.92))}.stage-copy{position:absolute;left:30px;right:30px;bottom:24px;z-index:2}.stage-copy b{font:700 12px/1 var(--mono);color:var(--gold);letter-spacing:.1em}.stage-copy h2{font-size:32px;margin:8px 0 2px}.stage-copy p{margin:0;color:#c8d4df}.progress{height:4px;background:#182431}.progress i{height:100%;display:block;width:0;background:var(--gold);transition:width .3s ease}.story-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 44px}@media(max-width:900px){.story-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.story-grid{grid-template-columns:1fr}}.story-card{text-align:left;border:1px solid var(--border);background:var(--bg2);color:var(--text);border-radius:14px;overflow:hidden;padding:0;cursor:pointer}.story-card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}.story-card span,.story-card strong,.story-card small{display:block;margin-left:13px;margin-right:13px}.story-card .n{font:700 11px var(--mono);color:var(--gold);margin-top:10px}.story-card strong{margin-top:5px}.story-card small{color:var(--text2);margin-top:4px;margin-bottom:13px}.section-title{font-size:34px;margin:12px 0 8px}.lede{color:var(--text2);max-width:900px;margin-bottom:18px}#hydrogen3d{background:rgba(17,25,37,.92);border:1px solid var(--border);border-radius:20px;padding:22px;margin:0 0 36px}#hydrogen3d h2{font-size:34px;margin:8px 0 4px}.hyd-intro{font-size:.9rem;color:var(--text2);margin-bottom:1rem}.chart-title{font:700 .72rem var(--mono);color:var(--text2);margin:4px 0}#h3d-info{background:var(--bg3)!important;border-color:var(--border)!important;color:var(--text2)!important}.explain{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0 50px}@media(max-width:850px){.explain{grid-template-columns:1fr}}.explain div{padding:17px;border:1px solid var(--border);background:var(--bg2);border-radius:14px}.explain h3{margin:0 0 6px;font-size:18px}.explain p{margin:0;color:var(--text2);font-size:14px}.deploy{padding:22px;border:1px solid rgba(230,195,90,.35);background:rgba(230,195,90,.06);border-radius:18px;margin:0 0 46px}code{font-family:var(--mono)}footer{color:var(--text3);padding:20px 0 60px;font-size:13px}
+</style></head>
+<body>
+<div class="wrap hero"><div class="kicker">QGT r04 · Integrated Cinematic Hydrogen</div><h1>From the reciprocal CELL to a live quantum hydrogen atom.</h1><p>The full end-to-end story and the original Hydrogen3D solver now live in the same page. No iframe, no fake Bohr orbit: the final act is the browser-side 64³ wavefunction itself.</p><div class="actions"><button class="btn primary" id="cinemaBtn">▶ Start integrated cinematic</button><button class="btn" id="liveBtn">Jump to live atom</button><a class="btn" href="qgt_end_to_end_r04_integrated_cinematic.mp4">Watch r04 MP4</a><a class="btn" href="../qgt_companion.html#hydrogen3d">Original companion module ↗</a></div></div>
+<div class="wrap"><div class="stage" id="cinemaStage"><img id="stageImg" src="assets/01_cell.png" alt="cinematic stage"><div class="stage-copy"><b id="stageNum">ACT 01</b><h2 id="stageTitle">CELL</h2><p id="stageText">Reciprocal two-wall carrier</p></div><div class="progress" style="position:absolute;left:0;right:0;bottom:0;z-index:3"><i id="progressBar"></i></div></div><div class="story-grid"><button class="story-card" type="button" data-index="0"><img src="assets/01_cell.png" alt="CELL"><span class="n">01</span><strong>CELL</strong><small>Reciprocal two-wall carrier</small></button>
+<button class="story-card" type="button" data-index="1"><img src="assets/02_gluing.png" alt="REVERSAL"><span class="n">02</span><strong>REVERSAL</strong><small>Scale, spinor and tensor reverse together</small></button>
+<button class="story-card" type="button" data-index="2"><img src="assets/03_joint_access.png" alt="JOINT ACCESS"><span class="n">03</span><strong>JOINT ACCESS</strong><small>DW1 + DW2 remove spurious parity mixing</small></button>
+<button class="story-card" type="button" data-index="3"><img src="assets/04_matter_line.png" alt="MATTER LINE"><span class="n">04</span><strong>MATTER LINE</strong><small>Schur selection: quaternionic → complex</small></button>
+<button class="story-card" type="button" data-index="4"><img src="assets/05_photon.png" alt="PHOTON"><span class="n">05</span><strong>PHOTON</strong><small>One neutral massless stabilizer branch</small></button>
+<button class="story-card" type="button" data-index="5"><img src="assets/06_coulomb.png" alt="COULOMB"><span class="n">06</span><strong>COULOMB</strong><small>Static massless Green function → 1/r</small></button>
+<button class="story-card" type="button" data-index="6"><img src="assets/07_hydrogen.png" alt="HYDROGEN"><span class="n">07</span><strong>HYDROGEN</strong><small>One autonomous Schrödinger bound-state problem</small></button>
+<button class="story-card" type="button" data-index="7"><img src="assets/08_readout.png" alt="LIVE ATOM"><span class="n">08</span><strong>LIVE ATOM</strong><small>The theory ends in a measurable, dynamical atom</small></button></div>
+<h2 class="section-title">The final act is not a diagram.</h2><p class="lede">The previous acts explain the physical descent. The section below is the same live Hydrogen 3D engine already present in the QGT Companion, now integrated as the endpoint of the story.</p>
+<section id="hydrogen3d">
+<div class="live-kicker">FINAL ACT · LIVE SOLVER</div><h2>Hydrogen 3D — the atom is now alive</h2>
+<p class="hyd-intro">
+  iħ∂Ψ/∂t = H<sub>QGT</sub>Ψ — split-operator on 64³ grid.
+  V = −1/r + α·M<sub>eff</sub>·sech²(r/ℓ<sub>pen</sub>) + f<sub>t</sub>·cos(2Γ<sub>τ</sub>t)·e<sup>−r²/2</sup>.
+  Initial: |1s⟩ + |2p<sub>z</sub>⟩ + |3d<sub>z²</sub>⟩. Norm conserved to ~10⁻¹³ per step (measured live, displayed below).
+  <span style="color:var(--gold);font-size:0.78rem;font-family:var(--mono);">dimostrato</span>
+</p>
+<div style="padding:10px 0 8px 0;">
+  <div style="display:flex !important;align-items:center;gap:10px;flex-wrap:wrap;
+              margin-bottom:8px;visibility:visible !important;">
+    <button id="h3d-playbtn" onclick="h3dTogglePlay()"
+      style="display:inline-block !important;background:#e8c850;color:#0a0a14;
+             border:none;border-radius:4px;padding:7px 24px;cursor:pointer;
+             font-family:monospace;font-size:0.9rem;font-weight:bold;
+             min-width:90px;visibility:visible !important;">▶ Play</button>
+    <button onclick="h3dDraw(0);if(h3d_playing)h3dTogglePlay();"
+      style="display:inline-block !important;background:#1a1a28;color:#c8c8d8;
+             border:1px solid #333350;border-radius:4px;padding:7px 16px;
+             cursor:pointer;font-family:monospace;font-size:0.85rem;">↺ Reset</button>
+    <input type="range" min="0" max="50" step="1" value="0" id="h3d-slider"
+           oninput="h3dGoto(+this.value)"
+           style="flex:1;min-width:140px;cursor:pointer;"/>
+    <span id="h3d-tval"
+          style="font-family:monospace;font-size:0.82rem;color:#c8c8d8;
+                 min-width:110px;display:inline-block;">t = 0.00 a.u.</span>
+  </div>
+  <div style="font-family:monospace;font-size:0.72rem;color:#666688;margin-top:2px;">
+    N=64³ · a₀_QGT=Γ²τ · Split-operator FFT · LIVE in your browser · dt=0.24 a.u. · loop 0–12 a.u. ≈ 290 as — one full charge-migration stroke
+  </div>
+</div>
+<div style="margin-top:10px;">
+  <canvas id="h3d-3d" width="560" height="430"
+    style="width:100%;max-height:480px;border:1px solid var(--border);border-radius:6px;
+           background:#000;display:block;cursor:grab;touch-action:none;"></canvas>
+  <div style="font-family:var(--mono);font-size:0.7rem;color:#666688;margin:4px 0 2px;">
+    Volumetric rendering of the live field — colour = phase arg&nbsp;Ψ; luminous shells = iso-density
+    bands of |Ψ|²; mesh = iso-phase bands; filaments = probability current Im(Ψ*∇Ψ).
+    Drag to rotate. White dot = proton (potential centre). Display clipped at |x|&lt;10.5 a.u. to exclude periodic images. Every pixel is solver data; nothing decorative.
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;">
+  <div>
+    <div class="chart-title">xy plane (z=0)</div>
+    <canvas id="h3d-xy" width="200" height="200" style="width:100%;border:1px solid var(--border);border-radius:4px;background:#000;display:block;"></canvas>
+  </div>
+  <div>
+    <div class="chart-title">xz plane (y=0)</div>
+    <canvas id="h3d-xz" width="200" height="200" style="width:100%;border:1px solid var(--border);border-radius:4px;background:#000;display:block;"></canvas>
+  </div>
+  <div>
+    <div class="chart-title">yz plane (x=0)</div>
+    <canvas id="h3d-yz" width="200" height="200" style="width:100%;border:1px solid var(--border);border-radius:4px;background:#000;display:block;"></canvas>
+  </div>
+</div>
+<div style="margin-top:8px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);
+            border-radius:var(--radius);font-family:var(--mono);font-size:0.75rem;color:var(--text2);"
+     id="h3d-info">Loading...</div>
 
+<div style="margin-top:14px;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);
+            border-left:3px solid var(--gold);border-radius:var(--radius);">
+  <div style="font-family:var(--mono);font-size:0.8rem;color:var(--gold);margin-bottom:8px;">
+    What you are watching &mdash; 290 attoseconds of electron dynamics</div>
+  <div style="font-size:0.84rem;color:var(--text2);line-height:1.55;">
+    <p style="margin:0 0 8px;"><b>Timescale.</b> One atomic unit of time = 24.19 attoseconds.
+    The loop spans t = 0 &rarr; 12 a.u. &asymp; 290 as &mdash; the natural window of attosecond
+    charge dynamics. Playback is slowed down by a factor of ~3&times;10<sup>16</sup>.</p>
+    <p style="margin:0 0 8px;"><b>Charge migration &mdash; the main event.</b> The superposition
+    (|1s&rang;+|2p<sub>z</sub>&rang;+|3d<sub>z&sup2;</sub>&rang;)/&radic;3 is not stationary.
+    Its dipole &lang;z&rang;, measured from this very solver, runs from +1.12 a.u. through zero
+    (t &asymp; 4.7) to &minus;1.30 a.u. at t &asymp; 12: one full stroke of the electron cloud
+    from the upper lobe to the lower one (slow 2p&harr;3d beat, period &asymp; 24 a.u.
+    &asymp; 0.59 fs). Visually: the gold lobe empties into the magenta one.</p>
+    <p style="margin:0 0 8px;"><b>Breathing drive.</b> The QGT term
+    f<sub>t</sub>&middot;cos(2&Gamma;<sub>&tau;</sub>t)&middot;e<sup>&minus;r&sup2;/2</sup>
+    completes 2.8 cycles in the window (T = &pi;/&Gamma;<sub>&tau;</sub> = 4.34 a.u.) &mdash;
+    the pulsing of the core.</p>
+    <p style="margin:0 0 8px;"><b>Fast beat and filaments.</b> The 1s&harr;2p energy difference
+    rotates the iso-phase mesh ~2.6 times &mdash; the churning of the colours &mdash; while the
+    filaments (probability current Im&nbsp;&Psi;*&nabla;&Psi;) re-orient as the migration proceeds.</p>
+    <p style="margin:0 0 8px;"><b>What the lobes are.</b> Everything you see is the probability
+    density |&Psi;|&sup2; of <i>one single electron</i>; the colours encode the local phase
+    arg&nbsp;&Psi;. Gold, cyan and magenta are not different particles &mdash; they are phase
+    domains of the same electron cloud: 2p<sub>z</sub> flips sign between upper and lower lobe,
+    3d<sub>z&sup2;</sub> flips sign between poles and equatorial ring, so different regions carry
+    different relative phases that evolve at different rates.</p>
+    <p style="margin:0 0 8px;"><b>Why lobes seem to detach.</b> Between phase domains the density
+    passes through genuine <i>nodal surfaces</i> where |&Psi;|&sup2; &rarr; 0: the dark gaps are
+    real zeros of the wavefunction, not empty space between objects. The renderer also clips the
+    display at |x<sub>i</sub>| &lt; 10.5 a.u. to exclude periodic images of the FFT box
+    (at t = 12 a.u. about 3% of the norm sits within two cells of the boundary and would
+    otherwise re-enter from the opposite face as a spurious detached blob). The norm shown above
+    is always the full, unclipped field.</p>
+    <p style="margin:0 0 8px;"><b>Where the proton is.</b> At the white-dot marker in the centre:
+    in this solver the proton is not a simulated particle but the fixed centre of the Coulomb
+    potential &minus;1/&radic;(r&sup2;+&epsilon;&sup2;) (infinite-mass approximation, standard for
+    attosecond electron dynamics). The electron cloud breathes and migrates around it.</p>
+    <p style="margin:0;"><b>Spreading and the honest stop.</b> &lang;r&rang; grows from 3.0 to
+    6.3 a.u.: the shells inflate because the packet is non-stationary. Beyond t &asymp; 14 the
+    tail would approach the periodic box boundary, so the loop stops where the numerics are still
+    clean. All figures above (&lang;z&rang;(t), &lang;r&rang;(t)) are measured from the in-page
+    solver and reproducible from its source.</p>
+  </div>
+</div>
+</section>
+<div class="explain"><div><h3>Quantum-honest realism</h3><p>Brightness is probability density, colour is local phase, filaments are probability current. The proton is the fixed centre of the Coulomb potential. Nothing is rendered as a classical electron orbit.</p></div><div><h3>Formation → life</h3><p>The cinematic prelude stops at the Schrödinger-grade bound-state problem. The live engine then shows internal superposition, charge migration, phase beating and breathing on attosecond scales.</p></div><div><h3>Readout</h3><p>The visual finale is a dynamical atom with measurable response, not a decorative icon. This is the right endpoint for the QGT physical readout story.</p></div></div>
+<div class="deploy"><div class="kicker">Deployment</div><h2 style="margin:8px 0">Ready for GitHub Pages</h2><p>This page is self-contained except for local site assets. Upload the <code>qgt_end_to_end_r04/</code> folder plus the modified root <code>index.html</code>, or replace the site with the full-site bundle supplied with this release.</p></div>
+<footer>QGT r04 integrated cinematic · scientific chain: r01 · narrative layer: r02/r03 · live atom engine: existing qgt_companion Hydrogen3D module.</footer></div>
+<script>
+const story=[{"num": "01", "title": "CELL", "copy": "Reciprocal two-wall carrier", "img": "assets/01_cell.png"}, {"num": "02", "title": "REVERSAL", "copy": "Scale, spinor and tensor reverse together", "img": "assets/02_gluing.png"}, {"num": "03", "title": "JOINT ACCESS", "copy": "DW1 + DW2 remove spurious parity mixing", "img": "assets/03_joint_access.png"}, {"num": "04", "title": "MATTER LINE", "copy": "Schur selection: quaternionic \u2192 complex", "img": "assets/04_matter_line.png"}, {"num": "05", "title": "PHOTON", "copy": "One neutral massless stabilizer branch", "img": "assets/05_photon.png"}, {"num": "06", "title": "COULOMB", "copy": "Static massless Green function \u2192 1/r", "img": "assets/06_coulomb.png"}, {"num": "07", "title": "HYDROGEN", "copy": "One autonomous Schr\u00f6dinger bound-state problem", "img": "assets/07_hydrogen.png"}, {"num": "08", "title": "LIVE ATOM", "copy": "The theory ends in a measurable, dynamical atom", "img": "assets/08_readout.png"}];let current=0,cinTimer=null;
+function showAct(i){current=i;const s=story[i];document.getElementById('stageImg').style.opacity=.15;setTimeout(()=>{document.getElementById('stageImg').src=s.img;document.getElementById('stageImg').style.opacity=.92},120);document.getElementById('stageNum').textContent='ACT '+s.num;document.getElementById('stageTitle').textContent=s.title;document.getElementById('stageText').textContent=s.copy;document.getElementById('progressBar').style.width=((i+1)/story.length*100)+'%';}
+document.querySelectorAll('.story-card').forEach(el=>el.addEventListener('click',()=>showAct(+el.dataset.index)));
+function startCinema(){if(cinTimer)clearInterval(cinTimer);showAct(0);let i=0;cinTimer=setInterval(()=>{i++;if(i<story.length){showAct(i)}else{clearInterval(cinTimer);cinTimer=null;document.getElementById('hydrogen3d').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>{h3dDraw(0);if(!h3d_playing)h3dTogglePlay()},850)}},1450)}
+document.getElementById('cinemaBtn').addEventListener('click',startCinema);document.getElementById('liveBtn').addEventListener('click',()=>{document.getElementById('hydrogen3d').scrollIntoView({behavior:'smooth'});setTimeout(()=>h3dDraw(0),500)});showAct(0);
+if(new URLSearchParams(location.search).get('autoplay')==='1') setTimeout(startCinema,700);
+</script>
+<script src="hydrogen3d_live_engine.js"></script>
+</body></html>
