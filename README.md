@@ -1,55 +1,45 @@
-# pasqualecamelia.github.io
+# QGT Hydrogen3D r06 — Guided Physical Hydrogen
 
-Interactive companion for the **Quantum Gauge Theory of Time** (Camelia 2026, KDP First Edition).
+This revision replaces the legacy single-mode Hydrogen3D narrative with three explicitly typed stages.
 
-## What this is
+## 1. PREPARE — numerical bound-state preparation
+A broad trial wavefunction is propagated in **imaginary time** under
 
-This repository is the companion site to the monograph *The Quantum Gauge Theory of Time*.
-It provides interactive visualisations, structural validators, and numerical tools that illustrate
-the core chain of the QGT:
+\[
+H_0=-\frac12\nabla^2-\frac1\rho.
+\]
 
-```
-∂_I J^I = 0  →  Π (rank-5)  →  projective cells  →  coherent gluing  →  ℝ⁴_eff
-```
+This is an eigenstate-projection / numerical preparation procedure. It is **not** presented as physical radiative recombination. The independent Python reference raises the 1s fidelity from about 0.5145 to 0.9767 over the displayed preparation interval.
 
-## Structure
+## 2. LIVE — life of a formed atom
+A coherent bound-state superposition evolves in the Coulomb sector. The visual encoding is:
+- brightness = \(|\psi|^2\),
+- hue = local phase \(\arg\psi\),
+- filaments = probability current,
+- white point = fixed proton/potential centre.
 
-| File / Folder | Content |
-|---|---|
-| `index.html` | Main companion page (breathing, gluing, hydrogen, CMB) |
-| `qgt_companion.html` | Full interactive companion with verify panel and 3D H atom |
-| `qgt_animation_v4.html` | Temporal fibre S¹(τ) · Lissajous solitons animation |
-| `qgt_breathing_3d.html` | Majorana helix — breathing in 3D |
-| `qgt_simulator.py` | Structural validator: α, a₀, T_CMB, CMB peaks, Gate-3 |
-| `CamH/` | Phase-locking validator for the hydrogen channel |
-| `CamCMB/` | CAMB Gate-3 validation with Planck PR3/PR4 data |
-| `requirements.txt` | Python dependencies |
+There is no classical electron orbit.
 
-## Running the validators
+## 3. LIGHT — explicit atom–light interaction
+The r06 baseline replaces the old radial breathing proxy with an explicit dipole interaction
 
-```bash
-pip install -r requirements.txt
+\[
+H(\tau)=H_0-F(\tau)\rho_z,
+\]
 
-# Main structural validator
-python qgt_simulator.py
-python qgt_simulator.py --plot
+using a near-resonant pulse at \(\omega=3/8\) in scaled hydrogen units. The independent reference reaches a maximum \(2p_z\) population of about 0.253 while conserving norm to ~1.7e-13.
 
-# Hydrogen phase-lock (CamH)
-python CamH/run_camH_validation.py
+## Epistemic firewall
+- Radiative continuum capture \(e^-+p^+\to H+\gamma\) is **not** simulated in r06.
+- PREPARE is numerical eigenprojection, not physical time.
+- LIVE and LIGHT are real-time Schrödinger-grade dynamics.
+- Absolute \(\alpha_Q\) and \(\mu_Q\) calibrate units but are not needed for the dimensionless dynamics.
+- Legacy golden-clock/breathing terms are not used in the r06 baseline.
 
-# CMB Gate-3 (requires camb>=1.5)
-python CamCMB/run_qgt_gate3_camb.py
-```
-
-## Key results
-
-- α⁻¹_QGT = 20φ⁴ = 137.082 (structural); α⁻¹_phys = 137.036 (CODATA, 0.033 ppm)
-- a₀_bare = Γτ² = φ²/5 = 0.5236 Å (golden temporal scale)
-- a₀_phys = 0.529177228 Å (Bohr–Rydberg readout, LEVEL_A, +0.033 ppm)
-- Hydrogen phase lock: sin Δ* = (13/8)δ_F (exact), δω/K ≈ 5.6×10⁻³ ≪ 1
-- CMB peaks RMS 1.6%, χ²/ν = 1.179 (PR3), 0.129 (PR4)
-
-## Monograph
-
-*The Quantum Gauge Theory of Time* — Pasquale Camelia, 2026, KDP First Edition.
-QR code in the monograph points to: https://pasqualecamelia.github.io
+## Files
+- `index.html` — guided web experience with 4 introductory slides and the 3-mode live simulator.
+- `hydrogen3d_guided_engine_r06.js` — live 64^3 browser engine and renderer.
+- `qgt_hydrogen3d_r06_reference.py` — independent 48^3 Python reference/verifier.
+- `data/summary.json` — quantitative summary.
+- `data/preparation.json`, `life.json`, `light.json` — observables by frame.
+- `data/slices.npz` — reference central-slice data.
