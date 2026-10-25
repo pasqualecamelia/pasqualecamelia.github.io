@@ -1,1 +1,50 @@
-
+[
+  {
+    "num": "01",
+    "title": "CELL",
+    "copy": "Reciprocal two-wall carrier",
+    "img": "assets/01_cell.png"
+  },
+  {
+    "num": "02",
+    "title": "REVERSAL",
+    "copy": "Scale, spinor and tensor reverse together",
+    "img": "assets/02_gluing.png"
+  },
+  {
+    "num": "03",
+    "title": "JOINT ACCESS",
+    "copy": "DW1 + DW2 remove spurious parity mixing",
+    "img": "assets/03_joint_access.png"
+  },
+  {
+    "num": "04",
+    "title": "MATTER LINE",
+    "copy": "Schur selection: quaternionic \u2192 complex",
+    "img": "assets/04_matter_line.png"
+  },
+  {
+    "num": "05",
+    "title": "PHOTON",
+    "copy": "One neutral massless stabilizer branch",
+    "img": "assets/05_photon.png"
+  },
+  {
+    "num": "06",
+    "title": "COULOMB",
+    "copy": "Static massless Green function \u2192 1/r",
+    "img": "assets/06_coulomb.png"
+  },
+  {
+    "num": "07",
+    "title": "HYDROGEN",
+    "copy": "One autonomous Schr\u00f6dinger bound-state problem",
+    "img": "assets/07_hydrogen.png"
+  },
+  {
+    "num": "08",
+    "title": "LIVE ATOM",
+    "copy": "The theory ends in a measurable, dynamical atom",
+    "img": "assets/08_readout.png"
+  }
+]
