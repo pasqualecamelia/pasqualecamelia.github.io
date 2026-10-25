@@ -156,7 +156,20 @@ details.acc>.acc-body{padding:0 0 2.4rem}
 .watch-card p{font-size:.85rem;color:var(--text2);margin:0 0 .6rem}
 .watch-card .go{font-family:var(--mono);font-size:.76rem}
 .watch-card .wc-badge{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem}
+
+.watch-featured{grid-column:1/-1;display:grid;grid-template-columns:minmax(320px,1.08fr) minmax(300px,.92fr);align-items:stretch}
+.watch-featured>a{display:block;background:#000;min-height:100%}
+.watch-featured>a img{height:100%;min-height:330px;aspect-ratio:auto;object-fit:cover}
+.watch-featured .wc-body{padding:1.25rem 1.35rem;display:flex;flex-direction:column;justify-content:center}
+.watch-featured h4{font-size:1.35rem;margin-bottom:.55rem}
+.watch-featured p{font-size:.94rem;line-height:1.65}
+.watch-actions{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:.35rem}
+.watch-actions .go{display:inline-block;padding:.5rem .65rem;border:1px solid var(--border);border-radius:4px;text-decoration:none}
+.watch-actions .go.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.watch-path{margin:.8rem 0 0;padding:.65rem .75rem;background:rgba(35,79,150,.05);border-left:3px solid var(--blue);font-size:.82rem;color:var(--text2)}
+@media(max-width:860px){.watch-featured{grid-template-columns:1fr}.watch-featured>a img{height:auto;min-height:0;aspect-ratio:16/9}}
 @media(max-width:760px){.watch-grid{grid-template-columns:1fr}}
+
 .editions{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1.2rem 0}
 .edition{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;display:grid;grid-template-columns:minmax(110px,150px) 1fr;gap:1rem;align-items:start}
 .edition img{width:100%;border-radius:6px;display:block;box-shadow:0 12px 28px rgba(0,0,0,.22);background:#000}
@@ -182,15 +195,15 @@ details.acc>.acc-body{padding:0 0 2.4rem}
     <div class="hero-actions">
       <a class="btn-main amazon" href="https://www.amazon.com/dp/B0H5315LNM" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'EN_B0H4NWW5J4'});">Buy the English edition &rarr;</a>
       <a class="btn-main amazon" href="https://www.amazon.it/dp/B0H4YXQHQT" target="_blank" rel="noopener noreferrer" onclick="gtag('event','book_amazon_click',{'event_category':'outbound','event_label':'IT_edition'});">Edizione italiana &rarr;</a>
-      <a class="btn-main watch" href="qgt_companion.html#hydrogen3d" onclick="gtag('event','watch_hydrogen_click',{'event_category':'engagement','event_label':'hero'});">Watch the hydrogen atom &mdash; 3D, real time &rarr;</a>
+      <a class="btn-main watch" href="qgt_end_to_end_r04/" onclick="gtag('event','watch_hydrogen_click',{'event_category':'engagement','event_label':'hero_r04'});">Watch QGT form hydrogen &mdash; cinematic + live &rarr;</a>
     </div>
   </div>
 </header>
 
 <nav class="toc">
   <div class="wrap">
-    <a href="#book">Book</a>
     <a href="#watch">Watch</a>
+    <a href="#book">Book</a>
     <a href="#thread">Thread</a>
     <a href="#validators">Validators</a>
     <a href="papers.html">Papers</a>
@@ -225,8 +238,58 @@ details.acc>.acc-body{padding:0 0 2.4rem}
   <p class="note">No pre-existing spacetime. Holography is micro-local (each cell),
     not global &mdash; the distinction from LQG and AdS/CFT is drawn in the
     monograph's related-work appendix.</p>
+  <div class="watch-path"><strong>Recommended entry:</strong> first follow <em>From CELL to Hydrogen</em> to see the physical chain close end-to-end; from there you can enter the live Hydrogen 3D solver directly.</div>
 
+</section>
 
+<section id="watch">
+  <h2><span class="num">00C</span>Watch</h2>
+  <p class="lead">One guided physical story, then the specialised visual labs. If this is your first visit, start with the complete CELL &rarr; hydrogen path.</p>
+  <div class="watch-grid">
+    <div class="watch-card watch-featured">
+      <a href="qgt_end_to_end_r04/"><img src="assets/thumb_hydrogen3d.jpg" alt="From CELL to Hydrogen — integrated cinematic and live Hydrogen 3D" loading="eager"/></a>
+      <div class="wc-body">
+        <div class="wc-badge">start here &middot; r04 &middot; live integrated</div>
+        <h4>From CELL to Hydrogen</h4>
+        <p>The complete physical path in one experience: reciprocal finite access, DW1/DW2 gluing, Schur matter-line selection, the massless photon branch, Coulomb binding, Schr&ouml;dinger hydrogen and finally the live 64&sup3; Hydrogen 3D wavefunction.</p>
+        <div class="watch-actions">
+          <a class="go primary" href="qgt_end_to_end_r04/">Start the full story &rarr;</a>
+          <a class="go" href="qgt_companion.html#hydrogen3d" onclick="gtag('event','watch_hydrogen_click',{'event_category':'engagement','event_label':'watch_direct_lab'});">Jump directly to Hydrogen 3D &rarr;</a>
+        </div>
+        <div class="watch-path"><strong>Logic:</strong> the old Hydrogen 3D is now the direct live laboratory; r04 is the recommended narrative entrance that explains how that atom is reached from the QGT cell.</div>
+      </div>
+    </div>
+
+    <div class="watch-card">
+      <a href="qgt_breathing_3d.html"><img src="assets/thumb_breathing3d.jpg" alt="Breathing flow in 3D on the Majorana sphere" loading="lazy"/></a>
+      <div class="wc-body">
+        <div class="wc-badge">specialised lab &middot; layer 3</div>
+        <h4>Breathing 3D</h4>
+        <p>The shell oscillating between the two domain walls on S&sup2;<sub>&chi;</sub> &mdash; the phase &theta;=gd(&Gamma;<sub>&tau;</sub>t) that every cell carries.</p>
+        <a class="go" href="qgt_breathing_3d.html">Open Breathing 3D &rarr;</a>
+      </div>
+    </div>
+
+    <div class="watch-card">
+      <a href="qgt_animation_v4.html"><img src="assets/thumb_lissajous.jpg" alt="Lissajous classes of the temporal fibre" loading="lazy"/></a>
+      <div class="wc-body">
+        <div class="wc-badge">specialised lab &middot; layers 1&ndash;4</div>
+        <h4>Temporal fibre &amp; Lissajous</h4>
+        <p>The chiral doublet winding on the lock-in surface; the four admissible anyon classes of TL&#8324;(&phi;).</p>
+        <a class="go" href="qgt_animation_v4.html">Open animation &rarr;</a>
+      </div>
+    </div>
+
+    <div class="watch-card">
+      <a href="respiratio.html"><img src="assets/thumb_respiratio.jpg" alt="Respiratio — the breathing sphere and the polygons of time" loading="lazy"/></a>
+      <div class="wc-body">
+        <div class="wc-badge">visual essay &middot; dal libro</div>
+        <h4>Respiratio</h4>
+        <p>La sfera che respira, i canali anticoniugati in quadratura, i poligoni del tempo e la pompa &oint;&#8202;S&#8202;d&#x1D4B5;&nbsp;&ne;&nbsp;0 &mdash; la soglia del romanzo <em>Il nome che non pu&ograve; dirsi</em>.</p>
+        <a class="go" href="respiratio.html">Apri Respiratio &rarr;</a>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section id="book">
@@ -265,58 +328,7 @@ details.acc>.acc-body{padding:0 0 2.4rem}
   </div>
 </section>
 
-<section id="watch">
-  <h2><span class="num">00C</span>Watch</h2>
-  <p class="lead">A growing set of animations, straight from the structural chain. No installation:
-    they run in this browser.</p>
-  <div class="watch-grid">
-    <div class="watch-card">
-      <a href="qgt_end_to_end_r04/"><img src="qgt_end_to_end_r04/assets/scientific_hydrogen_poster.png" alt="QGT r04 — integrated cinematic hydrogen" loading="lazy"/></a>
-      <div class="wc-body">
-        <div class="wc-badge">new &middot; live integrated</div>
-        <h4>From CELL to Hydrogen</h4>
-        <p>Eight end-to-end stages from reciprocal finite access and DW1/DW2 gluing to the selected matter line, the massless photon branch, Coulomb binding and a live Hydrogen 3D finale.</p>
-        <a class="go" href="qgt_end_to_end_r04/">Open integrated cinematic hydrogen &rarr;</a>
-      </div>
-    </div>
-    <div class="watch-card">
-      <a href="qgt_companion.html#hydrogen3d" onclick="gtag('event','watch_hydrogen_click',{'event_category':'engagement','event_label':'watch_section'});"><img src="assets/thumb_hydrogen3d.jpg" alt="Hydrogen 3D — real-time dynamics" loading="lazy"/></a>
-      <div class="wc-body">
-        <div class="wc-badge">demonstrated &middot; real time</div>
-        <h4>Hydrogen 3D</h4>
-        <p>Split-operator Schr&ouml;dinger evolution on a 32&sup3; grid: |1s&#10217;+|2p<sub>z</sub>&#10217; under the QGT potential with sech&sup2; back-action and breathing modulation. One loop = 290 attoseconds of real electron dynamics &mdash; a full charge-migration stroke, computed live.</p>
-        <a class="go" href="qgt_companion.html#hydrogen3d">Open Hydrogen 3D &rarr;</a>
-      </div>
-    </div>
-    <div class="watch-card">
-      <a href="qgt_breathing_3d.html"><img src="assets/thumb_breathing3d.jpg" alt="Breathing flow in 3D on the Majorana sphere" loading="lazy"/></a>
-      <div class="wc-body">
-        <div class="wc-badge">layer 3</div>
-        <h4>Breathing 3D</h4>
-        <p>The shell oscillating between the two domain walls on S&sup2;<sub>&chi;</sub> &mdash; the phase &theta;=gd(&Gamma;<sub>&tau;</sub>t) that every cell carries.</p>
-        <a class="go" href="qgt_breathing_3d.html">Open Breathing 3D &rarr;</a>
-      </div>
-    </div>
-    <div class="watch-card">
-      <a href="qgt_animation_v4.html"><img src="assets/thumb_lissajous.jpg" alt="Lissajous classes of the temporal fibre" loading="lazy"/></a>
-      <div class="wc-body">
-        <div class="wc-badge">layers 1&ndash;4</div>
-        <h4>Temporal fibre &amp; Lissajous</h4>
-        <p>The chiral doublet winding on the lock-in surface; the four admissible anyon classes of TL&#8324;(&phi;).</p>
-        <a class="go" href="qgt_animation_v4.html">Open animation &rarr;</a>
-      </div>
-    </div>
-    <div class="watch-card">
-      <a href="respiratio.html"><img src="assets/thumb_respiratio.jpg" alt="Respiratio — the breathing sphere and the polygons of time" loading="lazy"/></a>
-      <div class="wc-body">
-        <div class="wc-badge">dal libro</div>
-        <h4>Respiratio</h4>
-        <p>La sfera che respira (&#x1D4B5;<sub>k+1</sub>=2&#x1D4B5;<sub>k</sub><sup>2/3</sup>), i canali anticoniugati in quadratura, i poligoni del tempo e la pompa &#8750;&#8202;S&#8202;d&#x1D4B5;&nbsp;&ne;&nbsp;0 &mdash; la soglia del romanzo <em>Il nome che non pu&ograve; dirsi</em>.</p>
-        <a class="go" href="respiratio.html">Apri Respiratio &rarr;</a>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <section id="gallery">
   <h2><span class="num">01</span>The qubit — visualised</h2>
