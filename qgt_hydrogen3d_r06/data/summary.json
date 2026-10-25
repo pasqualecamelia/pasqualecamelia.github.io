@@ -1,0 +1,36 @@
+{
+  "model": "QGT Schr\u00f6dinger-grade dimensionless hydrogen",
+  "scaled_equation": "i dpsi/dtau = [-1/2 nabla_rho^2 - 1/rho - F(tau) rho_z] psi",
+  "grid": {
+    "N": 48,
+    "dx": 0.5,
+    "extent": 12.0
+  },
+  "preparation": {
+    "status": "numerical eigenstate preparation, not physical radiative recombination",
+    "initial_fidelity_1s": 0.5145038791479015,
+    "final_fidelity_1s": 0.9766503245731447,
+    "initial_mean_r": 3.3851632707701174,
+    "final_mean_r": 1.7987199669744312
+  },
+  "life": {
+    "status": "analytic unitary hydrogenic superposition in the closed Coulomb sector",
+    "dipole_min": -0.8914408408274647,
+    "dipole_max": 2.20312908072168
+  },
+  "light": {
+    "status": "real-time split-operator with explicit dipole coupling -E(t) z",
+    "E0_scaled": 0.12,
+    "omega_scaled": 0.375,
+    "pulse_duration_scaled": 30.0,
+    "max_abs_dipole": 1.5095705071534202,
+    "max_P_2pz": 0.2525477803775684,
+    "min_P_1s": 0.4707601914900018,
+    "max_norm_drift": 1.701971896750365e-13
+  },
+  "epistemic_firewall": {
+    "radiative_capture": "not simulated; requires photon-emission/open-QED extension",
+    "old_legacy_breathing_term": "not used in r06 baseline",
+    "absolute_alpha_Q_and_mu_Q": "scale calibration remains separate from the dimensionless dynamics"
+  }
+}
