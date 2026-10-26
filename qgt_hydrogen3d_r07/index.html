@@ -1,1 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>QGT Hydrogen3D — Bilinear Atom–Light Readout</title>
+<style>
+:root{--bg:#040a11;--bg2:#08131e;--bg3:#0e1d2b;--panel:#0a1622f2;--text:#f2f7fb;--muted:#9fb5c8;--gold:#efc76d;--blue:#72ceff;--blue2:#2c7dff;--violet:#c899ff;--orange:#ff9d4d;--red:#ff6d73;--green:#55df9b;--border:#173957;--radius:18px;--mono:Consolas,Menlo,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#0f2a43 0,#05101a 35%,#02070c 78%);line-height:1.5}a{color:var(--blue)}.wrap{max-width:1540px;margin:auto;padding:0 22px}.kicker{font:700 11px/1 var(--mono);letter-spacing:.13em;color:var(--gold);text-transform:uppercase}.btn{border:1px solid var(--border);background:linear-gradient(180deg,#10263a,#0a1722);color:#eaf5ff;border-radius:11px;padding:10px 14px;cursor:pointer;font-weight:750;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}.btn:hover{border-color:#2b6e9e}.btn.primary{border-color:#6d5728;background:linear-gradient(180deg,#f2d57f,#c99d41);color:#081018}.btn.active{outline:2px solid var(--gold);background:#18354d}.hero{padding:34px 0 18px}.heroTop{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.9fr);gap:26px;align-items:center}.hero h1{font-size:clamp(38px,5.6vw,74px);line-height:.98;margin:12px 0 16px;letter-spacing:-.035em}.hero p{max-width:920px;color:var(--muted);font-size:18px}.heroImage{border:1px solid #285577;border-radius:20px;overflow:hidden;background:#02070c;box-shadow:0 24px 90px rgba(0,0,0,.45),0 0 55px rgba(55,151,255,.08)}.heroImage img{width:100%;display:block}.heroImage figcaption{padding:9px 12px;color:#7f9ab1;font:11px/1.4 var(--mono);background:#07111a}.heroActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.section{padding:22px 0 44px}.section h2{font-size:clamp(28px,3.2vw,44px);line-height:1.08;margin:8px 0 10px}.lede{max-width:1040px;color:var(--muted);font-size:16px}.introGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}.storyCard{border:1px solid var(--border);background:linear-gradient(145deg,#0d1c29,#07111a);border-radius:15px;padding:15px}.storyCard b{display:block;margin-bottom:6px}.storyCard p{font-size:13px;color:var(--muted);margin:0}.storyN{font:800 12px/1 var(--mono);color:var(--gold);margin-bottom:8px}.firewall{padding:14px 16px;border:1px solid rgba(239,199,109,.32);background:rgba(239,199,109,.055);border-radius:14px;margin:14px 0;color:#dce7ef}.modebar{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0 12px}.panel{background:linear-gradient(145deg,rgba(13,29,43,.97),rgba(5,13,20,.97));border:1px solid var(--border);border-radius:18px;box-shadow:0 18px 55px rgba(0,0,0,.25)}.scienceFrame{width:min(100%,calc((100svh - 150px)*16/9));aspect-ratio:16/9;margin:0 auto;display:grid;grid-template-columns:minmax(0,3.25fr) minmax(190px,1fr);gap:9px;padding:9px}.mainStage{position:relative;overflow:hidden;border-radius:12px;min-width:0;min-height:0}.canvas3d{position:absolute;inset:0;width:100%;height:100%;background:#000;border:1px solid #17344c;border-radius:12px;display:block;cursor:grab;touch-action:none}.stageTag{position:absolute;left:10px;top:9px;z-index:4;padding:5px 8px;border-radius:8px;background:rgba(1,8,14,.72);backdrop-filter:blur(5px);font:10px/1.35 var(--mono);color:#a8cbe5}.frameLegend{position:absolute;left:10px;bottom:9px;z-index:4;padding:5px 8px;border-radius:8px;background:rgba(1,8,14,.72);backdrop-filter:blur(5px);font:10px/1.35 var(--mono);color:#86a4ba}.sliceRail{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:9px;min-width:0;min-height:0}.sliceBox{position:relative;border:1px solid #17344c;border-radius:10px;overflow:hidden;background:#000;min-height:0}.sliceBox canvas{position:absolute;inset:0;width:100%;height:100%}.sliceLabel{position:absolute;left:7px;top:6px;z-index:3;padding:4px 6px;border-radius:6px;background:rgba(0,6,11,.78);font:10px/1 var(--mono);color:#a6d4f2}.controlPanel{margin-top:10px;padding:11px 12px}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.controls input[type=range]{flex:1;min-width:210px}.time{font:12px var(--mono);color:#d5e8f7;min-width:120px}.underFrame{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:11px;margin-top:10px}.status{font:700 10px/1.2 var(--mono);color:var(--gold);letter-spacing:.08em}.explain{font-size:13px;color:var(--muted);padding:11px 12px;background:#07111a;border:1px solid var(--border);border-radius:10px;margin-top:6px}.info{padding:9px 11px;border:1px solid var(--border);background:#050d14;border-radius:10px;font:11px/1.45 var(--mono);color:#c4d6e3;margin-top:7px}.tiny{font:10px var(--mono);color:#7e9aaf;margin-bottom:5px}.history{width:100%;height:130px;background:#050c12;border:1px solid var(--border);border-radius:9px}.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:10px}.metric{padding:11px 12px;border:1px solid var(--border);background:#06111a;border-radius:11px}.metric span{display:block;font:10px/1.2 var(--mono);color:#7895aa}.metric strong{display:block;font-size:19px;margin-top:4px}.metric.beta{border-color:#6f40a7;background:linear-gradient(145deg,#1c1130,#0a1018)}.metric.alpha{border-color:#24638c}.benchmark{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(310px,.9fr);gap:12px;margin-top:16px}.benchmark .panel{padding:16px}.eq{font:700 clamp(15px,1.3vw,19px)/1.55 var(--mono);color:#d8e9f5;background:#040a10;border:1px solid #1b3449;padding:13px;border-radius:10px}.benchTable{width:100%;border-collapse:collapse;font-size:13px}.benchTable td,.benchTable th{border-bottom:1px solid #17344c;padding:8px;text-align:left}.benchTable th{color:#8ebbd8}.pass{color:var(--green);font-weight:800}.scope{display:grid;grid-template-columns:1fr 1fr;gap:12px}.scope .panel{padding:16px}.scope ul{margin:7px 0 0;padding-left:18px;color:var(--muted)}.footer{padding:16px 0 50px;color:#6e899e;font-size:12px}
+@media(max-width:1050px){.heroTop{grid-template-columns:1fr}.introGrid{grid-template-columns:repeat(2,1fr)}.scienceFrame{grid-template-columns:minmax(0,3fr) minmax(150px,1fr)}.underFrame,.benchmark{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.wrap{padding:0 12px}.introGrid{grid-template-columns:1fr}.scienceFrame{width:100%;grid-template-columns:minmax(0,2.6fr) minmax(100px,1fr);gap:6px;padding:6px}.sliceRail{gap:6px}.metrics{grid-template-columns:repeat(2,1fr)}.scope{grid-template-columns:1fr}.frameLegend{display:none}.hero{padding-top:24px}.hero p{font-size:15px}}
+@media(orientation:landscape) and (max-height:620px){.hero{padding-top:18px}.heroTop{grid-template-columns:1.1fr .9fr}.hero h1{font-size:36px}.hero p{font-size:13px}.scienceFrame{width:min(100%,calc((100svh - 115px)*16/9))}.section{padding:12px 0 25px}.underFrame{grid-template-columns:1.15fr .85fr}.history{height:88px}.metrics{grid-template-columns:repeat(5,1fr)}.metric strong{font-size:15px}}
+</style>
+</head>
+<body>
+<header class="wrap hero">
+  <div class="heroTop">
+    <div>
+      <div class="kicker">QGT Hydrogen3D · Bilinear Atom–Light Readout</div>
+      <h1>Hydrogen becomes a measurable relation.</h1>
+      <p>The live simulator keeps the Schrödinger-grade 3D atom and explicit light coupling, then adds the new coherent two-probe layer: four reversible sign configurations are evolved and a Walsh–Hadamard readout isolates the irreducible mixed atom–light phase, <b>β₁₁</b>.</p>
+      <div class="heroActions"><a class="btn primary" href="#simulator">Open live simulator ↓</a><a class="btn" href="#benchmark">Precision benchmark</a></div>
+    </div>
+    <figure class="heroImage"><img src="assets/qgt_hydrogen3d_beta11_dashboard.png" alt="QGT Hydrogen3D bilinear atom-light readout dashboard concept"/><figcaption>Visual guide to the live simulation below. The numerical values shown by the live engine and the precision benchmark are computed separately and explicitly labelled.</figcaption></figure>
+  </div>
+</header>
 
+<section class="wrap section">
+  <div class="kicker">PHYSICAL STORY</div><h2>From a bound atom to a bilinear readout</h2>
+  <p class="lede">The key change is not cosmetic. The simulator now distinguishes the atomic dynamics from the measurement grammar that extracts a relation between two reversible probes.</p>
+  <div class="introGrid">
+    <div class="storyCard"><div class="storyN">01 · ATOM</div><b>Prepare and evolve hydrogen</b><p>The Coulomb Hamiltonian produces the bound 1s sector and its coherent real-time dynamics.</p></div>
+    <div class="storyCard"><div class="storyN">02 · TWO PROBES</div><b>Apply two reversible fields</b><p>Two weak dipole probes enter with independently controllable signs s₁,s₂ = ±1.</p></div>
+    <div class="storyCard"><div class="storyN">03 · FOUR RUNS</div><b>Evolve ++, +−, −+, −−</b><p>All four branches use the same TDSE and differ only by the controlled probe signs.</p></div>
+    <div class="storyCard"><div class="storyN">04 · WALSH 11</div><b>Keep only the irreducible relation</b><p>The H⊗H character channel cancels common and single-probe terms and leaves β₁₁.</p></div>
+  </div>
+</section>
+
+<section class="wrap section" id="simulator">
+  <div class="kicker">LIVE 3D SIMULATOR</div><h2>One atom, four coherent branches, one mixed readout</h2>
+  <p class="lede">The browser engine uses dimensionless Coulomb units with H₀ = −½∇² − 1/ρ. LIGHT uses the explicit dipole term −F(τ)z. BILINEAR evolves four copies of the same 3D TDSE and computes β₁₁ directly from their ground-state return amplitudes.</p>
+  <div class="firewall"><b>Precision boundary.</b> The interactive 3D engine is a finite-grid visual laboratory. The independent high-precision partial-wave calculation is shown below and is not fitted to the animation. The microscopic QGT parent normalization of the electromagnetic field remains an upstream physics gate.</div>
+  <div class="modebar">
+    <button class="btn active" data-mode="prepare">1 · PREPARE</button>
+    <button class="btn" data-mode="life">2 · LIVE ATOM</button>
+    <button class="btn" data-mode="light">3 · LIGHT</button>
+    <button class="btn" data-mode="bilinear">4 · BILINEAR / WALSH 11</button>
+    <button class="btn" id="r07-control">Red-team: disable probe 2</button>
+    <button class="btn primary" id="r07-guided">▶ guided sequence</button>
+  </div>
+  <div class="panel scienceFrame">
+    <div class="mainStage">
+      <canvas id="r07-3d" class="canvas3d" width="1280" height="720"></canvas>
+      <div class="stageTag">3D TDSE · drag to rotate</div>
+      <div class="frameLegend">brightness = |ψ|² · hue = arg ψ · filaments = probability current</div>
+    </div>
+    <aside class="sliceRail" aria-label="Wavefunction diagnostics">
+      <div class="sliceBox"><div class="sliceLabel">xy density · z=0</div><canvas id="r07-xy" width="360" height="220"></canvas></div>
+      <div class="sliceBox"><div class="sliceLabel">xz density · y=0</div><canvas id="r07-xz" width="360" height="220"></canvas></div>
+      <div class="sliceBox"><div class="sliceLabel" id="r07-third-label">yz · x=0</div><canvas id="r07-yz" width="360" height="220"></canvas></div>
+    </aside>
+  </div>
+  <div class="panel controlPanel">
+    <div class="controls"><button class="btn primary" id="r07-play">▶ Play</button><button class="btn" id="r07-reset">↺ Reset</button><input id="r07-slider" type="range" min="0" max="40" value="0" step="1"/><span class="time" id="r07-time">τ = 0</span></div>
+    <div class="underFrame">
+      <div><div class="status">WHAT THIS MODE MEANS</div><div class="explain" id="r07-explain"></div><div class="info" id="r07-info"></div></div>
+      <div><div class="tiny">observable / β₁₁ history</div><canvas id="r07-history" class="history" width="560" height="150"></canvas></div>
+    </div>
+    <div class="metrics">
+      <div class="metric beta"><span>β₁₁ · mixed phase</span><strong id="m-beta">—</strong></div>
+      <div class="metric alpha"><span>α · live/reference</span><strong id="m-alpha">—</strong></div>
+      <div class="metric"><span>P₁s</span><strong id="m-p1">—</strong></div>
+      <div class="metric"><span>P₂p</span><strong id="m-p2">—</strong></div>
+      <div class="metric"><span>norm ⟨ψ|ψ⟩</span><strong id="m-norm">—</strong></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section" id="benchmark">
+  <div class="kicker">INDEPENDENT PRECISION WITNESS</div><h2>The same-action benchmark</h2>
+  <div class="benchmark">
+    <div class="panel">
+      <div class="eq">β₁₁ = ¼ Arg[(M₊₊M₋₋)/(M₊₋M₋₊)]<br/>αeff = β₁₁ / [ε₁ ε₂ ∫ f₁(t)f₂(t) dt]</div>
+      <p class="lede">A separate partial-wave TDSE solver, using Crank–Nicolson/Cayley propagation and the same Schrödinger-grade Hamiltonian, provides the reproducibility benchmark. An independent radial Sternheimer solve supplies the static polarizability.</p>
+      <div class="heroActions"><a class="btn" href="downloads/QGT_BETA11_SAME_ACTION_r01.zip">Download β₁₁ reproducibility bundle</a><a class="btn" href="downloads/QGT_MINIMAL_QUBIT_HADAMARD_CLOSURE_r01.zip">Download qubit/Hadamard theorem bundle</a></div>
+    </div>
+    <div class="panel">
+      <table class="benchTable"><tr><th>Quantity</th><th>Reference</th></tr>
+        <tr><td>β₁₁, T=160</td><td>1.529632891 × 10⁻³ rad</td></tr>
+        <tr><td>αeff, T=160</td><td>4.521633076</td></tr>
+        <tr><td>static α₁s</td><td>4.500003906</td></tr>
+        <tr><td>exact Schrödinger α₁s</td><td>4.5</td></tr>
+        <tr><td>max norm drift</td><td>1.54 × 10⁻¹²</td></tr>
+        <tr><td>no-overlap β₁₁</td><td>−6.80 × 10⁻⁹ rad · <span class="pass">PASS</span></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section">
+  <div class="kicker">SCOPE</div><h2>What this version establishes</h2>
+  <div class="scope">
+    <div class="panel"><b>Closed in this simulator</b><ul><li>3D Coulomb bound-state dynamics.</li><li>Explicit dipole atom–light coupling at Schrödinger grade.</li><li>Four coherent sign branches.</li><li>Walsh–Hadamard mixed channel β₁₁.</li><li>Red-team no-overlap control.</li><li>Independent static/dynamic precision benchmarks.</li></ul></div>
+    <div class="panel"><b>Not claimed here</b><ul><li>Spontaneous radiative recombination from a quantized emission field.</li><li>A microscopic derivation of the absolute electromagnetic normalization from the QGT parent.</li><li>That the full Fibonacci–Mellin transform is a Walsh transform.</li><li>Empirical corroboration of QGT.</li></ul></div>
+  </div>
+</section>
+
+<div class="wrap footer">QGT Hydrogen3D · Bilinear Atom–Light Readout · public scientific visualization and reproducible Schrödinger-grade witness.</div>
+<script src="hydrogen3d_bilinear_engine_r07.js"></script>
+</body>
+</html>
