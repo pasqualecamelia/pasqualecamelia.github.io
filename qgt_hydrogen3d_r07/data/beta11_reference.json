@@ -1,1 +1,233 @@
-
+{
+  "status": {
+    "beta11_identity": "CLOSED: Walsh/Hadamard (1,1) mixed channel",
+    "same_effective_action_schrodinger_grade": "PASS computational witness",
+    "same_microscopic_QGT_parent_normalization": "OPEN upstream gate"
+  },
+  "model": {
+    "H0": "-1/2 nabla^2 - 1/r",
+    "interaction": "-E(t) z",
+    "units": "dimensionless QGT/atomic Coulomb units",
+    "radial_solver": {
+      "dr": 0.05,
+      "rmax": 50.0,
+      "lmax": 2,
+      "dt": 0.05
+    },
+    "ground_energy_numeric": -0.49968789001568553
+  },
+  "static": {
+    "alpha_convergence": [
+      {
+        "dr": 0.04,
+        "alpha_1s": 4.500250814800492
+      },
+      {
+        "dr": 0.02,
+        "alpha_1s": 4.500062550936234
+      },
+      {
+        "dr": 0.01,
+        "alpha_1s": 4.50001562818358
+      },
+      {
+        "dr": 0.005,
+        "alpha_1s": 4.500003906449981
+      }
+    ],
+    "alpha_reference_dr_0p005": 4.500003906449981,
+    "exact_schrodinger_alpha": 4.5,
+    "reference_rel_error": 8.680999958876612e-07
+  },
+  "dynamic": {
+    "convergence": [
+      {
+        "T": 80.0,
+        "delay": 10.0,
+        "I12": 27.063370520967535,
+        "beta11": 0.0007706465107770751,
+        "alpha_eff": 4.556100712910161,
+        "rel_error_vs_4p5": 0.012466825091146827,
+        "max_norm_drift": 7.668310431085956e-13,
+        "max_excited_weight": 9.0156590537041e-08
+      },
+      {
+        "T": 120.0,
+        "delay": 15.0,
+        "I12": 40.595055781456004,
+        "beta11": 0.0011494669743153502,
+        "alpha_eff": 4.5304708258208395,
+        "rel_error_vs_4p5": 0.006771294626853219,
+        "max_norm_drift": 1.1570744362643381e-12,
+        "max_excited_weight": 5.5578737255303674e-09
+      },
+      {
+        "T": 160.0,
+        "delay": 20.0,
+        "I12": 54.12674104194239,
+        "beta11": 0.0015296328911991654,
+        "alpha_eff": 4.521633076009848,
+        "rel_error_vs_4p5": 0.004807350224410589,
+        "max_norm_drift": 1.5384360452230794e-12,
+        "max_excited_weight": 4.510086966951367e-09
+      }
+    ],
+    "fit_model": "alpha_eff(T) = alpha_inf + c/T^2",
+    "fit_alpha_inf": 4.51008903700386,
+    "fit_c": 294.37378457745183,
+    "fit_rel_error_vs_4p5": 0.002242008223080072,
+    "reference_run": {
+      "T": 160.0,
+      "delay": 20.0,
+      "eps1": 0.0025,
+      "eps2": 0.0025,
+      "I12": 54.12674104194239,
+      "beta11": 0.0015296328911991654,
+      "alpha_eff": 4.521633076009848,
+      "parity_ratio_real": 0.9999812807336119,
+      "parity_ratio_imag": 0.0061184933820783135,
+      "runs": [
+        {
+          "b": 1,
+          "rsign": 1,
+          "amplitude_real": -0.39905508375423626,
+          "amplitude_imag": 0.9169269515465461,
+          "amplitude_abs": 0.9999999971712713,
+          "phase": 1.9812824176104744,
+          "norm_drift": 1.5102363803976004e-12,
+          "excited_weight": 3.823047320331397e-09
+        },
+        {
+          "b": 1,
+          "rsign": -1,
+          "amplitude_real": -0.39624809770382785,
+          "amplitude_imag": 0.9181434749096553,
+          "amplitude_abs": 0.9999999977265396,
+          "phase": 1.9782231518280793,
+          "norm_drift": 1.5384360452230794e-12,
+          "excited_weight": 4.510086965899418e-09
+        },
+        {
+          "b": -1,
+          "rsign": 1,
+          "amplitude_real": -0.3962480977038234,
+          "amplitude_imag": 0.9181434749096635,
+          "amplitude_abs": 0.9999999977265454,
+          "phase": 1.9782231518280717,
+          "norm_drift": 1.5271117703719028e-12,
+          "excited_weight": 4.510086966951367e-09
+        },
+        {
+          "b": -1,
+          "rsign": -1,
+          "amplitude_real": -0.3990550837542324,
+          "amplitude_imag": 0.9169269515465402,
+          "amplitude_abs": 0.9999999971712644,
+          "phase": 1.981282417610473,
+          "norm_drift": 1.5238921236004899e-12,
+          "excited_weight": 3.823047320417559e-09
+        }
+      ],
+      "max_norm_drift": 1.5384360452230794e-12,
+      "max_excited_weight": 4.510086966951367e-09
+    }
+  },
+  "red_team": {
+    "amplitude_scaling": [
+      {
+        "eps": 0.0015,
+        "beta11": 0.00041368700009276096,
+        "beta11_over_eps2": 183.86088893011598,
+        "alpha_eff": 4.529144877147932
+      },
+      {
+        "eps": 0.0025,
+        "beta11": 0.0011494669743153502,
+        "beta11_over_eps2": 183.91471589045602,
+        "alpha_eff": 4.5304708258208395
+      },
+      {
+        "eps": 0.003,
+        "beta11": 0.001655565761993469,
+        "beta11_over_eps2": 183.95175133260767,
+        "alpha_eff": 4.531383139930002
+      }
+    ],
+    "no_overlap": {
+      "T": 80.0,
+      "delay": 100.0,
+      "eps1": 0.0025,
+      "eps2": 0.0025,
+      "I12": 0.0,
+      "beta11": -6.800428699210772e-09,
+      "alpha_eff": NaN,
+      "parity_ratio_real": 0.9999999116839934,
+      "parity_ratio_imag": -2.720171239449627e-08,
+      "runs": [
+        {
+          "b": 1,
+          "rsign": 1,
+          "amplitude_real": -0.3968808276015042,
+          "amplitude_imag": 0.917870095502622,
+          "amplitude_abs": 0.9999999517678225,
+          "phase": 1.9789124148143873,
+          "norm_drift": 1.5180079415699765e-12,
+          "excited_weight": 8.278039148136437e-08
+        },
+        {
+          "b": 1,
+          "rsign": -1,
+          "amplitude_real": -0.3968808576107885,
+          "amplitude_imag": 0.9178701306360161,
+          "amplitude_abs": 0.9999999959258261,
+          "phase": 1.9789124284152422,
+          "norm_drift": 1.5200063430143018e-12,
+          "excited_weight": 4.5510594178198175e-09
+        },
+        {
+          "b": -1,
+          "rsign": 1,
+          "amplitude_real": -0.3968808576107882,
+          "amplitude_imag": 0.9178701306360172,
+          "amplitude_abs": 0.999999995925827,
+          "phase": 1.9789124284152413,
+          "norm_drift": 1.518341008477364e-12,
+          "excited_weight": 4.5510594175569776e-09
+        },
+        {
+          "b": -1,
+          "rsign": -1,
+          "amplitude_real": -0.3968808276014988,
+          "amplitude_imag": 0.9178700955026244,
+          "amplitude_abs": 0.9999999517678226,
+          "phase": 1.9789124148143813,
+          "norm_drift": 1.517896919267514e-12,
+          "excited_weight": 8.278039148172e-08
+        }
+      ],
+      "max_norm_drift": 1.5200063430143018e-12,
+      "max_excited_weight": 8.278039148172e-08
+    },
+    "controls": {
+      "no_overlap_I12": 0.0,
+      "no_overlap_beta11_rad": -6.800428699210772e-09,
+      "no_overlap_pass_abs_beta_lt_1e-7": true,
+      "weak_amplitude_alpha_eff_mean": 4.530332947632924,
+      "weak_amplitude_alpha_eff_rel_spread": 0.0004940614316745852,
+      "bilinear_scaling_pass_rel_spread_lt_1e-3": true,
+      "norm_conservation_pass_lt_1e-10": true,
+      "weak_excitation_pass_lt_1e-6": true
+    }
+  },
+  "definitions": {
+    "beta11": "1/4 Arg[(M++ M--)/(M+- M-+)] on the continuous weak-response branch",
+    "alpha_eff": "beta11/(eps1 eps2 integral f1 f2 dt)",
+    "pulse": "sin^2 envelopes; f2 delayed relative to f1"
+  },
+  "epistemic_firewall": [
+    "The computation derives beta11 inside one Schr\u00f6dinger-grade effective Hamiltonian H[E].",
+    "It does not by itself derive the absolute electromagnetic field/charge normalization from the microscopic QGT parent.",
+    "The length-gauge dipole Hamiltonian has no explicit E^2 seagull; the parent FIELD Hessian must retain contact terms in representations where they are present.",
+    "The four-sign phase is an operational contraction of the mixed response, not the response tensor itself."
+  ]
+}
