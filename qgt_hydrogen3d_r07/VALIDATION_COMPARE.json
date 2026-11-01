@@ -1,0 +1,114 @@
+{
+  "validation": "PASS",
+  "comparison_contract": {
+    "initial_state": "identical normalized discrete Coulomb 1s array",
+    "same_grid": true,
+    "same_dt": true,
+    "same_kinetic_propagator": true,
+    "only_changed_term": "potential",
+    "coulomb": "V_C(r)=-1/r",
+    "qgt_structural_ansatz": "V_QGT(r,t)=-1/r + alpha*M_eff*sech^2(r/ell_pen) + f_t*cos(2*Gamma_tau*t)*exp(-r^2/2)",
+    "source_in_repository": "qgt_hydrogen3d.py",
+    "epistemic_status": "declared structural ansatz / visualization; not an empirically established correction to hydrogen"
+  },
+  "runtime": {
+    "constants": {
+      "phi": 1.618033988749895,
+      "gamma": 0.7236067977499789,
+      "alphaInv": 137.0820393249937,
+      "alpha": 0.007294901687515772,
+      "xi": 17.36607285816186,
+      "eta": 7.893669480982664,
+      "mEff": 0.13915691903729024,
+      "ellPen": 43.63456833538066,
+      "fT": 0.26180339887498943
+    },
+    "checkpoints": [
+      {
+        "step": 0,
+        "t": 0,
+        "d_rho": 0,
+        "fidelity": 1,
+        "norm_coulomb": 1,
+        "norm_qgt": 1,
+        "delta_mean_r": 0,
+        "max_abs_delta_rho": 0,
+        "qgt_breathing": 0.26180339887498943
+      },
+      {
+        "step": 1,
+        "t": 0.18,
+        "d_rho": 0.0013740751162542393,
+        "fidelity": 0.9998100779210369,
+        "norm_coulomb": 1.0000000000000482,
+        "norm_qgt": 1.0000000000000848,
+        "delta_mean_r": 0.0016306415292117737,
+        "max_abs_delta_rho": 5.848306472996771e-05,
+        "qgt_breathing": 0.252970601716401
+      },
+      {
+        "step": 5,
+        "t": 0.8999999999999999,
+        "d_rho": 0.022533249512512392,
+        "fidelity": 0.9976518954441239,
+        "norm_coulomb": 1.0000000000000275,
+        "norm_qgt": 1.0000000000000402,
+        "delta_mean_r": 0.029976976275673195,
+        "max_abs_delta_rho": 0.0005725691712687615,
+        "qgt_breathing": 0.06940318724801478
+      },
+      {
+        "step": 10,
+        "t": 1.7999999999999996,
+        "d_rho": 0.029761985941993828,
+        "fidelity": 0.9977473543864612,
+        "norm_coulomb": 1.0000000000001923,
+        "norm_qgt": 1.0000000000001643,
+        "delta_mean_r": 0.04957832561708342,
+        "max_abs_delta_rho": 0.0003115987568570594,
+        "qgt_breathing": -0.2250063028794327
+      },
+      {
+        "step": 20,
+        "t": 3.600000000000001,
+        "d_rho": 0.05151175310045724,
+        "fidelity": 0.9902095515755978,
+        "norm_coulomb": 1.0000000000001703,
+        "norm_qgt": 1.0000000000000704,
+        "delta_mean_r": -0.038068089322344845,
+        "max_abs_delta_rho": 0.0007632504253511103,
+        "qgt_breathing": 0.12495885519067124
+      },
+      {
+        "step": 40,
+        "t": 7.199999999999997,
+        "d_rho": 0.04675129048796322,
+        "fidelity": 0.9801469885593894,
+        "norm_coulomb": 1.000000000000117,
+        "norm_qgt": 1.0000000000001232,
+        "delta_mean_r": 0.056213983301714565,
+        "max_abs_delta_rho": 0.0006195720512296964,
+        "qgt_breathing": -0.1425175870202783
+      },
+      {
+        "step": 60,
+        "t": 10.799999999999992,
+        "d_rho": 0.050434958598798936,
+        "fidelity": 0.9742863148457899,
+        "norm_coulomb": 1.0000000000000682,
+        "norm_qgt": 1.0000000000000837,
+        "delta_mean_r": 0.19427089264972053,
+        "max_abs_delta_rho": 0.00021590438826115353,
+        "qgt_breathing": -0.26100624491225605
+      }
+    ]
+  },
+  "acceptance": {
+    "t0_d_rho_zero": true,
+    "t0_fidelity_one": true,
+    "max_norm_drift_60_steps": 1.9229062786507711e-13,
+    "difference_visible_after_5_steps": true,
+    "existing_modes_regression": "PREPARE/LIVE/LIGHT arrays exact in 3-step A/B test; BILINEAR beta exact in test"
+  },
+  "browser_note": "Headless Chromium navigation is blocked by the execution environment administrator; DOM structure, JS syntax and numerical engine were validated independently."
+}
